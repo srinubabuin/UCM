@@ -6,6 +6,7 @@
 
 package com.ucm.services;
 
+import com.ucm.exception.ConstraintVilationException;
 import com.ucm.exception.CourceNotFoundException;
 import com.ucm.model.Cource;
 import java.util.List;
@@ -16,7 +17,7 @@ import java.util.List;
  */
 public interface CourceService {
 
-    public int addCource(Cource cource);
+    public int addCource(Cource cource) throws ConstraintVilationException;
     public int modifyCource(Cource cource)throws CourceNotFoundException;
     public int deleteCource(Cource cource) throws CourceNotFoundException;
     public List<Cource> getAllCources();

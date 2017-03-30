@@ -7,7 +7,7 @@
 package com.ucm.model;
 
 import java.io.Serializable;
-import java.sql.Date;
+import java.util.Date;
 import javax.ws.rs.QueryParam;
 
 /**

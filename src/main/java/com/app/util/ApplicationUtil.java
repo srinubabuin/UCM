@@ -19,7 +19,10 @@ public class ApplicationUtil {
     public static String APP_FILE_SEPERATOR = "\\";
     public static String APP_PATH = "";
     public static String REST_PATH_BOOKING = "rest";
-
+    public static final String SUCCESS = "SUCCESS";
+    public static final String MESSAGE = "MESSAGE";
+    public static final String ID = "id";
+    
     public static String setAppFileSeperator(String serverDetails) {
 
         serverDetails = serverDetails.toLowerCase();
@@ -107,4 +110,5 @@ public class ApplicationUtil {
         }
         return transactionIsolationName;
     }
+    
 }
