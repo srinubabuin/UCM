@@ -31,8 +31,12 @@ public class LoginController extends HttpServlet {
             user.setLoginId(loginId);
             user.setPassword(password);
             UserServiceHelper userHelper = new UserServiceHelper();
-            AppUser appUser = userHelper.authUser(user);
-            System.out.println("############# " + appUser);
+            try {
+                AppUser appUser = userHelper.authUser(user);
+                System.out.println("############# " + appUser);
+            } catch (Exception e) {
+            }
+
         }
 
     }

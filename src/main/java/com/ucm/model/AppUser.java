@@ -5,6 +5,8 @@
  */
 package com.ucm.model;
 
+import com.app.util.Role;
+
 /**
  *
  * @author Srinu Babu
@@ -14,7 +16,7 @@ public class AppUser {
     private int id;
     private String loginId;
     private String password;
-    private String role;
+    private Role role;
 
     public int getId() {
         return id;
@@ -40,11 +42,11 @@ public class AppUser {
         this.password = password;
     }
 
-    public String getRole() {
+    public Role getRole() {
         return role;
     }
 
-    public void setRole(String role) {
+    public void setRole(Role role) {
         this.role = role;
     }
 

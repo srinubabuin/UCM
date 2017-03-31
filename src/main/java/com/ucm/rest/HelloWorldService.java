@@ -15,12 +15,12 @@ import javax.ws.rs.core.Response;
 public class HelloWorldService {
 
     @GET
-    @Path("/{param}")
+    @Path("/message/{param}")
     @Produces("text/plain")
     public Response getMsg(@PathParam("param") String msg) {
 
         String output = "Jersey say : " + msg;
-        System.out.println("output  "+output);
+        System.out.println("output  " + output);
         return Response.status(200).entity(output).build();
 
     }

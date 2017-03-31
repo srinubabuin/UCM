@@ -7,6 +7,7 @@ package com.user.service.impl;
 
 import com.app.util.AppSessionUtil;
 import com.app.util.DBUtil;
+import com.app.util.Role;
 import com.conn.pool.app.AppConnectionPool;
 import com.ucm.exception.NoUserException;
 import com.ucm.model.AppUser;
@@ -62,7 +63,7 @@ public class UserServiceImpl implements UserService {
                 appUser.setId(rs.getInt(DBUtil.COLUMN_USERS_ID));
                 appUser.setLoginId(rs.getString(DBUtil.COLUMN_USERS_LOGIN_ID));
                 appUser.setPassword(rs.getString(DBUtil.COLUMN_USERS_PASSWORD));
-                appUser.setRole(rs.getString(DBUtil.COLUMN_USERS_ROLE));
+                appUser.setRole(Role.valueOf(rs.getString(DBUtil.COLUMN_USERS_ROLE)));
             }
         } catch (SQLException ex) {
             System.out.println("Exception in isUserExists " + ex.getMessage());
@@ -89,7 +90,7 @@ public class UserServiceImpl implements UserService {
                 appUser.setId(rs.getInt(DBUtil.COLUMN_USERS_ID));
                 appUser.setLoginId(rs.getString(DBUtil.COLUMN_USERS_LOGIN_ID));
                 appUser.setPassword(rs.getString(DBUtil.COLUMN_USERS_PASSWORD));
-                appUser.setRole(rs.getString(DBUtil.COLUMN_USERS_ROLE));
+                appUser.setRole(Role.valueOf(rs.getString(DBUtil.COLUMN_USERS_ROLE)));
             }
             if (appUser == null) {
                 throw new NoUserException();

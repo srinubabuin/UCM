@@ -3,7 +3,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package com.ucm.services;
 
 import com.ucm.exception.ConstraintVilationException;
@@ -18,9 +17,15 @@ import java.util.List;
 public interface CourceService {
 
     public int addCource(Cource cource) throws ConstraintVilationException;
-    public int modifyCource(Cource cource)throws CourceNotFoundException;
+
+    public int modifyCource(Cource cource) throws CourceNotFoundException;
+
     public int deleteCource(Cource cource) throws CourceNotFoundException;
+
     public List<Cource> getAllCources();
+
     public Cource getCourceById(int courceId) throws CourceNotFoundException;
-    public Cource getCourceByName(String corceName) throws CourceNotFoundException;;
+
+    public Cource getCourceByName(String corceName) throws CourceNotFoundException;
+;
 }
