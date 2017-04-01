@@ -42,7 +42,7 @@ public class CourceServiceImpl implements CourceService {
         try {
             int pos = 1;
             con = AppConnectionPool.getConnection();
-            pstm = con.prepareStatement(AppQueryReader.getDBQuery("com.ucm.services.impl.addcource"), new String[]{UCMDBUtil.COLUMN_COURCES_ID});
+            pstm = con.prepareStatement(AppQueryReader.getDBQuery("com.ucm.services.impl.courceservice.addcource"), new String[]{UCMDBUtil.COLUMN_COURCES_ID});
             pstm.setString(pos, cource.getCourceName());
             pstm.setString(++pos, cource.getCourcePrefix());
             pstm.setString(++pos, cource.getCourceCode());
@@ -77,7 +77,7 @@ public class CourceServiceImpl implements CourceService {
         try {
             Cource cource;
             con = AppConnectionPool.getConnection();
-            pstm = con.prepareStatement(AppQueryReader.getDBQuery("com.ucm.services.impl.deletecourcewithcourceid"));
+            pstm = con.prepareStatement(AppQueryReader.getDBQuery("com.ucm.services.impl.courceservice.deletecourcewithcourceid"));
             pstm.setInt(1, courceId);
             deletecnt = pstm.executeUpdate();
         }catch(SQLException ex){
@@ -98,7 +98,7 @@ public class CourceServiceImpl implements CourceService {
         try {
             Cource cource;
             con = AppConnectionPool.getConnection();
-            pstm = con.prepareStatement(AppQueryReader.getDBQuery("com.ucm.services.impl.getallcources"));
+            pstm = con.prepareStatement(AppQueryReader.getDBQuery("com.ucm.services.impl.courceservice.getallcources"));
             rs = pstm.executeQuery();
             while(rs.next()){
                 cource = new Cource();
