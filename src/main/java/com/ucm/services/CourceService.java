@@ -20,7 +20,7 @@ public interface CourceService {
 
     public int modifyCource(Cource cource) throws CourceNotFoundException;
 
-    public int deleteCource(Cource cource) throws CourceNotFoundException;
+    public int deleteCource(int courceId) throws CourceNotFoundException;
 
     public List<Cource> getAllCources();
 
