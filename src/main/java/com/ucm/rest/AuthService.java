@@ -3,15 +3,18 @@ package com.ucm.rest;
 import com.app.util.AppSessionUtil;
 import com.ucm.exception.NoUserException;
 import com.ucm.model.AppUser;
-import com.ucm.model.SigninToken;
+import com.ucm.model.AppAuth;
 import com.ucm.service.helper.UserServiceHelper;
 import java.util.UUID;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 
 import org.apache.log4j.Logger;
@@ -21,16 +24,14 @@ public class AuthService {
 
     private static Logger logger = Logger.getLogger(AuthService.class);
 
-//    @OPTIONS
-//    @Path("/signin")
-//    public Response v1SigninOptions() {
-//        return Response.ok().header("Access-Control-Allow-Origin", "*").header("Access-Control-Allow-Methods", "POST").header("Access-Control-Allow-Headers", "Content-Type").build();
-//    }
+    @Context
+    private HttpServletRequest request;
+
     @POST
-    @Path("/signin")
+    @Path("/login")
     @Consumes({"application/json"})
     @Produces({"application/json"})
-    public Response v1SigninPost(AppUser requestedUser) {
+    public Response logIn(AppUser requestedUser) {
         AppUser appUser = null;
         UserServiceHelper userServiceHelper;
         try {
@@ -42,10 +43,15 @@ public class AuthService {
                 return Response.status(400).header("Access-Control-Allow-Origin", "*").build();
             }
             AppSessionUtil.setAuthoriztionUser(accessToken, appUser);
-            SigninToken signinToken = new SigninToken();
-            signinToken.setToken(accessToken);
-            signinToken.setRole(appUser.getRole());
-            return Response.ok().header("Access-Control-Allow-Origin", "*").entity(signinToken).build();
+            AppAuth appAuth = new AppAuth();
+            appAuth.setToken(accessToken);
+            appAuth.setRole(appUser.getRole());
+            HttpSession session = request.getSession(true);
+            if (session != null) {
+                session.setAttribute("accessToken", accessToken);
+                session.setAttribute("appAuth", appAuth);
+            }
+            return Response.ok().header("Access-Control-Allow-Origin", "*").entity(appAuth).build();
         } catch (NoUserException ex) {
             logger.info("NoUser ");
             return Response.ok().header("Access-Control-Allow-Origin", "*").build();
@@ -55,22 +61,20 @@ public class AuthService {
         }
     }
 
-//    @OPTIONS
-//    @Path("/signout")
-//    public Response signOutOptions() {
-//        return Response.ok().header("Access-Control-Allow-Origin", "*").header("Access-Control-Allow-Methods", "POST").header("Access-Control-Allow-Headers", "Content-Type").build();
-//    }
     @POST
-    @Path("/signout")
+    @Path("/logout")
     @Consumes({"application/json"})
     @Produces({"application/json"})
-    public Response signOut(@HeaderParam("Authorization") String authorization) {
+    public Response logOut(@HeaderParam("Authorization") String authorization) {
         UserServiceHelper userServiceHelper;
         try {
 
             userServiceHelper = new UserServiceHelper();
             userServiceHelper.deleteAccessTokens(authorization);
-
+            
+            if (request.getSession(false) != null) {
+                request.getSession(false).invalidate();
+            }
         } catch (NoUserException nue) {
             logger.info("v1SignoutPost() NoUserException");
             return Response.status(403).header("Access-Control-Allow-Origin", "*").build();

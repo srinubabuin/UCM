@@ -3,7 +3,7 @@ package com.ucm.model;
 import com.app.util.Role;
 import java.util.Objects;
 
-public class SigninToken {
+public class AppAuth {
 
     private String token = null;
     private Role role = null;
@@ -32,7 +32,7 @@ public class SigninToken {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        SigninToken signinToken = (SigninToken) o;
+        AppAuth signinToken = (AppAuth) o;
         return Objects.equals(token, signinToken.token);
     }
 

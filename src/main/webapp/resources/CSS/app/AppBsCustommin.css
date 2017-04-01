@@ -1,0 +1,246 @@
+/*Tabbar ends*/
+.fixed-lyt {
+    top: 0px;
+    left: 0;
+}
+
+.app-cell {
+    overflow: auto;
+    border-left: 1px solid #ddd;
+    /*padding-top: 5px;*/
+}
+
+.app-cell-content {
+    position: relative;
+    height: 100%;
+}
+
+.nav-tabs li.app-tab {
+    width: 100px;
+    overflow: hidden;
+    height: 35px;
+    line-height: 35px;
+    /*            border-left: 1px solid #ddd;
+                border-right: 1px solid #ddd;
+                border-top: 1px solid #ddd;
+                border-radius: 5px 5px 0px 0px;*/
+}
+li.app-tab a{
+    height: 35px;
+    padding: 5px 3px;
+
+}
+li.app-tab,active{ 
+    /*border-bottom: 1px solid #ddd;*/
+}
+
+.tab-content {
+    padding-top: 5px;
+}
+
+/*Tabbar starts*/
+/* bootstrap table starts*/
+.table > thead > tr > th, .table > tbody > tr > th, .table > tfoot > tr > th, .table > thead > tr > td, .table > tbody > tr > td, .table > tfoot > tr > td {
+    padding-bottom: 2px !important;
+    padding-top: 2px !important;
+}
+.table > tbody > tr > td {
+    font-size: 12px;
+}
+table thead tr th .th-inner {
+    padding-bottom: 2px !important;
+    padding-top: 2px !important;
+    line-height: 15px !important;
+}
+.bootstrap-table .fixed-table-container table thead tr {
+    background-color: #0080D5;
+    color: white;
+}
+
+.bootstrap-table .fixed-table-container table tbody tr td input[type=text] {
+    height: 20px;
+    background-image: none;
+    border: 1px solid #ccc;
+}
+.bootstrap-table .fixed-table-container table tbody tr td input[readonly] {
+    background-color: #eee;
+    opacity: 1;
+}
+
+.table-row-cell-ofl {
+    overflow: hidden !important;
+}
+.table-row-cell-ofl-wrp {
+    overflow: hidden !important;
+    white-space: nowrap !important;  
+}
+.table-cell-pd-1{
+    padding-bottom: 1px !important;
+    padding-top: 1px !important;
+}
+.table-cell-pd-2{
+    padding-bottom: 2px !important;
+    padding-top: 2px !important;
+}
+.table-cell-pd-3{
+    padding-bottom: 3px !important;
+    padding-top: 3px !important;
+}
+.table-cell-pd-4{
+    padding-bottom: 4px !important;
+    padding-top: 4px !important;
+}
+.table-col-wd-300 {
+    min-width: 300px !important;
+    max-width:300px !important;
+}
+.table-col-wd-290 {
+    min-width: 290px !important;
+    max-width: 290px !important;
+}
+.table-col-wd-280 {
+    min-width: 280px !important;
+    max-width: 280px !important;
+}
+.table-col-wd-270 {
+    min-width: 270px !important;
+    max-width: 270px !important;
+}
+.table-col-wd-260 {
+    min-width: 260px !important;
+    max-width: 260px !important;
+}
+.table-col-wd-250 {
+    min-width: 250px !important;
+    max-width: 250px !important;
+}
+.table-col-wd-240 {
+    min-width: 240px !important;
+    max-width:240px !important;
+}
+.table-col-wd-230 {
+    min-width: 230px !important;
+    max-width:230px !important;
+}
+.table-col-wd-220 {
+    min-width: 220px !important;
+    max-width:220px !important;
+}
+.table-col-wd-210 {
+    min-width: 210px !important;
+    max-width:210px !important;
+}
+.table-col-wd-200 {
+    min-width: 200px !important;
+    max-width:200px !important;
+}
+.table-col-wd-190 {
+    min-width: 190px !important;
+    max-width:190px !important;
+}
+.table-col-wd-180 {
+    min-width: 180px !important;
+    max-width:180px !important;
+}
+.table-col-wd-170 {
+    min-width: 170px !important;
+    max-width:170px !important;
+}
+.table-col-wd-160 {
+    min-width: 160px !important;
+    max-width:160px !important;
+}
+.table-col-wd-150 {
+    min-width: 150px !important;
+    max-width:150px !important;
+}
+.table-col-wd-140 {
+    min-width: 140px !important;
+    max-width:140px !important;
+}  
+.table-col-wd-130 {
+    min-width: 130px !important;
+    max-width:130px !important;
+}  
+.table-col-wd-120 {
+    min-width: 120px !important;
+    max-width:120px !important;
+}              
+.table-col-wd-110 {
+    min-width: 110px !important;
+    max-width:110px !important;
+}            
+.table-col-wd-100 {
+    min-width: 100px !important;
+    max-width:100px !important;
+}
+.table-col-wd-90 {
+    min-width: 90px !important;
+    max-width: 90px !important;
+}              
+.table-col-wd-80 {
+    min-width: 80px !important;
+    max-width: 80px !important;
+}                           
+.table-col-wd-70 {
+    min-width: 70px !important;
+    max-width: 70px !important;
+}                        
+.table-col-wd-60 {
+    min-width: 60px !important;
+    max-width: 60px !important;
+}            
+.table-col-wd-50 {
+    min-width: 50px !important;
+    max-width:50px !important;
+}
+.table-col-wd-40 {
+    min-width: 40px !important;
+    max-width:40px !important;
+}
+.table-col-wd-30 {
+    min-width: 30px !important;
+    max-width:30px !important;
+}
+.table-col-wd-20 {
+    min-width: 20px !important;
+    max-width:20px !important;
+}
+
+.fixed-table-pagination div.pagination, .fixed-table-pagination .pagination-detail {
+    margin-top: 2px;
+    margin-bottom: 2px;
+}
+.bootstrap-table .fixed-table-pagination {
+    font-size: 12px;
+}
+.fixed-table-pagination .pagination a {
+    padding: 3px 6px;
+}
+
+.fixed-table-pagination .page-list button {
+    padding: 3px 6px;
+    font-size: 12px;
+}
+
+/* bootstrap table ends*/
+
+/*Message Starts*/
+.message-position {
+    top: 5px;
+    position: fixed;
+    right: 5px;
+    max-width: 250px;
+    z-index: 88888;
+    padding: 0;
+}
+
+.message-inner-position {
+    max-width: 250px;
+    padding: 10px 10px 10px 20px;
+    font-size: 12px;
+    font-family: Tahoma;
+    z-index: 88888;
+    margin: 0 5px 5px 5px;
+}
+/*Message Ends*/

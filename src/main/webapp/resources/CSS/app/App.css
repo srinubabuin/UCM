@@ -1,0 +1,82 @@
+.navbar {
+    margin-bottom: 2px;
+}
+
+.labelleftalign {
+    text-align: left !important;
+}
+
+.report-form-header {
+    background-color: #0080D5;
+    color: white;
+    text-align: center;
+    font-weight: bold;
+}
+
+.form-group .required:after {
+    color: #d00;
+    content: "*";
+    position: absolute;
+    margin-left: 8px;
+    top:7px;
+}
+
+.col:not(:first-child),.col:not(:last-child) {
+    padding-right:7px;
+    padding-left:7px;
+}
+
+.form-group {
+    margin-bottom: 5px;
+}
+
+.form-horizontal .checkbox, .form-horizontal .radio, .form-control {
+    height: 25px;
+    padding: 3px 6px;
+    font-size: 12px;
+}
+
+.input-sm {
+    height: 25px;
+    padding: 3px 6px;
+    font-size: 12px;
+}
+
+.control-label {
+    padding-top: 2px;
+    font-size: 12px;
+}
+
+.btn-avg {
+    padding: 3px 6px;
+    font-size: 12px;
+}
+
+p {
+    margin: 0 0 5px;
+}
+
+.my-modal {
+    height: 500px !important;
+    overflow: auto !important;
+}
+
+/* Bootstrap table EDI CSS*/
+.fixed-table-toolbar .bars, .fixed-table-toolbar .search, .fixed-table-toolbar .columns {
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+/*Vendor report download invoice starts*/
+.vend-rprt-dwnld-invoce-wrap {
+
+}
+
+.rprt-form-wrapper {
+    padding-top: 5px;
+}
+
+.rprt-grid-wrapper {
+    padding-top: 5px;
+}
+/*Vendor report download invoice ends*/
