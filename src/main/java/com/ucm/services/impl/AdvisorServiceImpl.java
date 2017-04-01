@@ -18,6 +18,7 @@ import java.sql.SQLException;
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
 import com.sun.istack.internal.logging.Logger;
+import com.ucm.model.Concentration;
 import com.ucm.services.ConcentrationService;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -47,6 +48,8 @@ public class AdvisorServiceImpl implements AdvisiorService {
             pstm.setString(++pos, advisor.getEmail());
             pstm.setString(++pos, advisor.getName());
             pstm.setString(++pos, advisor.getStatus());
+            pstm.setString(++pos, advisor.getPhone());
+            pstm.setString(++pos, advisor.getNotes());
             pstm.setTimestamp(++pos, new Timestamp(new Date().getTime()));
             if(pstm.executeUpdate() > 0){
                 rs = pstm.getGeneratedKeys();
@@ -91,18 +94,25 @@ public class AdvisorServiceImpl implements AdvisiorService {
         Advisor advisor = null;
         try {
             int pos = 1;
-            ConcentrationService conService = new ConcentrationServiceImpl();
             con = AppConnectionPool.getConnection();
             pstm = con.prepareStatement(AppQueryReader.getDBQuery("com.ucm.services.impl.advisorservice.getadvisorbyid"));
             pstm.setInt(pos, advisorId);
             rs = pstm.executeQuery();
             if (rs.next()) {
                 advisor = new Advisor();
+                Concentration concentration = new Concentration();
+                concentration.setId(rs.getInt(DBUtil.COLUMN_ADVISORS_CONCENTATION_ID));
+                concentration.setConcentrationName(rs.getString(DBUtil.COLUMN_ADVISORS_CON_NAME));
+                concentration.setConcentrationStatus(rs.getString(DBUtil.COLUMN_ADVISORS_CON_STATUS));
+                concentration.setConcentrationCreatedDate(rs.getDate(DBUtil.COLUMN_ADVISORS_CON_CREATED_DATE));
+                concentration.setNotes(rs.getString(DBUtil.COLUMN_ADVISORS_CON_NOTES));
+                advisor.setConcentration(concentration);
                 advisor.setId(rs.getInt(DBUtil.COLUMN_ADVISORS_ID));
                 advisor.setLoginId(rs.getString(DBUtil.COLUMN_ADVISORS_LOGIN_ID));
-                advisor.setConcentration(conService.getConcentationWithId(rs.getInt(DBUtil.COLUMN_ADVISORS_CONCENTATION_ID)));
                 advisor.setEmail(rs.getString(DBUtil.COLUMN_ADVISORS_MAIL));
                 advisor.setStatus(rs.getString(DBUtil.COLUMN_ADVISORS_STATUS));
+                advisor.setPhone(rs.getString(DBUtil.COLUMN_ADVISORS_PHONE));
+                advisor.setNotes(rs.getString(DBUtil.COLUMN_ADVISORS_NOTES));
                 advisor.setCreatedDate(rs.getDate(DBUtil.COLUMN_ADVISORS_DATE));
                 advisor.setName(rs.getString(DBUtil.COLUMN_ADVISORS_NAME));
             }
@@ -122,18 +132,25 @@ public class AdvisorServiceImpl implements AdvisiorService {
         Advisor advisor = null;
         try {
             int pos = 1;
-            ConcentrationService conService = new ConcentrationServiceImpl();
             con = AppConnectionPool.getConnection();
             pstm = con.prepareStatement(AppQueryReader.getDBQuery("com.ucm.services.impl.advisorservice.getadvisorbyname"));
             pstm.setString(pos, advisorName);
             rs = pstm.executeQuery();
             if (rs.next()) {
                 advisor = new Advisor();
+                Concentration concentration = new Concentration();
+                concentration.setId(rs.getInt(DBUtil.COLUMN_ADVISORS_CONCENTATION_ID));
+                concentration.setConcentrationName(rs.getString(DBUtil.COLUMN_ADVISORS_CON_NAME));
+                concentration.setConcentrationStatus(rs.getString(DBUtil.COLUMN_ADVISORS_CON_STATUS));
+                concentration.setConcentrationCreatedDate(rs.getDate(DBUtil.COLUMN_ADVISORS_CON_CREATED_DATE));
+                concentration.setNotes(rs.getString(DBUtil.COLUMN_ADVISORS_CON_NOTES));
+                advisor.setConcentration(concentration);
                 advisor.setId(rs.getInt(DBUtil.COLUMN_ADVISORS_ID));
                 advisor.setLoginId(rs.getString(DBUtil.COLUMN_ADVISORS_LOGIN_ID));
-                advisor.setConcentration(conService.getConcentationWithId(rs.getInt(DBUtil.COLUMN_ADVISORS_CONCENTATION_ID)));
                 advisor.setEmail(rs.getString(DBUtil.COLUMN_ADVISORS_MAIL));
                 advisor.setStatus(rs.getString(DBUtil.COLUMN_ADVISORS_STATUS));
+                advisor.setPhone(rs.getString(DBUtil.COLUMN_ADVISORS_PHONE));
+                advisor.setNotes(rs.getString(DBUtil.COLUMN_ADVISORS_NOTES));
                 advisor.setCreatedDate(rs.getDate(DBUtil.COLUMN_ADVISORS_DATE));
                 advisor.setName(rs.getString(DBUtil.COLUMN_ADVISORS_NAME));
             }
@@ -154,18 +171,27 @@ public class AdvisorServiceImpl implements AdvisiorService {
         List<Advisor> advisors = null;
         try {
             Advisor advisor;
+            Concentration concentration;
             advisors = new ArrayList<>();
-            ConcentrationService conService = new ConcentrationServiceImpl();
+            
             con = AppConnectionPool.getConnection();
             pstm = con.prepareStatement(AppQueryReader.getDBQuery("com.ucm.services.impl.advisorservice.getalladvisors"));
             rs = pstm.executeQuery();
             while (rs.next()) {
                 advisor = new Advisor();
+                concentration = new Concentration();
+                concentration.setId(rs.getInt(DBUtil.COLUMN_ADVISORS_CONCENTATION_ID));
+                concentration.setConcentrationName(rs.getString(DBUtil.COLUMN_ADVISORS_CON_NAME));
+                concentration.setConcentrationStatus(rs.getString(DBUtil.COLUMN_ADVISORS_CON_STATUS));
+                concentration.setConcentrationCreatedDate(rs.getDate(DBUtil.COLUMN_ADVISORS_CON_CREATED_DATE));
+                concentration.setNotes(rs.getString(DBUtil.COLUMN_ADVISORS_CON_NOTES));
+                advisor.setConcentration(concentration);
                 advisor.setId(rs.getInt(DBUtil.COLUMN_ADVISORS_ID));
                 advisor.setLoginId(rs.getString(DBUtil.COLUMN_ADVISORS_LOGIN_ID));
-                advisor.setConcentration(conService.getConcentationWithId(rs.getInt(DBUtil.COLUMN_ADVISORS_CONCENTATION_ID)));
                 advisor.setEmail(rs.getString(DBUtil.COLUMN_ADVISORS_MAIL));
                 advisor.setStatus(rs.getString(DBUtil.COLUMN_ADVISORS_STATUS));
+                advisor.setPhone(rs.getString(DBUtil.COLUMN_ADVISORS_PHONE));
+                advisor.setNotes(rs.getString(DBUtil.COLUMN_ADVISORS_NOTES));
                 advisor.setCreatedDate(rs.getDate(DBUtil.COLUMN_ADVISORS_DATE));
                 advisor.setName(rs.getString(DBUtil.COLUMN_ADVISORS_NAME));
                 advisors.add(advisor);

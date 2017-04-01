@@ -44,6 +44,7 @@ public class ConcentrationServiceImpl implements ConcentrationService {
             pstm = con.prepareStatement(AppQueryReader.getDBQuery("com.ucm.services.impl.concentratioservice.addconcentation"), new String[]{DBUtil.COLUMN_CONCENTATIONS_ID});
             pstm.setString(pos, concentation.getConcentrationName());
             pstm.setString(++pos, concentation.getConcentrationStatus());
+            pstm.setString(++pos, concentation.getNotes());
             pstm.setTimestamp(++pos, new Timestamp(new Date().getTime()));
             if (pstm.executeUpdate() > 0) {
                 rs = pstm.getGeneratedKeys();
@@ -79,6 +80,7 @@ public class ConcentrationServiceImpl implements ConcentrationService {
                 concentation.setId(rs.getInt(DBUtil.COLUMN_CONCENTATIONS_ID));
                 concentation.setConcentrationName(rs.getString(DBUtil.COLUMN_CONCENTATIONS_NAME));
                 concentation.setConcentrationStatus(rs.getString(DBUtil.COLUMN_CONCENTATIONS_STATUS));
+                concentation.setNotes(rs.getString(DBUtil.COLUMN_CONCENTATIONS_NOTES));
                 concentation.setConcentrationCreatedDate(rs.getDate(DBUtil.COLUMN_CONCENTATIONS_DATE));
             }
         } catch (SQLException e) {
@@ -107,6 +109,7 @@ public class ConcentrationServiceImpl implements ConcentrationService {
                 concentation.setId(rs.getInt(DBUtil.COLUMN_CONCENTATIONS_ID));
                 concentation.setConcentrationName(rs.getString(DBUtil.COLUMN_CONCENTATIONS_NAME));
                 concentation.setConcentrationStatus(rs.getString(DBUtil.COLUMN_CONCENTATIONS_STATUS));
+                concentation.setNotes(rs.getString(DBUtil.COLUMN_CONCENTATIONS_NOTES));
                 concentation.setConcentrationCreatedDate(rs.getDate(DBUtil.COLUMN_CONCENTATIONS_DATE));
             }
         } catch (SQLException e) {
@@ -135,6 +138,7 @@ public class ConcentrationServiceImpl implements ConcentrationService {
                 concentation.setId(rs.getInt(DBUtil.COLUMN_CONCENTATIONS_ID));
                 concentation.setConcentrationName(rs.getString(DBUtil.COLUMN_CONCENTATIONS_NAME));
                 concentation.setConcentrationStatus(rs.getString(DBUtil.COLUMN_CONCENTATIONS_STATUS));
+                concentation.setNotes(rs.getString(DBUtil.COLUMN_CONCENTATIONS_NOTES));
                 concentation.setConcentrationCreatedDate(rs.getDate(DBUtil.COLUMN_CONCENTATIONS_DATE));
                 concentations.add(concentation);
             }

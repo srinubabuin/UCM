@@ -18,8 +18,9 @@ public class Concentration implements Serializable {
     private int id;
     private String concentrationName;
     private String concentrationStatus;
+    private String notes;
     private Date concentrationCreatedDate;
-
+    
     public int getId() {
         return id;
     }
@@ -44,6 +45,14 @@ public class Concentration implements Serializable {
         this.concentrationStatus = concentrationStatus;
     }
 
+    public String getNotes() {
+        return notes;
+    }
+
+    public void setNotes(String notes) {
+        this.notes = notes;
+    }
+    
     public Date getConcentrationCreatedDate() {
         return concentrationCreatedDate;
     }

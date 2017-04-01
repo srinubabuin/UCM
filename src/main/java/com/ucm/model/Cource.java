@@ -16,12 +16,12 @@ import javax.ws.rs.QueryParam;
  */
 public class Cource implements Serializable {
 
-    @QueryParam("id")
     private int id;
     private String courceName;
     private String courcePrefix;
     private String courceCode;
     private String courceStatus;
+    private String notes;
     private Date courceCreatedDate;
 
     public int getId() {
@@ -64,6 +64,14 @@ public class Cource implements Serializable {
         this.courceStatus = courceStatus;
     }
 
+    public String getNotes() {
+        return notes;
+    }
+
+    public void setNotes(String notes) {
+        this.notes = notes;
+    }
+    
     public Date getCourceCreatedDate() {
         return courceCreatedDate;
     }

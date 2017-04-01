@@ -47,6 +47,7 @@ public class CourceServiceImpl implements CourceService {
             pstm.setString(++pos, cource.getCourcePrefix());
             pstm.setString(++pos, cource.getCourceCode());
             pstm.setString(++pos, cource.getCourceStatus());
+            pstm.setString(++pos, cource.getNotes());
             pstm.setTimestamp(++pos, new Timestamp(new Date().getTime()));
             if (pstm.executeUpdate() > 0) {
                 rs = pstm.getGeneratedKeys();
@@ -75,13 +76,12 @@ public class CourceServiceImpl implements CourceService {
         PreparedStatement pstm = null;
         int deletecnt = 0;
         try {
-            Cource cource;
             con = AppConnectionPool.getConnection();
             pstm = con.prepareStatement(AppQueryReader.getDBQuery("com.ucm.services.impl.courceservice.deletecourcewithcourceid"));
             pstm.setInt(1, courceId);
             deletecnt = pstm.executeUpdate();
         }catch(SQLException ex){
-            LOGGER.log(Level.SEVERE, "Exception while adding the cource in deleteCource {0}", ex.getMessage());
+            LOGGER.log(Level.SEVERE, "Exception while deleting the cource in deleteCource {0}", ex.getMessage());
             throw new CourceNotFoundException();
         } finally {
             AppConnectionPool.release(null, pstm, con);
@@ -106,6 +106,7 @@ public class CourceServiceImpl implements CourceService {
                 cource.setCourceName(rs.getString(DBUtil.COLUMN_COURCES_NAME));
                 cource.setCourcePrefix(rs.getString(DBUtil.COLUMN_COURCES_PREFIX));
                 cource.setCourceStatus(rs.getString(DBUtil.COLUMN_COURCES_STATUS));
+                cource.setNotes(rs.getString(DBUtil.COLUMN_COURCES_NOTES));
                 cource.setCourceCode(rs.getString(DBUtil.COLUMN_COURCES_CODE));
                 cource.setCourceCreatedDate(rs.getDate(DBUtil.COLUMN_COURCES_CREATED_DATE));
                 cources.add(cource);

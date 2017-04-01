@@ -22,9 +22,11 @@ import javax.persistence.Temporal;
 public class Advisor implements Serializable {
     
     private double id;
+    private String name;
     private String loginId;
     private String email;
-    private String name;
+    private String phone;
+    private String notes;
     private String status;
     private Date createdDate;
     private Concentration concentration;
@@ -53,6 +55,14 @@ public class Advisor implements Serializable {
         this.email = email;
     }
 
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+    
     public String getName() {
         return name;
     }
@@ -61,6 +71,14 @@ public class Advisor implements Serializable {
         this.name = name;
     }
 
+    public String getNotes() {
+        return notes;
+    }
+
+    public void setNotes(String notes) {
+        this.notes = notes;
+    }
+    
     public String getStatus() {
         return status;
     }
