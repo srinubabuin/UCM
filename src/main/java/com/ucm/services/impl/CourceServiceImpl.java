@@ -70,8 +70,23 @@ public class CourceServiceImpl implements CourceService {
     }
 
     @Override
-    public int deleteCource(Cource cource) throws CourceNotFoundException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public int deleteCource(int courceId) throws CourceNotFoundException {
+        Connection con = null;
+        PreparedStatement pstm = null;
+        int deletecnt = 0;
+        try {
+            Cource cource;
+            con = AppConnectionPool.getConnection();
+            pstm = con.prepareStatement(AppQueryReader.getDBQuery("com.ucm.services.impl.deletecourcewithcourceid"));
+            pstm.setInt(1, courceId);
+            deletecnt = pstm.executeUpdate();
+        }catch(SQLException ex){
+            LOGGER.log(Level.SEVERE, "Exception while adding the cource in deleteCource {0}", ex.getMessage());
+            throw new CourceNotFoundException();
+        } finally {
+            AppConnectionPool.release(null, pstm, con);
+        }
+        return deletecnt;
     }
 
     @Override
