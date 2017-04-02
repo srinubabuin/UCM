@@ -27,5 +27,6 @@ public interface CourceService {
     public Cource getCourceById(int courceId) throws CourceNotFoundException;
 
     public Cource getCourceByName(String corceName) throws CourceNotFoundException;
-;
+    
+    public List<Cource> getAllCourcesByConcentrationId(int concentrationId);
 }

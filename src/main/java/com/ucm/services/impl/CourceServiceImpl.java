@@ -112,7 +112,7 @@ public class CourceServiceImpl implements CourceService {
                 cources.add(cource);
             }
         } catch (SQLException ex) {
-            LOGGER.log(Level.SEVERE, "Exception while adding the cource in getAllCources {0}", ex.getMessage());
+            LOGGER.log(Level.SEVERE, "Exception while getting the cources in getAllCources {0}", ex.getMessage());
         } finally {
             AppConnectionPool.release(rs, pstm, con);
         }
@@ -145,7 +145,7 @@ public class CourceServiceImpl implements CourceService {
             }
 
         } catch (SQLException ex) {
-            LOGGER.log(Level.SEVERE, "Exception while adding the cource in getCourceById {0}", ex.getMessage());
+            LOGGER.log(Level.SEVERE, "Exception while getting the cource in getCourceById {0}", ex.getMessage());
         } finally {
             AppConnectionPool.release(rs, pstm, con);
         }
@@ -155,6 +155,39 @@ public class CourceServiceImpl implements CourceService {
     @Override
     public Cource getCourceByName(String corceName) throws CourceNotFoundException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public List<Cource> getAllCourcesByConcentrationId(int concentrationId) {
+        
+        Connection con = null;
+        PreparedStatement pstm = null;
+        ResultSet rs = null;
+        List<Cource> cources = new ArrayList<>();
+        try {
+            Cource cource;
+            int pos = 1;
+            con = AppConnectionPool.getConnection();
+            pstm = con.prepareStatement(AppQueryReader.getDBQuery("com.ucm.services.impl.courceservice.getcourcebyconcentrationid"));
+            pstm.setInt(pos, concentrationId);
+            rs = pstm.executeQuery();
+            while (rs.next()) {
+                cource = new Cource();
+                cource.setId(rs.getInt(DBUtil.COLUMN_COURCES_ID));
+                cource.setCourceName(rs.getString(DBUtil.COLUMN_COURCES_NAME));
+                cource.setCourcePrefix(rs.getString(DBUtil.COLUMN_COURCES_PREFIX));
+                cource.setCourceStatus(rs.getString(DBUtil.COLUMN_COURCES_STATUS));
+                cource.setNotes(rs.getString(DBUtil.COLUMN_COURCES_NOTES));
+                cource.setCourceCode(rs.getString(DBUtil.COLUMN_COURCES_CODE));
+                cource.setCourceCreatedDate(rs.getDate(DBUtil.COLUMN_COURCES_CREATED_DATE));
+                cources.add(cource);
+            }
+        } catch (SQLException ex) {
+            LOGGER.log(Level.SEVERE, "Exception getAllCourcesByConcentrationId WITH  concentrationId:"+concentrationId, ex.getMessage());
+        } finally {
+            AppConnectionPool.release(rs, pstm, con);
+        }
+        return cources;
     }
 
 }

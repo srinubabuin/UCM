@@ -12,6 +12,7 @@ import com.sun.istack.internal.logging.Logger;
 import com.ucm.exception.ConstraintVilationException;
 import com.ucm.model.Concentration;
 import com.ucm.services.ConcentrationService;
+import com.ucm.services.CourceService;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -72,6 +73,7 @@ public class ConcentrationServiceImpl implements ConcentrationService {
         try {
             int pos = 1;
             con = AppConnectionPool.getConnection();
+            CourceService cs = new CourceServiceImpl();
             pstm = con.prepareStatement(AppQueryReader.getDBQuery("com.ucm.services.impl.concentratioservice.getconcentationwithid"));
             pstm.setInt(pos, concenId);
             rs = pstm.executeQuery();
@@ -82,6 +84,7 @@ public class ConcentrationServiceImpl implements ConcentrationService {
                 concentation.setConcentrationStatus(rs.getString(DBUtil.COLUMN_CONCENTATIONS_STATUS));
                 concentation.setNotes(rs.getString(DBUtil.COLUMN_CONCENTATIONS_NOTES));
                 concentation.setConcentrationCreatedDate(rs.getDate(DBUtil.COLUMN_CONCENTATIONS_DATE));
+                concentation.setCources(cs.getAllCourcesByConcentrationId(rs.getInt(DBUtil.COLUMN_CONCENTATIONS_ID)));
             }
         } catch (SQLException e) {
             LOGGER.log(Level.SEVERE, "Exception in getConcentationWithId method with concentationId:" + concenId + " " + e.getMessage());
@@ -101,6 +104,7 @@ public class ConcentrationServiceImpl implements ConcentrationService {
         try {
             int pos = 1;
             con = AppConnectionPool.getConnection();
+            CourceService cs = new CourceServiceImpl();
             pstm = con.prepareStatement(AppQueryReader.getDBQuery("com.ucm.services.impl.concentratioservice.getconcentationwithname"));
             pstm.setString(pos, conName);
             rs = pstm.executeQuery();
@@ -111,6 +115,7 @@ public class ConcentrationServiceImpl implements ConcentrationService {
                 concentation.setConcentrationStatus(rs.getString(DBUtil.COLUMN_CONCENTATIONS_STATUS));
                 concentation.setNotes(rs.getString(DBUtil.COLUMN_CONCENTATIONS_NOTES));
                 concentation.setConcentrationCreatedDate(rs.getDate(DBUtil.COLUMN_CONCENTATIONS_DATE));
+                concentation.setCources(cs.getAllCourcesByConcentrationId(rs.getInt(DBUtil.COLUMN_CONCENTATIONS_ID)));
             }
         } catch (SQLException e) {
             LOGGER.log(Level.SEVERE, "Exception in getConcentationWithName method with concentationName:" + conName + " " + e.getMessage());
@@ -130,6 +135,7 @@ public class ConcentrationServiceImpl implements ConcentrationService {
         try {
             concentations = new ArrayList<>();
             Concentration concentation;
+            CourceService cs = new CourceServiceImpl();
             con = AppConnectionPool.getConnection();
             pstm = con.prepareStatement(AppQueryReader.getDBQuery("com.ucm.services.impl.concentratioservice.getallconcentations"));
             rs = pstm.executeQuery();
@@ -140,6 +146,7 @@ public class ConcentrationServiceImpl implements ConcentrationService {
                 concentation.setConcentrationStatus(rs.getString(DBUtil.COLUMN_CONCENTATIONS_STATUS));
                 concentation.setNotes(rs.getString(DBUtil.COLUMN_CONCENTATIONS_NOTES));
                 concentation.setConcentrationCreatedDate(rs.getDate(DBUtil.COLUMN_CONCENTATIONS_DATE));
+                concentation.setCources(cs.getAllCourcesByConcentrationId(rs.getInt(DBUtil.COLUMN_CONCENTATIONS_ID)));
                 concentations.add(concentation);
             }
         } catch (SQLException e) {
