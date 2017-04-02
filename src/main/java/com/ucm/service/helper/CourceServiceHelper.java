@@ -5,8 +5,8 @@
  */
 package com.ucm.service.helper;
 
-import com.app.util.ApplicationUtil;
 import com.app.util.DBUtil;
+import com.app.util.RequestStatus;
 import com.ucm.exception.ConstraintVilationException;
 import com.ucm.exception.CourceNotFoundException;
 import com.ucm.model.Cource;
@@ -17,37 +17,29 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.json.JSONException;
-import org.json.JSONObject;
 
 /**
  * @author Srinu Babu
  */
 public class CourceServiceHelper {
 
-    public JSONObject addCource(Cource cource) {
+    public RequestStatus addCource(Cource cource) {
 
-        JSONObject response = new JSONObject();
+        RequestStatus response = new RequestStatus();
         try {
             CourceService courceService = new CourceServiceImpl();
             int courceId = courceService.addCource(cource);
             if (courceId > 0) {
-                response.put(ApplicationUtil.SUCCESS, true);
-                response.put(ApplicationUtil.MESSAGE, "Cource added successfully.");
-                response.put(ApplicationUtil.ID, courceId);
+                response.setSuccess(true);
+                response.setMessage("Cource added successfully.");
+                response.setId(courceId);
             } else {
-                response.put(ApplicationUtil.SUCCESS, false);
-                response.put(ApplicationUtil.MESSAGE, "Cource not added.");
-                response.put(ApplicationUtil.ID, courceId);
+                response.setMessage("Cource not added.");
+                response.setId(courceId);
             }
-        } catch (ConstraintVilationException | JSONException cve) {
-            try {
-                response.put(ApplicationUtil.SUCCESS, false);
-                response.put(ApplicationUtil.MESSAGE, DBUtil.getCustomCourceDBMessage(cve.getMessage()));
-                response.put(ApplicationUtil.ID, 0);
-            } catch (JSONException ex) {
-                Logger.getLogger(CourceServiceHelper.class.getName()).log(Level.SEVERE, null, ex);
-            }
+        } catch (ConstraintVilationException cve) {
+                response.setMessage(DBUtil.getCustomDBMessage(cve.getMessage()));
+                response.setId(0);
         }
         return response;
     }
@@ -67,28 +59,22 @@ public class CourceServiceHelper {
         return cource;
     }
 
-    public JSONObject deleteCourceWithId(int courceId) {
+    public RequestStatus deleteCourceWithId(int courceId) {
 
-        JSONObject response = new JSONObject();
+        RequestStatus response = new RequestStatus();
         try {
             int deletedCnt = new CourceServiceImpl().deleteCource(courceId);
             if (deletedCnt > 0) {
-                response.put(ApplicationUtil.SUCCESS, true);
-                response.put(ApplicationUtil.MESSAGE, "Cource deleted successfully.");
-                response.put(ApplicationUtil.ID, courceId);
+                response.setSuccess(true);
+                response.setMessage("Cource deleted successfully.");
+                response.setId(courceId);
             } else {
-                response.put(ApplicationUtil.SUCCESS, false);
-                response.put(ApplicationUtil.MESSAGE, "Cource not deleted.");
-                response.put(ApplicationUtil.ID, courceId);
+                response.setMessage("Cource not deleted.");
+                response.setId(courceId);
             }
-        } catch (CourceNotFoundException | JSONException cnfe) {
-            try {
-                response.put(ApplicationUtil.SUCCESS, false);
-                response.put(ApplicationUtil.MESSAGE, cnfe.getMessage());
-                response.put(ApplicationUtil.ID, 0);
-            } catch (JSONException ex) {
-                Logger.getLogger(CourceServiceHelper.class.getName()).log(Level.SEVERE, null, ex);
-            }
+        } catch (CourceNotFoundException cnfe) {
+                response.setMessage(cnfe.getMessage());
+                response.setId(courceId);
         }
         return response;
     }

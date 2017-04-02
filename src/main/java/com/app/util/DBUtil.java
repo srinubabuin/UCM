@@ -59,7 +59,7 @@ public class DBUtil {
     public final static String COLUMN_STUDENTS_CON_NOTES = "CON_NOTES";
     public final static String COLUMN_STUDENTS_CON_CREATED_DATE = "CON_CREATED_DATE";
     
-    public static String getCustomCourceDBMessage(String message){
+    public static String getCustomDBMessage(String message){
     
         if(message != null){
             if(message.contains("COUR_UNQ_NAME")){
@@ -70,6 +70,10 @@ public class DBUtil {
                 message = "Cource Code already exists.";
             }else if(message.contains("CON_NAME_UK")){
                 message = "Concentation already exists.";
+            }else if(message.contains("STU_MAIL_Uk")){
+                message = "Student Primary mail  already exists.";
+            }else if(message.contains("STU_PHONE_Uk")){
+                message = "Student phone number already exists.";
             }
         }
         return message;

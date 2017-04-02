@@ -1,21 +1,14 @@
 package com.ucm.rest;
 
-import com.app.util.AppSessionUtil;
-import com.ucm.exception.NoUserException;
-import com.ucm.model.AppAuth;
-import com.ucm.model.AppUser;
+import com.app.util.RequestStatus;
 import com.ucm.model.Cource;
 import com.ucm.service.helper.CourceServiceHelper;
-import com.ucm.service.helper.UserServiceHelper;
 import org.apache.log4j.Logger;
-import org.json.JSONObject;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
-import java.util.UUID;
 
 @Path("/cource")
 public class CourceService {
@@ -29,7 +22,7 @@ public class CourceService {
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response insert(Cource cource) {
-        JSONObject courceResponseObj;
+        RequestStatus courceResponseObj;
         CourceServiceHelper courceServiceHelper;
         try {
             courceServiceHelper = new CourceServiceHelper();
@@ -46,7 +39,7 @@ public class CourceService {
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response update(@PathParam("param") int courceId, Cource cource) {
-        JSONObject courceResponseObj;
+        RequestStatus courceResponseObj;
         CourceServiceHelper courceServiceHelper;
         try {
             courceServiceHelper = new CourceServiceHelper();
@@ -63,7 +56,7 @@ public class CourceService {
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response delete(@PathParam("param") int courceId) {
-        JSONObject courceResponseObj;
+        RequestStatus courceResponseObj;
         CourceServiceHelper courceServiceHelper;
         try {
             courceServiceHelper = new CourceServiceHelper();

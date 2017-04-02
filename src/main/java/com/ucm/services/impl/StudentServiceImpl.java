@@ -98,7 +98,7 @@ public class StudentServiceImpl implements StudentService {
         try {
             int pos = 1;
             con = AppConnectionPool.getConnection();
-            pstm = con.prepareStatement(AppQueryReader.getDBQuery(""));
+            pstm = con.prepareStatement(AppQueryReader.getDBQuery("com.ucm.services.impl.studentservice.getstudentbyid"));
             pstm.setInt(pos, studentId);
             rs = pstm.executeQuery();
             if (rs.next()) {
@@ -192,7 +192,7 @@ public class StudentServiceImpl implements StudentService {
             Student student;
             students = new ArrayList<>();
             con = AppConnectionPool.getConnection();
-            pstm = con.prepareStatement(AppQueryReader.getDBQuery(""));
+            pstm = con.prepareStatement(AppQueryReader.getDBQuery("com.ucm.services.impl.studentservice.getallstudents"));
             rs = pstm.executeQuery();
             while (rs.next()) {
                 student = new Student();
