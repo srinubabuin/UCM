@@ -20,7 +20,7 @@ import java.util.List;
  */
 public class AdvisorServiceHelper {
 
-    public RequestStatus addStudent(Advisor advisor) {
+    public RequestStatus addAdvisor(Advisor advisor) {
 
         RequestStatus response = new RequestStatus();
         try {

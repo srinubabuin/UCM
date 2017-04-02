@@ -8,6 +8,7 @@ package com.ucm.model;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 /**
  *
@@ -20,6 +21,7 @@ public class Concentration implements Serializable {
     private String concentrationStatus;
     private String notes;
     private Date concentrationCreatedDate;
+    private List<Cource> cources;
     
     public int getId() {
         return id;
@@ -59,6 +61,14 @@ public class Concentration implements Serializable {
 
     public void setConcentrationCreatedDate(Date concentrationCreatedDate) {
         this.concentrationCreatedDate = concentrationCreatedDate;
+    }
+
+    public List<Cource> getCources() {
+        return cources;
+    }
+
+    public void setCources(List<Cource> cources) {
+        this.cources = cources;
     }
     
 }
