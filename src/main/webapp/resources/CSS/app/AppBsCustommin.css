@@ -15,6 +15,9 @@
     height: 100%;
 }
 
+.form-cell {
+    padding-top: 5px;
+}
 .nav-tabs li.app-tab {
     width: 100px;
     overflow: hidden;

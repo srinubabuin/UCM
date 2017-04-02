@@ -1,4 +1,4 @@
-var appContextPath = "", accessToken = "";
+var appContextPath = "", appRestPath = "", accessToken = "";
 var browsersObj = {
     isIE: (navigator.userAgent.indexOf("MSIE") >= 0 || navigator.userAgent.indexOf("Trident") >= 0),
     isIE6: (window.XMLHttpRequest === null && navigator.userAgent.indexOf("MSIE") >= 0),
@@ -44,7 +44,7 @@ function getMainLayoutObj(module) {
 
     var lyt = document.createElement("div");
     lyt.className = "row fixed-lyt";
-    lyt.style.height = ((documentHeight - navHeight) - 5) + "px"; //2px is nav margin
+    // lyt.style.height = ((documentHeight - navHeight) - 5) + "px"; //2px is nav margin
     var mainObj = $("body").find("div[class='container-fluid'][type='main']");
     mainObj.append(lyt);
     return {
@@ -146,7 +146,7 @@ function appLayout(confObj) {
         }
         var a = document.createElement("div");
         a.className = acls + " app-cell";
-        a.style.height = (parentHeight - 2) + "px";
+        // a.style.height = (parentHeight - 2) + "px";
         var aCont = document.createElement("div");
         aCont.className = "app-cell-content";
         a.appendChild(aCont);
@@ -331,6 +331,11 @@ function createBootstrapTable(confObj) {
     }
     var options = confObj.options;
     var parentObj = confObj.parent;
+    if (!parentObj.style.height) {
+        var documentHeight = $(document).height();
+        var navHeight = $("body").find("header[class='navbar navbar-default']").height();
+        parentObj.style.height = ((documentHeight - navHeight) - 7) + "px";
+    }
     if (typeof (options) === "undefined" || typeof (parentObj) === "undefined") {
         return;
     }
@@ -347,43 +352,43 @@ function createBootstrapTable(confObj) {
     for (var tableAttrib in tableAttributes) {
         tableBaseObj.setAttribute(tableAttrib, tableAttributes[tableAttrib]);
     }
-    var tableHdrObj = document.createElement("thead");
-    if (tableMasterColumnsBase.length > 0) {
-        var tableMstrHdrRowObj = document.createElement("tr");
-        for (var columnIndex = 0; columnIndex < tableMasterColumnsBase.length; columnIndex++) {
-            var columnDetails = tableMasterColumnsBase[columnIndex];
-            var columnAttributes = columnDetails.attributes;
-            var columnClassName = "";
-            var tableHdrColObj = document.createElement("th");
-            tableHdrColObj.textContent = columnDetails.label;
-//            columnClassName = "table-col-wd-" + columnDetails.css.width + " " + cellPadingClassName;
-            tableHdrColObj.className = columnClassName;
-            for (var columnAttrib in columnAttributes) {
-                tableHdrColObj.setAttribute(columnAttrib, columnAttributes[columnAttrib]);
-            }
-            tableMstrHdrRowObj.appendChild(tableHdrColObj);
-        }
-        tableHdrObj.appendChild(tableMstrHdrRowObj);
-    }
-    var tableHdrRowObj = document.createElement("tr");
-    for (var columnIndex = 0; columnIndex < tableColumnsBase.length; columnIndex++) {
-        var columnDetails = tableColumnsBase[columnIndex];
-        var columnAttributes = columnDetails.attributes;
-        var columnClassName = "", columnWidthClassName = "";
-        if (typeof columnDetails.css !== "undefined") {
-            columnWidthClassName = typeof columnDetails.css.width === "undefined" ? "" : "table-col-wd-" + columnDetails.css.width;
-        }
-        var tableHdrColObj = document.createElement("th");
-        tableHdrColObj.textContent = columnDetails.label;
-        columnClassName = columnWidthClassName + " " + cellPadingClassName + " " + "table-row-cell-ofl";
-        tableHdrColObj.className = columnClassName;
-        for (var columnAttrib in columnAttributes) {
-            tableHdrColObj.setAttribute(columnAttrib, columnAttributes[columnAttrib]);
-        }
-        tableHdrRowObj.appendChild(tableHdrColObj);
-    }
-    tableHdrObj.appendChild(tableHdrRowObj);
-    tableBaseObj.appendChild(tableHdrObj);
+    /*    var tableHdrObj = document.createElement("thead");
+     if (tableMasterColumnsBase.length > 0) {
+     var tableMstrHdrRowObj = document.createElement("tr");
+     for (var columnIndex = 0; columnIndex < tableMasterColumnsBase.length; columnIndex++) {
+     var columnDetails = tableMasterColumnsBase[columnIndex];
+     var columnAttributes = columnDetails.attributes;
+     var columnClassName = "";
+     var tableHdrColObj = document.createElement("th");
+     tableHdrColObj.textContent = columnDetails.label;
+     //            columnClassName = "table-col-wd-" + columnDetails.css.width + " " + cellPadingClassName;
+     tableHdrColObj.className = columnClassName;
+     for (var columnAttrib in columnAttributes) {
+     tableHdrColObj.setAttribute(columnAttrib, columnAttributes[columnAttrib]);
+     }
+     tableMstrHdrRowObj.appendChild(tableHdrColObj);
+     }
+     tableHdrObj.appendChild(tableMstrHdrRowObj);
+     }
+     var tableHdrRowObj = document.createElement("tr");
+     for (var columnIndex = 0; columnIndex < tableColumnsBase.length; columnIndex++) {
+     var columnDetails = tableColumnsBase[columnIndex];
+     var columnAttributes = columnDetails.attributes;
+     var columnClassName = "", columnWidthClassName = "";
+     if (typeof columnDetails.css !== "undefined") {
+     columnWidthClassName = typeof columnDetails.css.width === "undefined" ? "" : "table-col-wd-" + columnDetails.css.width;
+     }
+     var tableHdrColObj = document.createElement("th");
+     tableHdrColObj.textContent = columnDetails.label;
+     columnClassName = columnWidthClassName + " " + cellPadingClassName + " " + "table-row-cell-ofl";
+     tableHdrColObj.className = columnClassName;
+     for (var columnAttrib in columnAttributes) {
+     tableHdrColObj.setAttribute(columnAttrib, columnAttributes[columnAttrib]);
+     }
+     tableHdrRowObj.appendChild(tableHdrColObj);
+     }
+     tableHdrObj.appendChild(tableHdrRowObj);
+     tableBaseObj.appendChild(tableHdrObj);*/
     parentObj.appendChild(tableBaseObj);
     tableConfigObj = {
         baseObj: tableBaseObj
@@ -711,14 +716,14 @@ function roundFloatValue(number, precision)          //this function returns rou
 /*util methods ends*/
 
 /*Ajax starts*/
-function appAjax(url, formData, callback) {
+function appAjax(url, method, formData, callback) {
     $.ajax({
         url: url,
         dataType: 'json',
         data: formData,
         contentType: 'application/json',
         processData: false,
-        type: 'POST',
+        type: method ? method : 'POST',
         success: function (data) {
             if (typeof callback === "function") {
                 callback(data);
@@ -729,7 +734,7 @@ function appAjax(url, formData, callback) {
     });
 }
 
-function appAjaxSync(url, formData, responseType) {
+function appAjaxSync(url, method, formData, responseType) {
     var response;
     var result = $.ajax({
         url: url,
@@ -737,7 +742,7 @@ function appAjaxSync(url, formData, responseType) {
         data: formData,
         contentType: 'application/json',
         processData: false,
-        type: 'POST',
+        type: method ? method : 'POST',
         async: false
     });
     if (responseType === "JSON") {
@@ -767,3 +772,52 @@ function appAjaxFileUpload(url, formData, responseType) {
     }
     return response;
 }
+
+
+/*Form Component*/
+
+function attachForm(confObj) {
+    if (typeof (confObj) === "undefined") {
+        return;
+    }
+    var options = confObj.options;
+    var parentObj = confObj.parent;
+    if (parentObj.style.height) {
+        parentObj.style.height = "";
+    }
+    if (typeof (parentObj) === "undefined") {
+        return;
+    }
+    clearAllElementsInDiv(parentObj);
+    var a = document.createElement("div");
+    a.className = "form-cell";
+    var ac = document.createElement("div");
+    ac.className = "page-title";
+    var acHdr = document.createElement("h2");
+    acHdr.innerHTML = confObj.hdrText;
+    ac.appendChild(acHdr);
+
+    var afc = document.createElement("div");
+    afc.className = "panel";
+    var afcBody = document.createElement("div");
+    afcBody.className = "panel-body";
+    var af = document.createElement("form");
+    af.className = "form-horizontal";
+    af.name = confObj.name;
+    af.id = confObj.id;
+    afcBody.appendChild(af);
+    afc.appendChild(afcBody);
+    ac.appendChild(afc)
+    a.appendChild(ac);
+
+    this.cell = {
+        "obj": a,
+        "form": af
+    };
+    var cells = {"a": this.cell};
+    for (var cell in cells) {
+        parentObj.appendChild(cells[cell].obj);
+    }
+    return cell;
+}
+/*Form Component*/

@@ -25,13 +25,13 @@
     <div class="wrapper">
 
         <!--<form action="/EDIPaged/ediAuth/doLogin" method="post" name="ediLoginForm" class="form-signin">-->
-        <form action="" method="post" name="loginForm" id="loginForm" class="form-signin">
+        <form action="" method="post" name="loginForm" onsubmit="javascript:doLogin();return false;" id="loginForm" class="form-signin">
             <h3 class="form-signin-heading">UCM</h3>
 
-            <input type="text" class="form-control" name="username" placeholder="Login Id" autofocus=""/>
+            <input type="text" class="form-control" name="username"  placeholder="Login Id" autofocus=""/>
             <input type="password" class="form-control" name="password" placeholder="Password"/>
             <button class="btn btn-lg btn-primary btn-block" onclick="doLogin()" name="Submit" value="Login"
-                    type="button">Login
+                    type="submit">Login
             </button>
             <span id="errorMessage" style="color: red;"></span>
         </form>

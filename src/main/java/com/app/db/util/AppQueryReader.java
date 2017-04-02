@@ -26,9 +26,9 @@ private static final Logger log = Logger.getLogger(AppQueryReader.class.getName(
 
    public static void loadProperties(String webPath) {
       try {
-         String propFileDir = webPath + ApplicationUtil.APP_FILE_SEPERATOR + "WEB-INF" + ApplicationUtil.APP_FILE_SEPERATOR + "configuration" + ApplicationUtil.APP_FILE_SEPERATOR + "dbqueries";
+         String propFileDir = webPath + "WEB-INF" + ApplicationUtil.APP_FILE_SEPERATOR + "configuration" + ApplicationUtil.APP_FILE_SEPERATOR + "dbqueries";
          log.log(Level.SEVERE, propFileDir);
-         queryProperties.load(new FileInputStream(new File(propFileDir + ApplicationUtil.APP_FILE_SEPERATOR + (AppConnectionPool.getAppDBType().toString().equalsIgnoreCase("ORACLE") ? "ORACLESERVER" : AppConnectionPool.getAppDBType().toString()) + "_Queries.properties")));
+         queryProperties.load(new FileInputStream(new File(propFileDir + ApplicationUtil.APP_FILE_SEPERATOR + "App_Oracle_Queries.properties")));
       } catch (IOException e) {
          // TODO: handle exception
       }

@@ -21,7 +21,7 @@
     top:7px;
 }
 
-.col:not(:first-child),.col:not(:last-child) {
+/*.col:not(:first-child),.col:not(:last-child) {
     padding-right:7px;
     padding-left:7px;
 }
@@ -55,19 +55,19 @@
 p {
     margin: 0 0 5px;
 }
-
+*/
 .my-modal {
     height: 500px !important;
     overflow: auto !important;
 }
 
-/* Bootstrap table EDI CSS*/
+
 .fixed-table-toolbar .bars, .fixed-table-toolbar .search, .fixed-table-toolbar .columns {
     margin-top: 5px;
     margin-bottom: 5px;
 }
 
-/*Vendor report download invoice starts*/
+
 .vend-rprt-dwnld-invoce-wrap {
 
 }
@@ -79,4 +79,45 @@ p {
 .rprt-grid-wrapper {
     padding-top: 5px;
 }
-/*Vendor report download invoice ends*/
+
+
+.page-title h2 {
+    font-size: 22px;
+    text-transform: uppercase;
+    padding: 0;
+    font-weight: 100;
+    margin: 0;
+    color: #414C59;
+}
+
+.title-hero {
+    margin: 0 0 15px;
+    padding: 0;
+    text-transform: uppercase;
+    font-size: 14px;
+    opacity: 0.7;
+}
+
+.panel {
+    margin-bottom: 20px;
+    border-width: 1px;
+    border-style: solid;
+    border-radius: 4px;
+    background-color: #fff;
+    border: 1px solid transparent;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, .05);
+}
+
+.panel-body {
+    padding: 5px 7px;
+    position: relative;
+}
+
+.panel-body .example-box-wrapper:last-child, .panel-body .col-md-6 .example-box-wrapper:last-child {
+    margin-bottom: 0;
+}
+
+.example-box-wrapper {
+    margin-bottom: 15px;
+    position: relative;
+}

@@ -36,11 +36,204 @@
 </head>
 <body onload="doOnLoad()">
 
+<div id='formTempletes' style="display: none;">
+    <div id="studentFormTpl">
+        <div class="form-group">
+            <label class="col-sm-3 control-label required">Name</label>
+            <div class="col-sm-8">
+                <div class="row">
+                    <div class="col-md-6">
+                        <input type="text" name="firstName" class="form-control" placeholder="First Name">
+                    </div>
+                    <div class="col-md-6">
+                        <input type="text" name="lastName" class="form-control" placeholder="Last Name">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label required">Concentration</label>
+            <div class="col-sm-8">
+                <select name="concentration" class="form-control">
+                    <option value="-1">Select Concentration</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label required">Mail</label>
+            <div class="col-sm-8">
+                <input type="text" name="mail" class="form-control" placeholder="example@ucmo.com">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label required">Personal Mail</label>
+            <div class="col-sm-8">
+                <input type="text" name="personalMail" class="form-control" placeholder="example@example.com">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label required">Phone #</label>
+            <div class="col-sm-8">
+                <input type="text" name="phone" class="form-control" placeholder="+1XXXXXXXXXX">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label required">Mailing Address</label>
+            <div class="col-sm-8">
+                <textarea name="address" rows="3" class="form-control textarea-no-resize"></textarea>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label required">GMAT/GRE Scores</label>
+            <div class="col-sm-8">
+                <div class="row">
+                    <div class="col-md-4">
+                        <select name="scoreType" class="form-control">
+                            <option value="GMAT">GMAT</option>
+                            <option value="GRE">GRE</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <input type="text" name="verbal" class="form-control"
+                               placeholder="Verbal">
+                    </div>
+                    <div class="col-md-2">
+                        <input type="text" name="quantitative" class="form-control"
+                               placeholder="Quantitative">
+                    </div>
+                    <div class="col-md-2">
+                        <input type="text" name="analytical" class="form-control"
+                               placeholder="Analytical">
+                    </div>
+                    <div class="col-md-2">
+                        <input type="text" name="gpa" class="form-control" placeholder="GPA">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-12 text-center">
+            <button name="save" class="btn btn-success" type="button">Save</button>
+            <button name="reset" class="btn btn-warning" type="reset">Reset</button>
+            <button name="cancel" class="btn btn-primary" type="button">Cancel</button>
+        </div>
+    </div>
+    <div id="advisorFormTpl">
+        <div class="form-group">
+            <label class="col-sm-3 control-label required">Name</label>
+            <div class="col-sm-8">
+                <div class="row">
+                    <div class="col-md-6">
+                        <input type="text" name="firstName" class="form-control" placeholder="First Name">
+                    </div>
+                    <div class="col-md-6">
+                        <input type="text" name="lastName" class="form-control" placeholder="Last Name">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label required">Concentration</label>
+            <div class="col-sm-8">
+                <select name="concentration" class="form-control">
+                    <option value="-1">Select Concentration</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label required">Mail</label>
+            <div class="col-sm-8">
+                <input type="text" name="mail" class="form-control" placeholder="example@ucmo.com">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label required">Phone #</label>
+            <div class="col-sm-8">
+                <input type="text" name="phone" class="form-control" placeholder="+1XXXXXXXXXX">
+            </div>
+        </div>
+        <div class="col-sm-12 text-center">
+            <button name="save" class="btn btn-success" type="button">Save</button>
+            <button name="reset" class="btn btn-warning" type="reset">Reset</button>
+            <button name="cancel" class="btn btn-primary" type="button">Cancel</button>
+        </div>
+    </div>
+    <div id="concentrationFormTpl">
+        <div class="form-group">
+            <label class="col-sm-3 control-label required">Concentration Name</label>
+            <div class="col-sm-8">
+                <input type="text" name="concentrationName" class="form-control" placeholder="Concentration Name">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label required">Cources</label>
+            <div class="col-sm-8">
+                <div class="row">
+                    <div class="col-md-6">
+                        <select name="allCources" multiple class="form-control">
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <select name="cources" multiple class="form-control">
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-12 text-center">
+            <button name="save" class="btn btn-success" type="button">Save</button>
+            <button name="reset" class="btn btn-warning" type="reset">Reset</button>
+            <button name="cancel" class="btn btn-primary" type="button">Cancel</button>
+        </div>
+    </div>
+    <div id="courceFormTpl">
+        <div class="form-group">
+            <label class="col-sm-3 control-label required">Cource Name</label>
+            <div class="col-sm-8">
+                <input type="text" name="name" class="form-control" placeholder="Cource Name">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label required">Prefix</label>
+            <div class="col-sm-8">
+                <input type="text" name="prefix" class="form-control" placeholder="Prefix">
+            </div>
+
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label required">Code</label>
+            <div class="col-sm-8">
+                <input type="text" name="code" class="form-control" placeholder="Code">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">Notes</label>
+            <div class="col-sm-8">
+                <textarea name="notes" rows="3" class="form-control textarea-no-resize"></textarea>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label required">Status</label>
+            <div class="col-sm-8">
+                <select name="status" class="form-control">
+                    <option value="ACTIVE">Active</option>
+                    <option value="INACTIVE">In Active</option>
+                </select>
+            </div>
+        </div>
+        <div class="col-sm-12 text-center">
+            <button name="save" class="btn btn-success" type="button">Save</button>
+            <button name="reset" class="btn btn-warning" type="reset">Reset</button>
+            <button name="cancel" class="btn btn-primary" type="button">Cancel</button>
+        </div>
+    </div>
+</div>
+
+
 <header class="navbar navbar-default">
     <div class="container-fluid">
         <div class="navbar-header">
             <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
-                    data-target="#resourceManagerNavBar" aria-expanded="false" aria-controls="navbar">
+                    data-target="#appNavBar" aria-expanded="false" aria-controls="navbar">
                 <span class="sr-only">Toggle navigation</span>
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
@@ -87,6 +280,7 @@
 </body>
 <script>
     appContextPath = "${pageContext.request.contextPath}";
+    appRestPath = appContextPath + "/rest";
     accessToken = "${accessToken}";
     var appManagerLytObj;
     var studentLytObj, advisorLytObj, courceLytObj, concentrationLytObj;
