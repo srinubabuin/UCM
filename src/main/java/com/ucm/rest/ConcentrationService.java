@@ -21,10 +21,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import org.apache.log4j.Logger;
 
-/**
- *
- * @author Srinu Babu
- */
+@Path("/concentration")
 public class ConcentrationService {
 
     private static final Logger LOGGER = Logger.getLogger(ConcentrationService.class);
@@ -39,6 +36,23 @@ public class ConcentrationService {
         try {
             ConcentationServiceHelper helper = new ConcentationServiceHelper();
             RequestStatus reqStatus = helper.addConcentration(concentration);
+            return Response.ok().header("Access-Control-Allow-Origin", "*").entity(reqStatus).build();
+        } catch (Exception e) {
+            LOGGER.info("Insert Concentration error");
+            return Response.status(405).header("Access-Control-Allow-Origin", "*").build();
+        }
+    }
+
+
+    @PUT
+    @Path("/{param}")
+    @Consumes({"application/json"})
+    @Produces({"application/json"})
+    public Response update(@PathParam("param") int concentrationId) {
+
+        try {
+            ConcentationServiceHelper helper = new ConcentationServiceHelper();
+            RequestStatus reqStatus = null;
             return Response.ok().header("Access-Control-Allow-Origin", "*").entity(reqStatus).build();
         } catch (Exception e) {
             LOGGER.info("Insert Concentration error");
@@ -78,21 +92,21 @@ public class ConcentrationService {
         }
     }
 
-    @GET
-    @Path("/{param}")
-    @Consumes({"application/json"})
-    @Produces({"application/json"})
-    public Response getConcentratioByName(@PathParam("param") String concentationName) {
-
-        try {
-            ConcentationServiceHelper helper = new ConcentationServiceHelper();
-            Concentration concen = helper.getConcentrationWitName(concentationName);
-            return Response.ok().header("Access-Control-Allow-Origin", "*").entity(concen).build();
-        } catch (Exception e) {
-            LOGGER.info("Insert Concentration error");
-            return Response.status(405).header("Access-Control-Allow-Origin", "*").build();
-        }
-    }
+//    @GET
+//    @Path("/{param}")
+//    @Consumes({"application/json"})
+//    @Produces({"application/json"})
+//    public Response getConcentratioByName(@PathParam("param") String concentationName) {
+//
+//        try {
+//            ConcentationServiceHelper helper = new ConcentationServiceHelper();
+//            Concentration concen = helper.getConcentrationWitName(concentationName);
+//            return Response.ok().header("Access-Control-Allow-Origin", "*").entity(concen).build();
+//        } catch (Exception e) {
+//            LOGGER.info("Insert Concentration error");
+//            return Response.status(405).header("Access-Control-Allow-Origin", "*").build();
+//        }
+//    }
 
     @GET
     @Consumes({"application/json"})

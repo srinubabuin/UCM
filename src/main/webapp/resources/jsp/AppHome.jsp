@@ -161,24 +161,48 @@
         <div class="form-group">
             <label class="col-sm-3 control-label required">Concentration Name</label>
             <div class="col-sm-8">
-                <input type="text" name="concentrationName" class="form-control" placeholder="Concentration Name">
+                <input type="text" name="name" class="form-control" placeholder="Concentration Name">
             </div>
         </div>
         <div class="form-group">
             <label class="col-sm-3 control-label required">Cources</label>
             <div class="col-sm-8">
                 <div class="row">
-                    <div class="col-md-6">
+                    <div class="col-md-5">
                         <select name="allCources" multiple class="form-control">
                         </select>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-2  text-center">
+                        <button name="courceMoveLeft" class="btn btn-success" type="button"
+                                style="padding: 3px 6px; width: 70px;" value=">>">&gt;&gt;</button>
+                        </br>
+                        </br>
+                        <button name="courceMoveRight" class="btn btn-danger" type="reset"
+                                style="padding: 3px 6px; width: 70px;" value="<<">&lt;&lt;</button>
+                    </div>
+                    <div class="col-md-5">
                         <select name="cources" multiple class="form-control">
                         </select>
                     </div>
                 </div>
             </div>
         </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">Notes</label>
+            <div class="col-sm-8">
+                <textarea name="notes" rows="3" class="form-control textarea-no-resize"></textarea>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label required">Status</label>
+            <div class="col-sm-8">
+                <select name="status" class="form-control">
+                    <option value="ACTIVE">Active</option>
+                    <option value="INACTIVE">In Active</option>
+                </select>
+            </div>
+        </div>
+        <input type="hidden" name="concentrationId" value="-1">
         <div class="col-sm-12 text-center">
             <button name="save" class="btn btn-success" type="button">Save</button>
             <button name="reset" class="btn btn-warning" type="reset">Reset</button>
@@ -220,6 +244,7 @@
                 </select>
             </div>
         </div>
+        <input type="hidden" name="courceId" value="-1">
         <div class="col-sm-12 text-center">
             <button name="save" class="btn btn-success" type="button">Save</button>
             <button name="reset" class="btn btn-warning" type="reset">Reset</button>
