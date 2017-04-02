@@ -11,6 +11,7 @@ import com.conn.pool.app.AppConnectionPool;
 import com.sun.istack.internal.logging.Logger;
 import com.ucm.exception.ConstraintVilationException;
 import com.ucm.model.Concentration;
+import com.ucm.model.Cource;
 import com.ucm.services.ConcentrationService;
 import com.ucm.services.CourceService;
 import java.sql.Connection;
@@ -51,6 +52,8 @@ public class ConcentrationServiceImpl implements ConcentrationService {
                 rs = pstm.getGeneratedKeys();
                 rs.next();
                 concentationId = rs.getInt(1);
+                concentation.setId(concentationId);
+                addConcentrationCources(concentation);
             }
         } catch (SQLIntegrityConstraintViolationException e) {
             LOGGER.log(Level.SEVERE, "Exception while adding the Concentation " + e.getMessage());
@@ -62,7 +65,40 @@ public class ConcentrationServiceImpl implements ConcentrationService {
         }
         return concentationId;
     }
-
+    
+    @Override
+    public int addConcentrationCources(Concentration concentation) {
+        
+        Connection con = null;
+        PreparedStatement pstm = null;
+        ResultSet rs = null;
+        int conCources = 0;
+        try {
+            int pos = 1;
+            con = AppConnectionPool.getConnection();
+            pstm = con.prepareStatement(AppQueryReader.getDBQuery("com.ucm.services.impl.concentratioservice.inserticoncentrationwcources"), new String[]{DBUtil.COLUMN_CONCENTATIONS_ID});
+            for(Cource cource : concentation.getCources()){
+                pstm.setInt(pos, concentation.getId());
+                pstm.setInt(++pos, cource.getId());
+                pstm.setString(++pos, concentation.getConcentrationStatus());
+                pstm.setTimestamp(++pos, new Timestamp(new Date().getTime()));
+                pstm.addBatch();
+                pos = 1;
+            }
+            int[] i = pstm.executeBatch();
+            conCources = i.length;
+            
+        } catch (SQLIntegrityConstraintViolationException e) {
+            LOGGER.log(Level.SEVERE, "Exception while adding the Concentation in addConcentrationCources" + e.getMessage());
+        } catch (SQLException ex) {
+            LOGGER.log(Level.SEVERE, "Exception while adding the Concentation " + ex.getMessage());
+        } finally {
+            AppConnectionPool.release(rs, pstm, con);
+        }
+        return conCources;
+    }
+    
+    
     @Override
     public Concentration getConcentationWithId(int concenId) {
 

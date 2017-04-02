@@ -17,6 +17,7 @@ import java.util.List;
 public interface ConcentrationService {
 
     public int addConcentation(Concentration concentation) throws ConstraintVilationException;
+    public int addConcentrationCources(Concentration concentation);
     public Concentration getConcentationWithId(int concenId);
     public Concentration getConcentationWithName(String conName);
     public List<Concentration> getAllConcentations();
