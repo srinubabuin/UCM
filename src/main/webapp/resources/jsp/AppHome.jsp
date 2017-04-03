@@ -121,22 +121,7 @@
         <div class="form-group">
             <label class="col-sm-3 control-label required">Name</label>
             <div class="col-sm-8">
-                <div class="row">
-                    <div class="col-md-6">
-                        <input type="text" name="firstName" class="form-control" placeholder="First Name">
-                    </div>
-                    <div class="col-md-6">
-                        <input type="text" name="lastName" class="form-control" placeholder="Last Name">
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="form-group">
-            <label class="col-sm-3 control-label required">Concentration</label>
-            <div class="col-sm-8">
-                <select name="concentration" class="form-control">
-                    <option value="-1">Select Concentration</option>
-                </select>
+                <input type="text" name="name" class="form-control" placeholder="Name">
             </div>
         </div>
         <div class="form-group">
@@ -151,6 +136,23 @@
                 <input type="text" name="phone" class="form-control" placeholder="+1XXXXXXXXXX">
             </div>
         </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">Notes</label>
+            <div class="col-sm-8">
+                <textarea name="notes" rows="3" class="form-control textarea-no-resize"></textarea>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label required">Status</label>
+            <div class="col-sm-8">
+                <select name="status" class="form-control">
+                    <option value="ACTIVE">Active</option>
+                    <option value="INACTIVE">In Active</option>
+                </select>
+            </div>
+        </div>
+        <input type="hidden" name="id" value="-1">
+        <input type="hidden" name="loginId" value="-1">
         <div class="col-sm-12 text-center">
             <button name="save" class="btn btn-success" type="button">Save</button>
             <button name="reset" class="btn btn-warning" type="reset">Reset</button>
@@ -162,6 +164,14 @@
             <label class="col-sm-3 control-label required">Concentration Name</label>
             <div class="col-sm-8">
                 <input type="text" name="name" class="form-control" placeholder="Concentration Name">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label required">Advisor</label>
+            <div class="col-sm-8">
+                <select name="advisor" class="form-control">
+                    <option value="-1">Select Advisor</option>
+                </select>
             </div>
         </div>
         <div class="form-group">

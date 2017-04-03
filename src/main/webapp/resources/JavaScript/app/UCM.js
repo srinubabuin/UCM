@@ -148,50 +148,50 @@ function getStudentDetailsGridObj(toolbarObj, confObj) {
             "data-unique-id": "srNo"
         },
         columns: [{
-                title: "#",
-                field: "srNo",
-                align: "left"
-            }, {
-                title: "700#",
-                field: "studentId",
-                align: "left"
-            }, {
-                title: "Name",
-                field: "name",
-                align: "left"
+            title: "#",
+            field: "srNo",
+            align: "left"
+        }, {
+            title: "700#",
+            field: "studentId",
+            align: "left"
+        }, {
+            title: "Name",
+            field: "name",
+            align: "left"
 
-            }, {
-                title: "Mail",
-                field: "mail",
-                align: "left"
-            }, {
-                title: "Phone #",
-                field: "phone",
-                align: "left"
-            }, {
-                title: "Concentration",
-                field: "concentration",
-                align: "left"
+        }, {
+            title: "Mail",
+            field: "mail",
+            align: "left"
+        }, {
+            title: "Phone #",
+            field: "phone",
+            align: "left"
+        }, {
+            title: "Concentration",
+            field: "concentration",
+            align: "left"
 
-            }, {
-                title: "Entry Date",
-                field: "entryDate",
-                align: "left"
+        }, {
+            title: "Entry Date",
+            field: "entryDate",
+            align: "left"
 
-            }, {
-                title: "Operate",
-                field: "operate",
-                align: 'center',
-                events: confObj.me.operateEvent(),
-                formatter: [
-                    '<button class="studentEdit" title="Edit">',
-                    '<i class="glyphicon glyphicon-pencil icon-pencil"></i>',
-                    '</button>  ',
-                    '<button class="studentRemove" title="Remove">',
-                    '<i class="glyphicon glyphicon-remove-sign icon-remove-sign"></i>',
-                    '</button>'
-                ].join('')
-            }]
+        }, {
+            title: "Operate",
+            field: "operate",
+            align: 'center',
+            events: confObj.me.operateEvent(),
+            formatter: [
+                '<button class="studentEdit" title="Edit">',
+                '<i class="glyphicon glyphicon-pencil icon-pencil"></i>',
+                '</button>  ',
+                '<button class="studentRemove" title="Remove">',
+                '<i class="glyphicon glyphicon-remove-sign icon-remove-sign"></i>',
+                '</button>'
+            ].join('')
+        }]
     };
     return studentDetailsConfobj;
 }
@@ -203,10 +203,10 @@ function getStudentForm() {
 
 function getStudentsGridData() {
     return [{
-            srNo: 1,
-            studentId: 7001,
-            name: 'abc'
-        }];
+        srNo: 1,
+        studentId: 7001,
+        name: 'abc'
+    }];
 }
 
 /*Student Layout Ends*/
@@ -222,8 +222,8 @@ function loadAdvisorLyt(cellObj) {
     this.loadAdvisorsLyt = function () {
         var _this = this;
         clearAllElementsInDiv(_this.detailsCellObj);
-        // _this.initAdvisorsGrid();
-        _this.showAdvisorForm(_this.detailsCellObj);
+        _this.initAdvisorsGrid();
+        // _this.showAdvisorForm(_this.detailsCellObj);
     };
     this.initAdvisorsGrid = function () {
         var _this = this;
@@ -240,10 +240,13 @@ function loadAdvisorLyt(cellObj) {
         advisorsGrid.bootstrapTable({
             "height": $(_this.detailsCellObj).height() - 5,
             "columns": advisorsGridConfObj.options.columns,
-            data: []
+            data: [],
+            "onDblClickRow": function (row, el, field) {
+                _this.showViewAdvisorForm(_this.detailsCellObj, row);
+            }
         });
-        $(_this.detailsCellObj).find("button[name=addAdvisors]").click(function () {
-            _this.showAdvisorForm(_this.detailsCellObj);
+        $(_this.detailsCellObj).find("button[name=addAdvisor]").click(function () {
+            _this.showAddAdvisorForm(_this.detailsCellObj);
         });
         _this.loadAdvisorsGridData(advisorsGrid);
     };
@@ -252,15 +255,16 @@ function loadAdvisorLyt(cellObj) {
         var _this = this;
         return {
             'click .advisorEdit': function (e, value, row, index) {
-                _this.showAdvisorForm(_this.detailsCellObj);
+                _this.showEditAdvisorForm(_this.detailsCellObj, row);
             }, 'click .advisorRemove': function (e, value, row, index) {
+                _this.deleteAdvisorFromGrid(row);
             }
         };
     };
 
     this.loadAdvisorsGridData = function (gridObj) {
         gridObj.bootstrapTable("showLoading");
-        var gridData = getStudentsGridData();
+        var gridData = getAllAdvisors() || [];
         gridObj.bootstrapTable("load", gridData);
         gridObj.bootstrapTable("hideLoading");
     };
@@ -269,7 +273,7 @@ function loadAdvisorLyt(cellObj) {
         var toolbarObj = document.createElement("div");
         toolbarObj.role = "toolbar";
         var addAdvisorButtonObj = document.createElement("button");
-        addAdvisorButtonObj.name = "addAdvisors";
+        addAdvisorButtonObj.name = "addAdvisor";
         addAdvisorButtonObj.title = "Add Advisor";
         addAdvisorButtonObj.type = "button";
         addAdvisorButtonObj.className = "btn btn-default";
@@ -279,41 +283,147 @@ function loadAdvisorLyt(cellObj) {
         return toolbarObj;
     };
 
-    this.showAdvisorForm = function (cellObj) {
+    this.attachAdvisorsForm = function (cellObj, confObj) {
+        var advisorFormWrapObj = new attachForm(confObj);
+        advisorFormWrapObj.cell.form.innerHTML = getAdvisorForm();
+    };
+
+    this.showAddAdvisorForm = function (cellObj) {
         var _this = this;
         appManagerLytObj.module = "";
         var advisorFormConfObj = {
             "parent": cellObj,
             "hdrText": "Add Advisor",
+            "formType": "add",
             "name": "addadvisor",
             "id": "addadvisor"
         };
-        var advisorFormWrapObj = new attachForm(advisorFormConfObj);
-
-        advisorFormWrapObj.cell.form.innerHTML = getAdvisorForm();
+        _this.attachAdvisorsForm(cellObj, advisorFormConfObj);
         var advisorFormObj = document.forms[advisorFormConfObj.name];
+        $(advisorFormObj.elements["status"].parentElement.parentElement).hide();
         $(advisorFormObj.elements["save"]).click(function () {
-            _this.onAdvisorFormBtnClick("save", advisorFormObj.name);
+            _this.onAdvisorFormBtnClick("save", advisorFormConfObj);
         });
         // $(advisorFormObj.elements["reset"]).click(function () {
-        //     _this.onAdvisorFormBtnClick("reset", advisorFormObj.name);
+        //     _this.onAdvisorFormBtnClick("reset", advisorFormConfObj);
         // });
         $(advisorFormObj.elements["cancel"]).click(function () {
-            _this.onAdvisorFormBtnClick("cancel", advisorFormObj.name);
+            _this.onAdvisorFormBtnClick("cancel", advisorFormConfObj);
         });
-        // _this.onAdvisorFormBtnClick("clearBtn", studentFormObj.name);
+        $(advisorFormObj.elements["courceMoveLeft"]).click(function () {
+            _this.onAdvisorFormBtnClick("courceMoveLeft", advisorFormConfObj);
+        });
+        $(advisorFormObj.elements["courceMoveRight"]).click(function () {
+            _this.onAdvisorFormBtnClick("courceMoveRight", advisorFormConfObj);
+        });
+        // _this.onAdvisorFormBtnClick("clearBtn", advisorFormConfObj);
     };
-    this.onAdvisorFormBtnClick = function (id, formName) {
+
+    this.showEditAdvisorForm = function (cellObj, advisor) {
+        var _this = this;
+        appManagerLytObj.module = "";
+        var advisorFormConfObj = {
+            "parent": cellObj,
+            "hdrText": "Edit Advisor",
+            "formType": "edit",
+            "name": "editadvisor",
+            "id": "editadvisor"
+        };
+        _this.attachAdvisorsForm(cellObj, advisorFormConfObj);
+        var advisor = getAdvisor(advisor.id);
+        _this.setAdvisorFormDetails(advisorFormConfObj, advisor);
+        var advisorFormObj = document.forms[advisorFormConfObj.name];
+        $(advisorFormObj.elements["reset"]).hide();
+        $(advisorFormObj.elements["save"]).click(function () {
+            _this.onAdvisorFormBtnClick("save", advisorFormConfObj);
+        });
+        // $(advisorFormObj.elements["reset"]).click(function () {
+        //     _this.onAdvisorFormBtnClick("reset", advisorFormConfObj);
+        // });
+        $(advisorFormObj.elements["cancel"]).click(function () {
+            _this.onAdvisorFormBtnClick("cancel", advisorFormConfObj);
+        });
+        // _this.onAdvisorFormBtnClick("clearBtn", advisorFormConfObj);
+    };
+
+    this.showViewAdvisorForm = function (cellObj, advisor) {
+        var _this = this;
+        appManagerLytObj.module = "";
+        var advisorFormConfObj = {
+            "parent": cellObj,
+            "hdrText": "View Advisor",
+            "formType": "view",
+            "name": "viewadvisor",
+            "id": "viewadvisor"
+        };
+        _this.attachAdvisorsForm(cellObj, advisorFormConfObj);
+        var advisor = getAdvisor(advisor.id);
+        _this.setAdvisorFormDetails(advisorFormConfObj, advisor);
+        var advisorFormObj = document.forms[advisorFormConfObj.name];
+        $(advisorFormObj.elements["name"]).attr('readonly', 'true');
+        $(advisorFormObj.elements["mail"]).attr('readonly', 'true');
+        $(advisorFormObj.elements["phone"]).attr('readonly', 'true');
+        $(advisorFormObj.elements["notes"]).attr('readonly', 'true');
+        $(advisorFormObj.elements["status"]).attr('disabled', 'disabled');
+        $(advisorFormObj.elements["save"]).hide();
+        $(advisorFormObj.elements["reset"]).hide();
+        $(advisorFormObj.elements["cancel"]).text("Close");
+        $(advisorFormObj.elements["cancel"]).click(function () {
+            _this.onAdvisorFormBtnClick("cancel", advisorFormConfObj);
+        });
+        // _this.onAdvisorFormBtnClick("clearBtn", advisorFormConfObj);
+    };
+
+    this.setAdvisorFormDetails = function (formConfObj, details) {
+        var advisorFormObj = document.forms[formConfObj.name];
+        $(advisorFormObj.elements["id"]).val(details.id);
+        $(advisorFormObj.elements["name"]).val(details.name);
+        $(advisorFormObj.elements["mail"]).val(details.email);
+        $(advisorFormObj.elements["loginId"]).val(details.loginId);
+        $(advisorFormObj.elements["phone"]).val(details.phone);
+        $(advisorFormObj.elements["notes"]).val(details.notes);
+        $(advisorFormObj.elements["status"]).val(details.status);
+    };
+
+    this.onAdvisorFormBtnClick = function (id, confObj) {
 
         var _this = this;
+        var formName = confObj.name;
         if (id === "save") {
             var formObj = document.forms[formName];
+            var advisor = {};
+            advisor["name"] = formObj["name"].value;
+            advisor["email"] = formObj["mail"].value;
+            advisor["loginId"] = formObj["loginId"].value;
+            advisor["phone"] = formObj["phone"].value;
+            advisor["notes"] = formObj["notes"].value;
+            advisor["status"] = formObj["status"].value;
+            var response;
+            if (confObj.formType === "add") {
+                console.log(advisor);
+                response = addAdvisor(advisor);
+            } else {
+                advisor["id"] = formObj["id"].value;
+                response = editAdvisor(advisor);
+            }
+            if (response && response.success) {
+                _this.initAdvisorsGrid();
+            } else {
+                console.log(response);
+            }
         } else if (id === "reset") {
             clearFormDataByName(formName);
         } else if (id === "cancel") {
-            _this.initAdvisorsGrid()
+            _this.initAdvisorsGrid();
         }
+    };
 
+    this.deleteAdvisorFromGrid = function (advisor) {
+        var _this = this;
+        var response = deleteAdvisor(advisor.id);
+        if (response.success) {
+            _this.initAdvisorsGrid();
+        }
     };
 
     this.loadAdvisorsLyt();
@@ -334,45 +444,70 @@ function getAdvisorDetailsGridObj(toolbarObj, confObj) {
             "data-unique-id": "srNo"
         },
         columns: [{
-                title: "#",
-                field: "srNo",
-                align: "left"
-            }, {
-                title: "700#",
-                field: "advisorId",
-                align: "left"
-            }, {
-                title: "Name",
-                field: "name",
-                align: "left"
-            }, {
-                title: "Mail",
-                field: "mail",
-                align: "left"
-            }, {
-                title: "Concentration",
-                field: "concentration",
-                align: "left"
-            }, {
-                title: "Status",
-                field: "status",
-                align: "left"
-            }, {
-                title: "Operate",
-                field: "operate",
-                align: 'center',
-                events: confObj.me.operateEvent(),
-                formatter: [
-                    '<button class="advisorEdit" title="Edit">',
-                    '<i class="glyphicon glyphicon-pencil icon-pencil"></i>',
-                    '</button>  ',
-                    '<button class="advisorRemove" title="Remove">',
-                    '<i class="glyphicon glyphicon-remove-sign icon-remove-sign"></i>',
-                    '</button>'
-                ].join('')
-            }]
+            title: "#",
+            field: "srNo",
+            align: "left"
+        }, {
+            title: "700#",
+            field: "loginId",
+            align: "left"
+        }, {
+            title: "Name",
+            field: "name",
+            align: "left"
+        }, {
+            title: "Mail",
+            field: "email",
+            align: "left"
+        }, {
+            title: "Concentration",
+            field: "concentration",
+            align: "left"
+        }, {
+            title: "Status",
+            field: "status",
+            align: "left"
+        }, {
+            title: "Operate",
+            field: "operate",
+            align: 'center',
+            events: confObj.me.operateEvent(),
+            formatter: [
+                '<button class="advisorEdit" title="Edit">',
+                '<i class="glyphicon glyphicon-pencil icon-pencil"></i>',
+                '</button>  ',
+                '<button class="advisorRemove" title="Remove">',
+                '<i class="glyphicon glyphicon-remove-sign icon-remove-sign"></i>',
+                '</button>'
+            ].join('')
+        }]
     };
     return advisorDetailsConfobj;
+}
+
+function getAdvisorForm() {
+    var form = document.getElementById("advisorFormTpl").innerHTML;
+    return form;
+}
+
+function getAllAdvisors() {
+    return appAjaxSync(appRestPath + "/advisor", "GET", "", "JSON");
+}
+
+function getAdvisor(advisorId) {
+    return appAjaxSync(appRestPath + "/advisor/" + advisorId, "GET", "", "JSON");
+}
+
+function addAdvisor(advisor) {
+    return appAjaxSync(appRestPath + "/advisor", "PUT", JSON.stringify(advisor), "JSON");
+}
+
+function editAdvisor(advisor) {
+    return appAjaxSync(appRestPath + "/advisor/" + advisor.id, "PUT", JSON.stringify(advisor), "JSON");
+}
+
+function deleteAdvisor(advisorId) {
+    return appAjaxSync(appRestPath + "/advisor/" + advisorId, "DELETE", "", "JSON");
 }
 
 function getAdvisorForm() {
@@ -473,6 +608,8 @@ function loadConcentrationLyt(cellObj) {
         $(concentrationFormObj.elements["status"].parentElement.parentElement).hide();
         var courceOptions = getCourcesAsOptions();
         $(concentrationFormObj.elements["allCources"]).append(courceOptions);
+        var advisorOptions = getAdvisorsAsOptions();
+        $(concentrationFormObj.elements["advisor"]).append(advisorOptions);
         $(concentrationFormObj.elements["save"]).click(function () {
             _this.onConcentrationFormBtnClick("save", concentrationFormConfObj);
         });
@@ -555,6 +692,9 @@ function loadConcentrationLyt(cellObj) {
     };
 
     this.setConcentrationFormDetails = function (formConfObj, details) {
+        if (!details) {
+            return;
+        }
         var concentrationFormObj = document.forms[formConfObj.name];
         $(concentrationFormObj.elements["concentrationId"]).val(details.id);
         $(concentrationFormObj.elements["name"]).val(details.concentrationName);
@@ -574,6 +714,11 @@ function loadConcentrationLyt(cellObj) {
         }
         $(concentrationFormObj.elements["allCources"]).append(allCources);
         $(concentrationFormObj.elements["cources"]).append(cources);
+        var advisorOptions = getAdvisorsAsOptions();
+        $(concentrationFormObj.elements["advisor"]).append(advisorOptions);
+        if (details.advisor && details.advisor.id) {
+            $(concentrationFormObj.elements["advisor"]).find('option[value="' + details.advisor.id + '"]').attr("selected", "selected");
+        }
     };
 
     this.onConcentrationFormBtnClick = function (id, confObj) {
@@ -594,6 +739,9 @@ function loadConcentrationLyt(cellObj) {
                 }
             });
             concentration["cources"] = selectedCources;
+            concentration["advisor"] = {
+                id: formObj["advisor"].value
+            };
             var response;
             if (confObj.formType === "add") {
                 console.log(concentration);
@@ -649,48 +797,48 @@ function getConcentrationDetailsGridObj(toolbarObj, confObj) {
             "data-unique-id": "srNo"
         },
         columns: [{
-                title: "#",
-                field: "srNo",
-                align: "left"
-            }, {
-                title: "Name",
-                field: "concentrationName",
-                align: "left"
-            }, {
-                title: "Cources",
-                field: "cources",
-                align: "left",
-                formatter: function (value, row, index) {
-                    var courceNames = [];
-                    if (value && value.length) {
-                        for (var i = 0; i < value.length; i++) {
-                            courceNames.push(value[i].courceName + " (" + value[i].courcePrefix + " ," + value[i].courceCode + ")");
-                        }
+            title: "#",
+            field: "srNo",
+            align: "left"
+        }, {
+            title: "Name",
+            field: "concentrationName",
+            align: "left"
+        }, {
+            title: "Cources",
+            field: "cources",
+            align: "left",
+            formatter: function (value, row, index) {
+                var courceNames = [];
+                if (value && value.length) {
+                    for (var i = 0; i < value.length; i++) {
+                        courceNames.push(value[i].courceName + " (" + value[i].courcePrefix + " ," + value[i].courceCode + ")");
                     }
-                    return courceNames.join(', ');
                 }
-            }, {
-                title: "Notes",
-                field: "notes",
-                align: "left"
-            }, {
-                title: "Status",
-                field: "concentrationStatus",
-                align: "left"
-            }, {
-                title: "Operate",
-                field: "operate",
-                align: 'center',
-                events: confObj.me.operateEvent(),
-                formatter: [
-                    '<button class="concentrationEdit" title="Edit">',
-                    '<i class="glyphicon glyphicon-pencil icon-pencil"></i>',
-                    '</button>  ',
-                    '<button class="concentrationRemove" title="Remove">',
-                    '<i class="glyphicon glyphicon-remove-sign icon-remove-sign"></i>',
-                    '</button>'
-                ].join('')
-            }]
+                return courceNames.join(', ');
+            }
+        }, {
+            title: "Notes",
+            field: "notes",
+            align: "left"
+        }, {
+            title: "Status",
+            field: "concentrationStatus",
+            align: "left"
+        }, {
+            title: "Operate",
+            field: "operate",
+            align: 'center',
+            events: confObj.me.operateEvent(),
+            formatter: [
+                '<button class="concentrationEdit" title="Edit">',
+                '<i class="glyphicon glyphicon-pencil icon-pencil"></i>',
+                '</button>  ',
+                '<button class="concentrationRemove" title="Remove">',
+                '<i class="glyphicon glyphicon-remove-sign icon-remove-sign"></i>',
+                '</button>'
+            ].join('')
+        }]
     };
     return concentrationDetailsConfobj;
 }
@@ -964,43 +1112,43 @@ function getCourceDetailsGridObj(toolbarObj, confObj) {
             "data-unique-id": "srNo"
         },
         columns: [{
-                title: "#",
-                field: "srNo",
-                align: "left"
-            }, {
-                title: "Name",
-                field: "courceName",
-                align: "left"
-            }, {
-                title: "Prefix",
-                field: "courcePrefix",
-                align: "left"
-            }, {
-                title: "Code",
-                field: "courceCode",
-                align: "left"
-            }, {
-                title: "Notes",
-                field: "notes",
-                align: "left"
-            }, {
-                title: "Status",
-                field: "courceStatus",
-                align: "left"
-            }, {
-                title: "Operate",
-                field: "operate",
-                align: 'center',
-                events: confObj.me.operateEvent(),
-                formatter: [
-                    '<button class="courceEdit" title="Edit">',
-                    '<i class="glyphicon glyphicon-pencil icon-pencil"></i>',
-                    '</button>  ',
-                    '<button class="courceRemove" title="Remove">',
-                    '<i class="glyphicon glyphicon-remove-sign icon-remove-sign"></i>',
-                    '</button>'
-                ].join('')
-            }]
+            title: "#",
+            field: "srNo",
+            align: "left"
+        }, {
+            title: "Name",
+            field: "courceName",
+            align: "left"
+        }, {
+            title: "Prefix",
+            field: "courcePrefix",
+            align: "left"
+        }, {
+            title: "Code",
+            field: "courceCode",
+            align: "left"
+        }, {
+            title: "Notes",
+            field: "notes",
+            align: "left"
+        }, {
+            title: "Status",
+            field: "courceStatus",
+            align: "left"
+        }, {
+            title: "Operate",
+            field: "operate",
+            align: 'center',
+            events: confObj.me.operateEvent(),
+            formatter: [
+                '<button class="courceEdit" title="Edit">',
+                '<i class="glyphicon glyphicon-pencil icon-pencil"></i>',
+                '</button>  ',
+                '<button class="courceRemove" title="Remove">',
+                '<i class="glyphicon glyphicon-remove-sign icon-remove-sign"></i>',
+                '</button>'
+            ].join('')
+        }]
     };
     return courceDetailsConfobj;
 }
@@ -1029,6 +1177,17 @@ function getConcentrationAsOptions() {
     for (var i = 0; i < concentrations.length; i++) {
         if (concentrations[i].concentrationStatus === 'ACTIVE') {
             options.push($('<option>').val(concentrations[i].id).text(concentrations[i].concentrationName));
+        }
+    }
+    return options;
+}
+
+function getAdvisorsAsOptions() {
+    var options = [];
+    var advisors = getAllAdvisors();
+    for (var i = 0; i < advisors.length; i++) {
+        if (advisors[i].status === 'ACTIVE') {
+            options.push($('<option>').val(advisors[i].id).text(advisors[i].name));
         }
     }
     return options;
