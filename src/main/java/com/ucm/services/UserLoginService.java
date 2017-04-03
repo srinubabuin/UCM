@@ -4,13 +4,12 @@
  * and open the template in the editor.
  */
 
-package com.app.db.util;
+package com.ucm.services;
 
-/**
- *
- * @author Srinu Babu
- */
-public class UCMDBUtil {
+import com.ucm.model.AppUser;
 
-    public static final String COLUMN_COURCES_ID = "ID";
+public interface UserLoginService {
+
+    public int insertUser(AppUser appUser);
+    public int getMaxId();
 }

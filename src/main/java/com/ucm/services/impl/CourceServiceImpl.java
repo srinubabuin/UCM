@@ -6,7 +6,6 @@
 package com.ucm.services.impl;
 
 import com.app.db.util.AppQueryReader;
-import com.app.db.util.UCMDBUtil;
 import com.app.util.DBUtil;
 import com.conn.pool.app.AppConnectionPool;
 import com.ucm.exception.ConstraintVilationException;
@@ -42,7 +41,7 @@ public class CourceServiceImpl implements CourceService {
         try {
             int pos = 1;
             con = AppConnectionPool.getConnection();
-            pstm = con.prepareStatement(AppQueryReader.getDBQuery("com.ucm.services.impl.courceservice.addcource"), new String[]{UCMDBUtil.COLUMN_COURCES_ID});
+            pstm = con.prepareStatement(AppQueryReader.getDBQuery("com.ucm.services.impl.courceservice.addcource"), new String[]{DBUtil.COLUMN_COURCES_ID});
             pstm.setString(pos, cource.getCourceName());
             pstm.setString(++pos, cource.getCourcePrefix());
             pstm.setString(++pos, cource.getCourceCode());

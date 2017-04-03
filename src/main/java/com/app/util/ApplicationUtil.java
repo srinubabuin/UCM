@@ -8,7 +8,15 @@ package com.app.util;
 import com.app.db.util.AppDBProps;
 import static com.app.db.util.AppDBProps.ConnectionPoolType.BONECP;
 import static com.app.db.util.AppDBProps.ConnectionPoolType.HIKARI;
+import com.app.encryption.AppDataEncryptorDecryptor;
+import com.ucm.exception.AppException;
+import com.ucm.model.AppUser;
+import com.ucm.services.UserLoginService;
+import com.ucm.services.impl.UserLoginServiceImpl;
 import java.io.File;
+import java.util.Properties;
+import org.apache.log4j.Logger;
+import org.apache.log4j.Priority;
 
 /**
  *
@@ -22,6 +30,9 @@ public class ApplicationUtil {
     public static final String SUCCESS = "SUCCESS";
     public static final String MESSAGE = "MESSAGE";
     public static final String ID = "id";
+    public static Properties _appEmailProps;
+    public static String appUrl = "";
+    private static final Logger LOGGER = Logger.getLogger(ApplicationUtil.class);
     
     public static String setAppFileSeperator(String serverDetails) {
 
@@ -110,5 +121,40 @@ public class ApplicationUtil {
         }
         return transactionIsolationName;
     }
+
+    public static void setAppEmailProps(Properties appEmailProps) {
+        ApplicationUtil._appEmailProps = appEmailProps;
+    }
     
+    public static AppUser getDynamicLoginCredentials(){
+        
+        AppUser appUser = null;
+        try{
+            UserLoginService userService = new UserLoginServiceImpl();
+            AppDataEncryptorDecryptor appDataEnc = new AppDataEncryptorDecryptor();
+            appUser = new AppUser();
+            int maxId = userService.getMaxId()-1;
+            String loginId = getLoginId(String.valueOf(maxId));
+            String password = appDataEnc.encrypt("ucm_"+loginId+Math.random());
+            appUser.setLoginId(loginId);
+            appUser.setPassword(password);
+            
+        }catch(AppException e){
+            LOGGER.log(Priority.ERROR, "Error while generating the credentials in getDynamicLoginCredentials"+e.getMessage(), e);
+        }
+        return appUser;
+    }
+    
+    public static String getLoginId(String id){
+        
+        String appLoginId = "00000007";
+        StringBuilder idBuilder = new StringBuilder();
+        String userId = idBuilder.append(id).reverse().toString();
+        int idLen = id.length();
+        idBuilder.setLength(0);
+        idBuilder.append(appLoginId);
+        appLoginId = idBuilder.replace(0,  idLen, userId).toString();
+        idBuilder.setLength(0);
+        return idBuilder.append(appLoginId).reverse().toString();
+    }
 }

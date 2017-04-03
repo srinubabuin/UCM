@@ -6,12 +6,19 @@
 package com.ucm.services.impl;
 
 import com.app.db.util.AppQueryReader;
+import com.app.email.AppEmail;
+import com.app.email.EmailSenderThread;
+import com.app.util.ApplicationUtil;
 import com.app.util.DBUtil;
+import com.app.util.Role;
 import com.conn.pool.app.AppConnectionPool;
+import com.ucm.email.EmailMessageBuilder;
 import com.ucm.exception.ConstraintVilationException;
+import com.ucm.model.AppUser;
 import com.ucm.model.Concentration;
 import com.ucm.model.Student;
 import com.ucm.services.StudentService;
+import com.ucm.services.UserLoginService;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -39,9 +46,14 @@ public class StudentServiceImpl implements StudentService {
         int studentId = 0;
         try {
             int pos = 1;
+            UserLoginService userService = new UserLoginServiceImpl();
+            AppUser appUser = ApplicationUtil.getDynamicLoginCredentials();
+            appUser.setRole(Role.STUDENT);
+            int loginId = userService.insertUser(appUser);
+            if(loginId > 0){
             con = AppConnectionPool.getConnection();
             pstm = con.prepareStatement(AppQueryReader.getDBQuery("com.ucm.services.impl.studentservice.addstudent"), new String[]{DBUtil.COLUMN_STUDENTS_ID});
-            pstm.setString(pos, student.getLoginId());
+            pstm.setString(pos, appUser.getLoginId());
             pstm.setString(++pos, student.getFirstName());
             pstm.setString(++pos, student.getLastName());
             pstm.setString(++pos, student.getEmail());
@@ -61,7 +73,12 @@ public class StudentServiceImpl implements StudentService {
                 rs = pstm.getGeneratedKeys();
                 rs.next();
                 studentId = rs.getInt(1);
+                AppEmail appMail = EmailMessageBuilder.getStudentLoginDetails(student, appUser);
+                Runnable studentEmail = new EmailSenderThread(appMail); 
+                Thread emailthread = new Thread(studentEmail);
+                emailthread.start();
             }
+        }
         } catch (SQLException e) {
             LOGGER.log(Level.SEVERE, "Exception occured in addStudent method {0}", e.getMessage());
             throw new ConstraintVilationException(e.getMessage());

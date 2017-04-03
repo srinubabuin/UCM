@@ -8,10 +8,6 @@ package com.user.service;
 import com.ucm.exception.NoUserException;
 import com.ucm.model.AppUser;
 
-/**
- *
- * @author Srinu Babu
- */
 public interface UserService {
 
     public boolean isUserExists(AppUser user);

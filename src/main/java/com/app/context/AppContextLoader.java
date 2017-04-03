@@ -36,10 +36,18 @@ public class AppContextLoader implements ServletContextListener {
         }
         ApplicationUtil.APP_PATH = path;
         Properties properties = new Properties();
+        Properties emailProperties = new Properties();
+        
         try (FileInputStream inputstream = new FileInputStream(ApplicationUtil.APP_PATH + "WEB-INF" + fileSeperator + "database" + fileSeperator + "database.properties")) {
             properties.load(inputstream);
         } catch (IOException e) {
             System.err.println("Could not load database properties file!!!  " + e.getMessage());
+        }
+        try (FileInputStream inputstream = new FileInputStream(ApplicationUtil.APP_PATH + "WEB-INF" + fileSeperator + "configuration"+ fileSeperator +"email"+ fileSeperator + "appmailprops.properties")) {
+            emailProperties.load(inputstream);
+            ApplicationUtil.setAppEmailProps(emailProperties);
+        } catch (IOException e) {
+            System.err.println("Could not load email properties file!!!  " + e.getMessage());
         }
         String driverName = properties.getProperty("DriverName", "oracle.jdbc.OracleDriver");
         String url = properties.getProperty("URL");
@@ -72,7 +80,8 @@ public class AppContextLoader implements ServletContextListener {
 
     @Override
     public void contextDestroyed(ServletContextEvent sce) {
-
+        
+        System.out.println("App Stopped...........");
     }
 
 }
