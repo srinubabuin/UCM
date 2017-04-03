@@ -174,11 +174,11 @@
                     </div>
                     <div class="col-md-2  text-center">
                         <button name="courceMoveLeft" class="btn btn-success" type="button"
-                                style="padding: 3px 6px; width: 70px;" value=">>">&gt;&gt;</button>
+                                style="padding: 3px 6px; width: 70px;">&gt;&gt;</button>
                         </br>
                         </br>
                         <button name="courceMoveRight" class="btn btn-danger" type="reset"
-                                style="padding: 3px 6px; width: 70px;" value="<<">&lt;&lt;</button>
+                                style="padding: 3px 6px; width: 70px;">&lt;&lt;</button>
                     </div>
                     <div class="col-md-5">
                         <select name="cources" multiple class="form-control">

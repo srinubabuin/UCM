@@ -526,8 +526,10 @@ function loadConcentrationLyt(cellObj) {
         _this.setConcentrationFormDetails(concentrationFormConfObj, concentration);
         var concentrationFormObj = document.forms[concentrationFormConfObj.name];
         $(concentrationFormObj.elements["name"]).attr('readonly', 'true');
-        $(concentrationFormObj.elements["prefix"]).attr('readonly', 'true');
-        $(concentrationFormObj.elements["code"]).attr('readonly', 'true');
+        $(concentrationFormObj.elements["allCources"]).attr('readonly', 'true');
+        $(concentrationFormObj.elements["courceMoveLeft"]).attr('disabled', 'true');
+        $(concentrationFormObj.elements["courceMoveRight"]).attr('disabled', 'true');
+        $(concentrationFormObj.elements["cources"]).attr('readonly', 'true');
         $(concentrationFormObj.elements["notes"]).attr('readonly', 'true');
         $(concentrationFormObj.elements["status"]).attr('disabled', 'disabled');
         $(concentrationFormObj.elements["save"]).hide();
@@ -958,3 +960,25 @@ function getCourceForm() {
 }
 
 /*Cource Layout Ends*/
+
+function getCourcesAsOptions() {
+    var options = [];
+    var cources = getAllCources();
+    for (var i = 0; i < cources.length; i++) {
+        if (cources[i].courceStatus === 'ACTIVE') {
+            options.push($('<option>').val(cources[i].id).text(cources[i].courceName));
+        }
+    }
+    return options;
+}
+
+function getConcentrationAsOptions() {
+    var options = [];
+    var concentrations = getAllConcentrations();
+    for (var i = 0; i < concentrations.length; i++) {
+        if (concentrations[i].concentrationStatus === 'ACTIVE') {
+            options.push($('<option>').val(concentrations[i].id).text(concentrations[i].concentrationName));
+        }
+    }
+    return options;
+}
