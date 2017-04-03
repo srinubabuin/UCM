@@ -17,13 +17,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
-import com.sun.istack.internal.logging.Logger;
 import com.ucm.model.Concentration;
-import com.ucm.services.ConcentrationService;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.logging.Level;
+import org.apache.log4j.Logger;
+import org.apache.log4j.Priority;
 
 /**
  *
@@ -57,10 +56,10 @@ public class AdvisorServiceImpl implements AdvisiorService {
                 advId = rs.getInt(1);
             }
         } catch (SQLIntegrityConstraintViolationException e) {
-            LOGGER.log(Level.SEVERE, "Exception while adding advisor method addAdvisor " + e.getMessage());
+            LOGGER.log(Priority.ERROR, "Exception while adding advisor method addAdvisor " + e.getMessage());
             throw new ConstraintVilationException(e.getMessage());
         }catch(SQLException se){
-            LOGGER.log(Level.SEVERE, "Exception while adding advisor method addAdvisor " + se.getMessage());
+            LOGGER.log(Priority.ERROR, "Exception while adding advisor method addAdvisor " + se.getMessage());
         } finally {
             AppConnectionPool.release(rs, pstm, con);
         }
@@ -79,7 +78,7 @@ public class AdvisorServiceImpl implements AdvisiorService {
             pstm.setInt(1, advisorId);
             delecnt = pstm.executeUpdate();
         } catch (SQLException e) {
-            LOGGER.log(Level.SEVERE, "Exception in deleteAdvisor method with advisorId:"+advisorId+" "+ e.getMessage());
+            LOGGER.log(Priority.ERROR, "Exception in deleteAdvisor method with advisorId:"+advisorId+" "+ e.getMessage());
         } finally {
             AppConnectionPool.release(rs, pstm, con);
         }
@@ -117,7 +116,7 @@ public class AdvisorServiceImpl implements AdvisiorService {
                 advisor.setName(rs.getString(DBUtil.COLUMN_ADVISORS_NAME));
             }
         } catch (SQLException e) {
-            LOGGER.log(Level.SEVERE, "Exception in getConcentationWithId method with advisorId:" + advisorId + " " + e.getMessage());
+            LOGGER.log(Priority.ERROR, "Exception in getConcentationWithId method with advisorId:" + advisorId + " " + e.getMessage());
         } finally {
             AppConnectionPool.release(rs, pstm, con);
         }
@@ -155,7 +154,7 @@ public class AdvisorServiceImpl implements AdvisiorService {
                 advisor.setName(rs.getString(DBUtil.COLUMN_ADVISORS_NAME));
             }
         } catch (SQLException e) {
-            LOGGER.log(Level.SEVERE, "Exception in getConcentationWithId method with advisorName:" + advisorName + " " + e.getMessage());
+            LOGGER.log(Priority.ERROR, "Exception in getConcentationWithId method with advisorName:" + advisorName + " " + e.getMessage());
         } finally {
             AppConnectionPool.release(rs, pstm, con);
         }
@@ -197,7 +196,7 @@ public class AdvisorServiceImpl implements AdvisiorService {
                 advisors.add(advisor);
             }
         } catch (SQLException e) {
-            LOGGER.log(Level.SEVERE, "Exception in getAllAdvisors method " + e.getMessage());
+            LOGGER.log(Priority.ERROR, "Exception in getAllAdvisors method " + e.getMessage());
         } finally {
             AppConnectionPool.release(rs, pstm, con);
         }

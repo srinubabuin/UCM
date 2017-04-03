@@ -8,7 +8,6 @@ package com.ucm.services.impl;
 import com.app.db.util.AppQueryReader;
 import com.app.util.DBUtil;
 import com.conn.pool.app.AppConnectionPool;
-import com.sun.istack.internal.logging.Logger;
 import com.ucm.exception.ConstraintVilationException;
 import com.ucm.model.Concentration;
 import com.ucm.model.Cource;
@@ -23,7 +22,8 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.logging.Level;
+import org.apache.log4j.Logger;
+import org.apache.log4j.Priority;
 
 /**
  *
@@ -56,19 +56,19 @@ public class ConcentrationServiceImpl implements ConcentrationService {
                 addConcentrationCources(concentation);
             }
         } catch (SQLIntegrityConstraintViolationException e) {
-            LOGGER.log(Level.SEVERE, "Exception while adding the Concentation " + e.getMessage());
+            LOGGER.log(Priority.ERROR, "Exception while adding the Concentation " + e.getMessage());
             throw new ConstraintVilationException(e.getMessage());
         } catch (SQLException ex) {
-            LOGGER.log(Level.SEVERE, "Exception while adding the Concentation " + ex.getMessage());
+            LOGGER.log(Priority.ERROR, "Exception while adding the Concentation " + ex.getMessage());
         } finally {
             AppConnectionPool.release(rs, pstm, con);
         }
         return concentationId;
     }
-    
+
     @Override
     public int addConcentrationCources(Concentration concentation) {
-        
+
         Connection con = null;
         PreparedStatement pstm = null;
         ResultSet rs = null;
@@ -77,7 +77,7 @@ public class ConcentrationServiceImpl implements ConcentrationService {
             int pos = 1;
             con = AppConnectionPool.getConnection();
             pstm = con.prepareStatement(AppQueryReader.getDBQuery("com.ucm.services.impl.concentratioservice.inserticoncentrationwcources"), new String[]{DBUtil.COLUMN_CONCENTATIONS_ID});
-            for(Cource cource : concentation.getCources()){
+            for (Cource cource : concentation.getCources()) {
                 pstm.setInt(pos, concentation.getId());
                 pstm.setInt(++pos, cource.getId());
                 pstm.setString(++pos, concentation.getConcentrationStatus());
@@ -87,18 +87,17 @@ public class ConcentrationServiceImpl implements ConcentrationService {
             }
             int[] i = pstm.executeBatch();
             conCources = i.length;
-            
+
         } catch (SQLIntegrityConstraintViolationException e) {
-            LOGGER.log(Level.SEVERE, "Exception while adding the Concentation in addConcentrationCources" + e.getMessage());
+            LOGGER.log(Priority.ERROR, "Exception while adding the Concentation in addConcentrationCources" + e.getMessage());
         } catch (SQLException ex) {
-            LOGGER.log(Level.SEVERE, "Exception while adding the Concentation " + ex.getMessage());
+            LOGGER.log(Priority.ERROR, "Exception while adding the Concentation " + ex.getMessage());
         } finally {
             AppConnectionPool.release(rs, pstm, con);
         }
         return conCources;
     }
-    
-    
+
     @Override
     public Concentration getConcentationWithId(int concenId) {
 
@@ -123,7 +122,7 @@ public class ConcentrationServiceImpl implements ConcentrationService {
                 concentation.setCources(cs.getAllCourcesByConcentrationId(rs.getInt(DBUtil.COLUMN_CONCENTATIONS_ID)));
             }
         } catch (SQLException e) {
-            LOGGER.log(Level.SEVERE, "Exception in getConcentationWithId method with concentationId:" + concenId + " " + e.getMessage());
+            LOGGER.log(Priority.ERROR, "Exception in getConcentationWithId method with concentationId:" + concenId + " " + e.getMessage());
         } finally {
             AppConnectionPool.release(rs, pstm, con);
         }
@@ -154,7 +153,7 @@ public class ConcentrationServiceImpl implements ConcentrationService {
                 concentation.setCources(cs.getAllCourcesByConcentrationId(rs.getInt(DBUtil.COLUMN_CONCENTATIONS_ID)));
             }
         } catch (SQLException e) {
-            LOGGER.log(Level.SEVERE, "Exception in getConcentationWithName method with concentationName:" + conName + " " + e.getMessage());
+            LOGGER.log(Priority.ERROR, "Exception in getConcentationWithName method with concentationName:" + conName + " " + e.getMessage());
         } finally {
             AppConnectionPool.release(rs, pstm, con);
         }
@@ -186,7 +185,7 @@ public class ConcentrationServiceImpl implements ConcentrationService {
                 concentations.add(concentation);
             }
         } catch (SQLException e) {
-            LOGGER.log(Level.SEVERE, "Exception in getAllConcentations " + e.getMessage());
+            LOGGER.log(Priority.ERROR, "Exception in getAllConcentations " + e.getMessage());
         } finally {
             AppConnectionPool.release(rs, pstm, con);
         }
@@ -206,7 +205,7 @@ public class ConcentrationServiceImpl implements ConcentrationService {
             pstm.setInt(1, concenId);
             delecnt = pstm.executeUpdate();
         } catch (SQLException e) {
-            LOGGER.log(Level.SEVERE, "Exception in deleteConcentation method with concentrationId:"+concenId+" "+ e.getMessage());
+            LOGGER.log(Priority.ERROR, "Exception in deleteConcentation method with concentrationId:" + concenId + " " + e.getMessage());
         } finally {
             AppConnectionPool.release(rs, pstm, con);
         }
