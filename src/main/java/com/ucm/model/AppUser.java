@@ -7,10 +7,6 @@ package com.ucm.model;
 
 import com.app.util.Role;
 
-/**
- *
- * @author Srinu Babu
- */
 public class AppUser {
 
     private int id;

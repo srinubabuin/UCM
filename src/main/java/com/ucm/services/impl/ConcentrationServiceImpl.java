@@ -9,6 +9,7 @@ import com.app.db.util.AppQueryReader;
 import com.app.util.DBUtil;
 import com.conn.pool.app.AppConnectionPool;
 import com.ucm.exception.ConstraintVilationException;
+import com.ucm.model.Advisor;
 import com.ucm.model.Concentration;
 import com.ucm.model.Cource;
 import com.ucm.services.ConcentrationService;
@@ -25,10 +26,6 @@ import java.util.List;
 import org.apache.log4j.Logger;
 import org.apache.log4j.Priority;
 
-/**
- *
- * @author Srinu Babu
- */
 public class ConcentrationServiceImpl implements ConcentrationService {
 
     private static final Logger LOGGER = Logger.getLogger(ConcentrationServiceImpl.class);
@@ -45,6 +42,7 @@ public class ConcentrationServiceImpl implements ConcentrationService {
             con = AppConnectionPool.getConnection();
             pstm = con.prepareStatement(AppQueryReader.getDBQuery("com.ucm.services.impl.concentratioservice.addconcentation"), new String[]{DBUtil.COLUMN_CONCENTATIONS_ID});
             pstm.setString(pos, concentation.getConcentrationName());
+            pstm.setInt(++pos, concentation.getAdvisor().getId());
             pstm.setString(++pos, concentation.getConcentrationStatus());
             pstm.setString(++pos, concentation.getNotes());
             pstm.setTimestamp(++pos, new Timestamp(new Date().getTime()));
@@ -104,7 +102,8 @@ public class ConcentrationServiceImpl implements ConcentrationService {
         Connection con = null;
         PreparedStatement pstm = null;
         ResultSet rs = null;
-        Concentration concentation = null;
+        Concentration concentration = null;
+        Advisor advisor;
         try {
             int pos = 1;
             con = AppConnectionPool.getConnection();
@@ -113,20 +112,29 @@ public class ConcentrationServiceImpl implements ConcentrationService {
             pstm.setInt(pos, concenId);
             rs = pstm.executeQuery();
             if (rs.next()) {
-                concentation = new Concentration();
-                concentation.setId(rs.getInt(DBUtil.COLUMN_CONCENTATIONS_ID));
-                concentation.setConcentrationName(rs.getString(DBUtil.COLUMN_CONCENTATIONS_NAME));
-                concentation.setConcentrationStatus(rs.getString(DBUtil.COLUMN_CONCENTATIONS_STATUS));
-                concentation.setNotes(rs.getString(DBUtil.COLUMN_CONCENTATIONS_NOTES));
-                concentation.setConcentrationCreatedDate(rs.getDate(DBUtil.COLUMN_CONCENTATIONS_DATE));
-                concentation.setCources(cs.getAllCourcesByConcentrationId(rs.getInt(DBUtil.COLUMN_CONCENTATIONS_ID)));
+                advisor = new Advisor();
+                advisor.setId(rs.getInt(DBUtil.COLUMN_CONCENTATIONS_ADVISORS_ID));
+                advisor.setName(rs.getString(DBUtil.COLUMN_CONCENTATIONS_ADVISORS_NAME));
+                advisor.setLoginId(rs.getString(DBUtil.COLUMN_CONCENTATIONS_ADVISORS_LOGIN_ID));
+                advisor.setEmail(rs.getString(DBUtil.COLUMN_CONCENTATIONS_ADVISORS_MAIL));
+                advisor.setNotes(rs.getString(DBUtil.COLUMN_CONCENTATIONS_ADVISORS_NOTES));
+                advisor.setStatus(rs.getString(DBUtil.COLUMN_CONCENTATIONS_ADVISORS_STATUS));
+                advisor.setPhone(rs.getString(DBUtil.COLUMN_CONCENTATIONS_ADVISORS_PHONE));
+                concentration = new Concentration();
+                concentration.setId(rs.getInt(DBUtil.COLUMN_CONCENTATIONS_ID));
+                concentration.setConcentrationName(rs.getString(DBUtil.COLUMN_CONCENTATIONS_NAME));
+                concentration.setConcentrationStatus(rs.getString(DBUtil.COLUMN_CONCENTATIONS_STATUS));
+                concentration.setNotes(rs.getString(DBUtil.COLUMN_CONCENTATIONS_NOTES));
+                concentration.setConcentrationCreatedDate(rs.getDate(DBUtil.COLUMN_CONCENTATIONS_DATE));
+                concentration.setCources(cs.getAllCourcesByConcentrationId(rs.getInt(DBUtil.COLUMN_CONCENTATIONS_ID)));
+                concentration.setAdvisor(advisor);
             }
         } catch (SQLException e) {
             LOGGER.log(Priority.ERROR, "Exception in getConcentationWithId method with concentationId:" + concenId + " " + e.getMessage());
         } finally {
             AppConnectionPool.release(rs, pstm, con);
         }
-        return concentation;
+        return concentration;
     }
 
     @Override
@@ -135,7 +143,8 @@ public class ConcentrationServiceImpl implements ConcentrationService {
         Connection con = null;
         PreparedStatement pstm = null;
         ResultSet rs = null;
-        Concentration concentation = null;
+        Concentration concentration = null;
+        Advisor advisor;
         try {
             int pos = 1;
             con = AppConnectionPool.getConnection();
@@ -144,20 +153,29 @@ public class ConcentrationServiceImpl implements ConcentrationService {
             pstm.setString(pos, conName);
             rs = pstm.executeQuery();
             if (rs.next()) {
-                concentation = new Concentration();
-                concentation.setId(rs.getInt(DBUtil.COLUMN_CONCENTATIONS_ID));
-                concentation.setConcentrationName(rs.getString(DBUtil.COLUMN_CONCENTATIONS_NAME));
-                concentation.setConcentrationStatus(rs.getString(DBUtil.COLUMN_CONCENTATIONS_STATUS));
-                concentation.setNotes(rs.getString(DBUtil.COLUMN_CONCENTATIONS_NOTES));
-                concentation.setConcentrationCreatedDate(rs.getDate(DBUtil.COLUMN_CONCENTATIONS_DATE));
-                concentation.setCources(cs.getAllCourcesByConcentrationId(rs.getInt(DBUtil.COLUMN_CONCENTATIONS_ID)));
+                advisor = new Advisor();
+                advisor.setId(rs.getInt(DBUtil.COLUMN_CONCENTATIONS_ADVISORS_ID));
+                advisor.setName(rs.getString(DBUtil.COLUMN_CONCENTATIONS_ADVISORS_NAME));
+                advisor.setLoginId(rs.getString(DBUtil.COLUMN_CONCENTATIONS_ADVISORS_LOGIN_ID));
+                advisor.setEmail(rs.getString(DBUtil.COLUMN_CONCENTATIONS_ADVISORS_MAIL));
+                advisor.setNotes(rs.getString(DBUtil.COLUMN_CONCENTATIONS_ADVISORS_NOTES));
+                advisor.setStatus(rs.getString(DBUtil.COLUMN_CONCENTATIONS_ADVISORS_STATUS));
+                advisor.setPhone(rs.getString(DBUtil.COLUMN_CONCENTATIONS_ADVISORS_PHONE));
+                concentration = new Concentration();
+                concentration.setId(rs.getInt(DBUtil.COLUMN_CONCENTATIONS_ID));
+                concentration.setConcentrationName(rs.getString(DBUtil.COLUMN_CONCENTATIONS_NAME));
+                concentration.setConcentrationStatus(rs.getString(DBUtil.COLUMN_CONCENTATIONS_STATUS));
+                concentration.setNotes(rs.getString(DBUtil.COLUMN_CONCENTATIONS_NOTES));
+                concentration.setConcentrationCreatedDate(rs.getDate(DBUtil.COLUMN_CONCENTATIONS_DATE));
+                concentration.setCources(cs.getAllCourcesByConcentrationId(rs.getInt(DBUtil.COLUMN_CONCENTATIONS_ID)));
+                concentration.setAdvisor(advisor);
             }
         } catch (SQLException e) {
             LOGGER.log(Priority.ERROR, "Exception in getConcentationWithName method with concentationName:" + conName + " " + e.getMessage());
         } finally {
             AppConnectionPool.release(rs, pstm, con);
         }
-        return concentation;
+        return concentration;
     }
 
     @Override
@@ -167,22 +185,32 @@ public class ConcentrationServiceImpl implements ConcentrationService {
         PreparedStatement pstm = null;
         ResultSet rs = null;
         List<Concentration> concentations = null;
+        Advisor advisor;
         try {
             concentations = new ArrayList<>();
-            Concentration concentation;
+            Concentration concentration;
             CourceService cs = new CourceServiceImpl();
             con = AppConnectionPool.getConnection();
             pstm = con.prepareStatement(AppQueryReader.getDBQuery("com.ucm.services.impl.concentratioservice.getallconcentations"));
             rs = pstm.executeQuery();
             while (rs.next()) {
-                concentation = new Concentration();
-                concentation.setId(rs.getInt(DBUtil.COLUMN_CONCENTATIONS_ID));
-                concentation.setConcentrationName(rs.getString(DBUtil.COLUMN_CONCENTATIONS_NAME));
-                concentation.setConcentrationStatus(rs.getString(DBUtil.COLUMN_CONCENTATIONS_STATUS));
-                concentation.setNotes(rs.getString(DBUtil.COLUMN_CONCENTATIONS_NOTES));
-                concentation.setConcentrationCreatedDate(rs.getDate(DBUtil.COLUMN_CONCENTATIONS_DATE));
-                concentation.setCources(cs.getAllCourcesByConcentrationId(rs.getInt(DBUtil.COLUMN_CONCENTATIONS_ID)));
-                concentations.add(concentation);
+                advisor = new Advisor();
+                advisor.setId(rs.getInt(DBUtil.COLUMN_CONCENTATIONS_ADVISORS_ID));
+                advisor.setName(rs.getString(DBUtil.COLUMN_CONCENTATIONS_ADVISORS_NAME));
+                advisor.setLoginId(rs.getString(DBUtil.COLUMN_CONCENTATIONS_ADVISORS_LOGIN_ID));
+                advisor.setEmail(rs.getString(DBUtil.COLUMN_CONCENTATIONS_ADVISORS_MAIL));
+                advisor.setNotes(rs.getString(DBUtil.COLUMN_CONCENTATIONS_ADVISORS_NOTES));
+                advisor.setStatus(rs.getString(DBUtil.COLUMN_CONCENTATIONS_ADVISORS_STATUS));
+                advisor.setPhone(rs.getString(DBUtil.COLUMN_CONCENTATIONS_ADVISORS_PHONE));
+                concentration = new Concentration();
+                concentration.setId(rs.getInt(DBUtil.COLUMN_CONCENTATIONS_ID));
+                concentration.setConcentrationName(rs.getString(DBUtil.COLUMN_CONCENTATIONS_NAME));
+                concentration.setConcentrationStatus(rs.getString(DBUtil.COLUMN_CONCENTATIONS_STATUS));
+                concentration.setNotes(rs.getString(DBUtil.COLUMN_CONCENTATIONS_NOTES));
+                concentration.setConcentrationCreatedDate(rs.getDate(DBUtil.COLUMN_CONCENTATIONS_DATE));
+                concentration.setCources(cs.getAllCourcesByConcentrationId(rs.getInt(DBUtil.COLUMN_CONCENTATIONS_ID)));
+                concentration.setAdvisor(advisor);
+                concentations.add(concentration);
             }
         } catch (SQLException e) {
             LOGGER.log(Priority.ERROR, "Exception in getAllConcentations " + e.getMessage());

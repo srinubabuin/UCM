@@ -8,20 +8,10 @@ package com.ucm.model;
 
 import java.io.Serializable;
 import java.util.Date;
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
-import javax.persistence.Temporal;
 
-/**
- *
- * @author Srinu Babu
- */
 public class Advisor implements Serializable {
     
-    private double id;
+    private int id;
     private String name;
     private String loginId;
     private String email;
@@ -31,11 +21,11 @@ public class Advisor implements Serializable {
     private Date createdDate;
     private Concentration concentration;
 
-    public double getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(double id) {
+    public void setId(int id) {
         this.id = id;
     }
 

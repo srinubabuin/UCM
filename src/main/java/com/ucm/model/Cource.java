@@ -3,17 +3,11 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package com.ucm.model;
 
 import java.io.Serializable;
 import java.util.Date;
-import javax.ws.rs.QueryParam;
 
-/**
- *
- * @author Srinu Babu
- */
 public class Cource implements Serializable {
 
     private int id;
@@ -71,7 +65,7 @@ public class Cource implements Serializable {
     public void setNotes(String notes) {
         this.notes = notes;
     }
-    
+
     public Date getCourceCreatedDate() {
         return courceCreatedDate;
     }
@@ -79,5 +73,5 @@ public class Cource implements Serializable {
     public void setCourceCreatedDate(Date courceCreatedDate) {
         this.courceCreatedDate = courceCreatedDate;
     }
-     
+
 }

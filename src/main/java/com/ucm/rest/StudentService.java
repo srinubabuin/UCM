@@ -21,6 +21,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import org.apache.log4j.Logger;
 
+@Path("/student")
 public class StudentService {
 
     private static final Logger LOGGER = Logger.getLogger(CourceService.class);

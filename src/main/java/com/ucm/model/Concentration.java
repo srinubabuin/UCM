@@ -3,17 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package com.ucm.model;
 
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
-/**
- *
- * @author Srinu Babu
- */
 public class Concentration implements Serializable {
 
     private int id;
@@ -22,7 +17,8 @@ public class Concentration implements Serializable {
     private String notes;
     private Date concentrationCreatedDate;
     private List<Cource> cources;
-    
+    private Advisor advisor;
+
     public int getId() {
         return id;
     }
@@ -54,7 +50,7 @@ public class Concentration implements Serializable {
     public void setNotes(String notes) {
         this.notes = notes;
     }
-    
+
     public Date getConcentrationCreatedDate() {
         return concentrationCreatedDate;
     }
@@ -70,5 +66,12 @@ public class Concentration implements Serializable {
     public void setCources(List<Cource> cources) {
         this.cources = cources;
     }
-    
+
+    public Advisor getAdvisor() {
+        return advisor;
+    }
+
+    public void setAdvisor(Advisor advisor) {
+        this.advisor = advisor;
+    }
 }

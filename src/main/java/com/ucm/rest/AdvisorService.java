@@ -21,10 +21,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import org.apache.log4j.Logger;
 
-/**
- *
- * @author Srinu Babu
- */
+@Path("/advisor")
 public class AdvisorService {
 
     private static final Logger LOGGER = Logger.getLogger(AdvisorService.class);
@@ -75,20 +72,19 @@ public class AdvisorService {
         }
     }
 
-    @GET
-    @Path("/{param}")
-    @Consumes({"application/json"})
-    @Produces({"application/json"})
-    public Response getAdvisorByName(@PathParam("param") String advName) {
-
-        try {
-            Advisor advisor = new AdvisorServiceHelper().getAdvisorWitName(advName);
-            return Response.ok().header("Access-Control-Allow-Origin", "*").entity(advisor).build();
-        } catch (Exception ex) {
-            LOGGER.info("Error while fetching the advisor");
-            return Response.status(405).header("Access-Control-Allow-Origin", "*").build();
-        }
-    }
+//    @GET
+//    @Consumes({"application/json"})
+//    @Produces({"application/json"})
+//    public Response getAdvisorByName(@PathParam("param") String advName) {
+//
+//        try {
+//            Advisor advisor = new AdvisorServiceHelper().getAdvisorWitName(advName);
+//            return Response.ok().header("Access-Control-Allow-Origin", "*").entity(advisor).build();
+//        } catch (Exception ex) {
+//            LOGGER.info("Error while fetching the advisor");
+//            return Response.status(405).header("Access-Control-Allow-Origin", "*").build();
+//        }
+//    }
 
     @GET
     @Consumes({"application/json"})

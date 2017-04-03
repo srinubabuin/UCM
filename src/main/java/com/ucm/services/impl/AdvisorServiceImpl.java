@@ -24,16 +24,13 @@ import java.util.Date;
 import org.apache.log4j.Logger;
 import org.apache.log4j.Priority;
 
-/**
- *
- * @author Srinu Babu
- */
 public class AdvisorServiceImpl implements AdvisiorService {
 
     private static final Logger LOGGER = Logger.getLogger(AdvisorServiceImpl.class);
+
     @Override
     public int addAdvisor(Advisor advisor) throws ConstraintVilationException {
-        
+
         Connection con = null;
         PreparedStatement pstm = null;
         ResultSet rs = null;
@@ -43,14 +40,13 @@ public class AdvisorServiceImpl implements AdvisiorService {
             con = AppConnectionPool.getConnection();
             pstm = con.prepareStatement(AppQueryReader.getDBQuery("com.ucm.services.impl.advisorservice.addadvisor"), new String[]{DBUtil.COLUMN_ADVISORS_ID});
             pstm.setString(pos, advisor.getLoginId());
-            pstm.setInt(++pos, advisor.getConcentration().getId());
             pstm.setString(++pos, advisor.getEmail());
             pstm.setString(++pos, advisor.getName());
             pstm.setString(++pos, advisor.getStatus());
             pstm.setString(++pos, advisor.getPhone());
             pstm.setString(++pos, advisor.getNotes());
             pstm.setTimestamp(++pos, new Timestamp(new Date().getTime()));
-            if(pstm.executeUpdate() > 0){
+            if (pstm.executeUpdate() > 0) {
                 rs = pstm.getGeneratedKeys();
                 rs.next();
                 advId = rs.getInt(1);
@@ -58,7 +54,7 @@ public class AdvisorServiceImpl implements AdvisiorService {
         } catch (SQLIntegrityConstraintViolationException e) {
             LOGGER.log(Priority.ERROR, "Exception while adding advisor method addAdvisor " + e.getMessage());
             throw new ConstraintVilationException(e.getMessage());
-        }catch(SQLException se){
+        } catch (SQLException se) {
             LOGGER.log(Priority.ERROR, "Exception while adding advisor method addAdvisor " + se.getMessage());
         } finally {
             AppConnectionPool.release(rs, pstm, con);
@@ -78,7 +74,7 @@ public class AdvisorServiceImpl implements AdvisiorService {
             pstm.setInt(1, advisorId);
             delecnt = pstm.executeUpdate();
         } catch (SQLException e) {
-            LOGGER.log(Priority.ERROR, "Exception in deleteAdvisor method with advisorId:"+advisorId+" "+ e.getMessage());
+            LOGGER.log(Priority.ERROR, "Exception in deleteAdvisor method with advisorId:" + advisorId + " " + e.getMessage());
         } finally {
             AppConnectionPool.release(rs, pstm, con);
         }
@@ -101,10 +97,11 @@ public class AdvisorServiceImpl implements AdvisiorService {
                 advisor = new Advisor();
                 Concentration concentration = new Concentration();
                 concentration.setId(rs.getInt(DBUtil.COLUMN_ADVISORS_CONCENTATION_ID));
-                concentration.setConcentrationName(rs.getString(DBUtil.COLUMN_ADVISORS_CON_NAME));
-                concentration.setConcentrationStatus(rs.getString(DBUtil.COLUMN_ADVISORS_CON_STATUS));
-                concentration.setConcentrationCreatedDate(rs.getDate(DBUtil.COLUMN_ADVISORS_CON_CREATED_DATE));
-                concentration.setNotes(rs.getString(DBUtil.COLUMN_ADVISORS_CON_NOTES));
+                concentration.setConcentrationName(rs.getString(DBUtil.COLUMN_ADVISORS_CONCENTATION_NAME));
+                concentration.setConcentrationStatus(rs.getString(DBUtil.COLUMN_ADVISORS_CONCENTATION_STATUS));
+                concentration.setConcentrationCreatedDate(rs.getDate(DBUtil.COLUMN_ADVISORS_CONCENTATION_CREATED_DATE));
+                concentration.setNotes(rs.getString(DBUtil.COLUMN_ADVISORS_CONCENTATION_NOTES));
+                concentration.setConcentrationCreatedDate(rs.getDate(DBUtil.COLUMN_ADVISORS_CONCENTATION_CREATED_DATE));
                 advisor.setConcentration(concentration);
                 advisor.setId(rs.getInt(DBUtil.COLUMN_ADVISORS_ID));
                 advisor.setLoginId(rs.getString(DBUtil.COLUMN_ADVISORS_LOGIN_ID));
@@ -139,10 +136,11 @@ public class AdvisorServiceImpl implements AdvisiorService {
                 advisor = new Advisor();
                 Concentration concentration = new Concentration();
                 concentration.setId(rs.getInt(DBUtil.COLUMN_ADVISORS_CONCENTATION_ID));
-                concentration.setConcentrationName(rs.getString(DBUtil.COLUMN_ADVISORS_CON_NAME));
-                concentration.setConcentrationStatus(rs.getString(DBUtil.COLUMN_ADVISORS_CON_STATUS));
-                concentration.setConcentrationCreatedDate(rs.getDate(DBUtil.COLUMN_ADVISORS_CON_CREATED_DATE));
-                concentration.setNotes(rs.getString(DBUtil.COLUMN_ADVISORS_CON_NOTES));
+                concentration.setConcentrationName(rs.getString(DBUtil.COLUMN_ADVISORS_CONCENTATION_NAME));
+                concentration.setConcentrationStatus(rs.getString(DBUtil.COLUMN_ADVISORS_CONCENTATION_STATUS));
+                concentration.setConcentrationCreatedDate(rs.getDate(DBUtil.COLUMN_ADVISORS_CONCENTATION_CREATED_DATE));
+                concentration.setNotes(rs.getString(DBUtil.COLUMN_ADVISORS_CONCENTATION_NOTES));
+                concentration.setConcentrationCreatedDate(rs.getDate(DBUtil.COLUMN_ADVISORS_CONCENTATION_CREATED_DATE));
                 advisor.setConcentration(concentration);
                 advisor.setId(rs.getInt(DBUtil.COLUMN_ADVISORS_ID));
                 advisor.setLoginId(rs.getString(DBUtil.COLUMN_ADVISORS_LOGIN_ID));
@@ -163,8 +161,8 @@ public class AdvisorServiceImpl implements AdvisiorService {
 
     @Override
     public List<Advisor> getAllAdvisors() {
-        
-         Connection con = null;
+
+        Connection con = null;
         PreparedStatement pstm = null;
         ResultSet rs = null;
         List<Advisor> advisors = null;
@@ -172,7 +170,7 @@ public class AdvisorServiceImpl implements AdvisiorService {
             Advisor advisor;
             Concentration concentration;
             advisors = new ArrayList<>();
-            
+
             con = AppConnectionPool.getConnection();
             pstm = con.prepareStatement(AppQueryReader.getDBQuery("com.ucm.services.impl.advisorservice.getalladvisors"));
             rs = pstm.executeQuery();
@@ -180,10 +178,11 @@ public class AdvisorServiceImpl implements AdvisiorService {
                 advisor = new Advisor();
                 concentration = new Concentration();
                 concentration.setId(rs.getInt(DBUtil.COLUMN_ADVISORS_CONCENTATION_ID));
-                concentration.setConcentrationName(rs.getString(DBUtil.COLUMN_ADVISORS_CON_NAME));
-                concentration.setConcentrationStatus(rs.getString(DBUtil.COLUMN_ADVISORS_CON_STATUS));
-                concentration.setConcentrationCreatedDate(rs.getDate(DBUtil.COLUMN_ADVISORS_CON_CREATED_DATE));
-                concentration.setNotes(rs.getString(DBUtil.COLUMN_ADVISORS_CON_NOTES));
+                concentration.setConcentrationName(rs.getString(DBUtil.COLUMN_ADVISORS_CONCENTATION_NAME));
+                concentration.setConcentrationStatus(rs.getString(DBUtil.COLUMN_ADVISORS_CONCENTATION_STATUS));
+                concentration.setConcentrationCreatedDate(rs.getDate(DBUtil.COLUMN_ADVISORS_CONCENTATION_CREATED_DATE));
+                concentration.setNotes(rs.getString(DBUtil.COLUMN_ADVISORS_CONCENTATION_NOTES));
+                concentration.setConcentrationCreatedDate(rs.getDate(DBUtil.COLUMN_ADVISORS_CONCENTATION_CREATED_DATE));
                 advisor.setConcentration(concentration);
                 advisor.setId(rs.getInt(DBUtil.COLUMN_ADVISORS_ID));
                 advisor.setLoginId(rs.getString(DBUtil.COLUMN_ADVISORS_LOGIN_ID));

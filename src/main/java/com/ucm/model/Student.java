@@ -3,16 +3,11 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package com.ucm.model;
 
 import java.io.Serializable;
 import java.util.Date;
 
-/**
- *
- * @author Srinu Babu
- */
 public class Student implements Serializable {
 
     private int id;
@@ -40,7 +35,7 @@ public class Student implements Serializable {
     public void setId(int id) {
         this.id = id;
     }
-    
+
     public String getLoginId() {
         return loginId;
     }
@@ -168,6 +163,5 @@ public class Student implements Serializable {
     public void setCreatedDate(Date createdDate) {
         this.createdDate = createdDate;
     }
-    
-    
+
 }

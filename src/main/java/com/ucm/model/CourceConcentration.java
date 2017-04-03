@@ -3,16 +3,11 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package com.ucm.model;
 
 import java.io.Serializable;
 import java.util.Date;
 
-/**
- *
- * @author Srinu Babu
- */
 public class CourceConcentration implements Serializable {
 
     private double id;
@@ -60,6 +55,5 @@ public class CourceConcentration implements Serializable {
     public void setCource(Cource cource) {
         this.cource = cource;
     }
-    
-    
+
 }
