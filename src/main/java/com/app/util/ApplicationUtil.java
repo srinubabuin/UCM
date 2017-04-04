@@ -14,6 +14,11 @@ import com.ucm.model.AppUser;
 import com.ucm.services.UserLoginService;
 import com.ucm.services.impl.UserLoginServiceImpl;
 import java.io.File;
+import static java.lang.Integer.min;
+import static java.lang.Math.abs;
+import static java.lang.Math.pow;
+import static java.lang.Math.random;
+import static java.lang.Math.round;
 import java.util.Properties;
 import org.apache.log4j.Logger;
 import org.apache.log4j.Priority;
@@ -135,7 +140,7 @@ public class ApplicationUtil {
             appUser = new AppUser();
             int maxId = userService.getMaxId()-1;
             String loginId = getLoginId(String.valueOf(maxId));
-            String password = appDataEnc.encrypt("ucm_"+loginId+Math.random());
+            String password = appDataEnc.encrypt(passwordGenerator(10));
             appUser.setLoginId(loginId);
             appUser.setPassword(password);
             
@@ -156,5 +161,23 @@ public class ApplicationUtil {
         appLoginId = idBuilder.replace(0,  idLen, userId).toString();
         idBuilder.setLength(0);
         return idBuilder.append(appLoginId).reverse().toString();
+    }
+    
+    public static String passwordGenerator(int passwordLength){
+    
+        StringBuilder password = new StringBuilder();
+        for (int i = passwordLength; i > 0; i -= 12) {
+            int n = min(12, abs(i));
+            password.append(leftPad(Long.toString(round(random() * pow(36, n)), 36), n, '0'));
+        }
+        return password.toString();
+    }
+    public static String leftPad(String originalString, int length,
+            char padCharacter) {
+        String paddedString = originalString;
+        while (paddedString.length() < length) {
+            paddedString = padCharacter + paddedString;
+        }
+        return paddedString;
     }
 }
