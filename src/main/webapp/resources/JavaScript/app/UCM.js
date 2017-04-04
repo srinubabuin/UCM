@@ -8,22 +8,135 @@ function onMainNavItemClick(itemId) {
         $("#appNavBar").find('.active').removeClass('active');
     }
     $("#appNavBar").find('li[itemId="' + itemId + '"]').addClass('active');
-    if (itemId === "STUDENTS") {
+    if (itemId === "STUDENTSEARCH") {
+        appManagerLytObj.module = itemId;
+        studentLytObj = new loadStudentSearchLyt(appManagerLytObj.domObj);
+    } else if (itemId === "STUDENTS") {
+        appManagerLytObj.module = itemId;
         studentLytObj = new loadStudentLyt(appManagerLytObj.domObj);
-        appManagerLytObj.module = itemId;
     } else if (itemId === "ADVISORS") {
+        appManagerLytObj.module = itemId;
         advisorLytObj = new loadAdvisorLyt(appManagerLytObj.domObj);
-        appManagerLytObj.module = itemId;
     } else if (itemId === "CONCENTRATIONS") {
+        appManagerLytObj.module = itemId;
         concentrationLytObj = new loadConcentrationLyt(appManagerLytObj.domObj);
-        appManagerLytObj.module = itemId;
     } else if (itemId === "COURCES") {
-        courceLytObj = new loadCourceLyt(appManagerLytObj.domObj);
         appManagerLytObj.module = itemId;
+        courceLytObj = new loadCourceLyt(appManagerLytObj.domObj);
     } else if (itemId === "LOGOUT") {
         doLogout();
     }
 }
+
+/*Student Serach Starts*/
+function loadStudentSearchLyt(cellObj) {
+    this.lytConfObj = {
+        "pattern": "1C",
+        "parent": cellObj
+    };
+    this.lytObj = new appLayout(this.lytConfObj);
+    this.detailsCellObj = this.lytObj.cells.a.obj;
+    this.loadStudentSearchLyt = function () {
+        var _this = this;
+        clearAllElementsInDiv(_this.detailsCellObj);
+        _this.showStudentSearchForm(_this.detailsCellObj);
+    };
+
+    this.attachStudentSearchForm = function (cellObj, confObj) {
+        var studentSearchFormWrapObj = new attachForm(confObj);
+        studentSearchFormWrapObj.cell.form.innerHTML = getStudentSearchForm();
+    };
+
+    this.showStudentSearchForm = function (cellObj) {
+        var _this = this;
+        var studentSearchFormConfObj = {
+            "parent": cellObj,
+            "hdrText": "Add Student Search",
+            "formType": "add",
+            "name": "addstudentSearch",
+            "id": "addstudentSearch"
+        };
+        _this.attachStudentSearchForm(cellObj, studentSearchFormConfObj);
+        var studentSearchFormObj = document.forms[studentSearchFormConfObj.name];
+        $(studentSearchFormObj.elements["search"]).click(function () {
+            _this.onStudentSearchFormBtnClick("search", studentSearchFormConfObj);
+        });
+    };
+
+    this.showEditStudentSearchForm = function (cellObj, studentSearch) {
+        var _this = this;
+
+        var studentSearchFormConfObj = {
+            "parent": cellObj,
+            "hdrText": "Edit Student Search",
+            "formType": "edit",
+            "name": "editstudentSearch",
+            "id": "editstudentSearch"
+        };
+        _this.attachStudentSearchForm(cellObj, studentSearchFormConfObj);
+        var studentSearch = getStudentSearch(studentSearch.id);
+        _this.setStudentSearchFormDetails(studentSearchFormConfObj, studentSearch);
+        var studentSearchFormObj = document.forms[studentSearchFormConfObj.name];
+        $(studentSearchFormObj.elements["reset"]).hide();
+        $(studentSearchFormObj.elements["save"]).click(function () {
+            _this.onStudentSearchFormBtnClick("save", studentSearchFormConfObj);
+        });
+        // $(studentSearchFormObj.elements["reset"]).click(function () {
+        //     _this.onStudentSearchFormBtnClick("reset", studentSearchFormConfObj);
+        // });
+        $(studentSearchFormObj.elements["cancel"]).click(function () {
+            _this.onStudentSearchFormBtnClick("cancel", studentSearchFormConfObj);
+        });
+        // _this.onStudentSearchFormBtnClick("clearBtn", studentSearchFormConfObj);
+    };
+
+    this.setStudentSearchFormDetails = function (formConfObj, details) {
+        var studentSearchFormObj = document.forms[formConfObj.name];
+    };
+
+    this.onStudentSearchFormBtnClick = function (id, confObj) {
+        var _this = this;
+        var formName = confObj.name;
+        if (id === "save") {
+            var formObj = document.forms[formName];
+            if (formObj["password"].value !== formObj["rePassword"].value) {
+                return;
+            }
+            var studentSearch = {};
+            if (confObj.formType === "add") {
+                response = addStudentSearch(studentSearch);
+            } else {
+                studentSearch["id"] = formObj["id"].value;
+                response = editStudentSearch(studentSearch);
+            }
+            if (response && response.success) {
+                _this.initStudentSearchGrid();
+            } else {
+                console.log(response);
+            }
+        } else if (id === "reset") {
+            clearFormDataByName(formName);
+        } else if (id === "cancel") {
+            _this.initStudentSearchGrid();
+        }
+    };
+
+    this.deleteStudentSearchFromGrid = function (studentSearch) {
+        var _this = this;
+        var response = deleteStudentSearch(studentSearch.id);
+        if (response.success) {
+            _this.initStudentSearchGrid();
+        }
+    };
+
+    this.loadStudentSearchLyt();
+}
+
+function getStudentSearchForm() {
+    var form = document.getElementById("studentSearchFormTpl").innerHTML;
+    return form;
+}
+/*Student Search Ends*/
 
 /*Student Layout Starts*/
 function loadStudentLyt(cellObj) {
@@ -36,15 +149,19 @@ function loadStudentLyt(cellObj) {
     this.loadStudentsLyt = function () {
         var _this = this;
         clearAllElementsInDiv(_this.detailsCellObj);
-        // _this.initStudentsGrid();
-        _this.showStudentForm(_this.detailsCellObj);
+        if (appManagerLytObj.module === 'STUDENTSEARCH') {
+
+        } else {
+            _this.initStudentsGrid();
+        }
+        // _this.showStudentForm(_this.detailsCellObj);
     };
 
     this.initStudentsGrid = function () {
         var _this = this;
         var toolbarObj = _this.getStudentDetailsToolbar();
         var confObj = {
-            'me': _this
+            me: _this
         };
         var studentsGridConfObj = {
             "parent": _this.detailsCellObj,
@@ -55,10 +172,13 @@ function loadStudentLyt(cellObj) {
         studentsGrid.bootstrapTable({
             "height": $(_this.detailsCellObj).height() - 5,
             "columns": studentsGridConfObj.options.columns,
-            data: []
+            data: [],
+            "onDblClickRow": function (row, el, field) {
+                _this.showViewStudentForm(_this.detailsCellObj, row);
+            }
         });
-        $(_this.detailsCellObj).find("button[name=addStudents]").click(function () {
-            _this.showStudentForm(_this.detailsCellObj);
+        $(_this.detailsCellObj).find("button[name=addStudent]").click(function () {
+            _this.showAddStudentForm(_this.detailsCellObj);
         });
         _this.loadStudentsGridData(studentsGrid);
     };
@@ -67,15 +187,16 @@ function loadStudentLyt(cellObj) {
         var _this = this;
         return {
             'click .studentEdit': function (e, value, row, index) {
-                _this.showStudentForm(_this.detailsCellObj);
+                _this.showEditStudentForm(_this.detailsCellObj, row);
             }, 'click .studentRemove': function (e, value, row, index) {
+                _this.deleteStudentFromGrid(row);
             }
         };
     };
 
     this.loadStudentsGridData = function (gridObj) {
         gridObj.bootstrapTable("showLoading");
-        var gridData = getStudentsGridData();
+        var gridData = getAllStudents() || [];
         gridObj.bootstrapTable("load", gridData);
         gridObj.bootstrapTable("hideLoading");
     };
@@ -83,52 +204,134 @@ function loadStudentLyt(cellObj) {
     this.getStudentDetailsToolbar = function () {
         var toolbarObj = document.createElement("div");
         toolbarObj.role = "toolbar";
-        var refreshButtonObj = document.createElement("button");
-        refreshButtonObj.name = "addStudents";
-        refreshButtonObj.title = "Add Student";
-        refreshButtonObj.type = "button";
-        refreshButtonObj.className = "btn btn-default";
-        refreshButtonObj.style.padding = "3px 6px";
-        refreshButtonObj.innerHTML = '<i class="glyphicon glyphicon-plus-sign icon-plus-sign"></i>';
-        toolbarObj.appendChild(refreshButtonObj);
+        var addStudentButtonObj = document.createElement("button");
+        addStudentButtonObj.name = "addStudent";
+        addStudentButtonObj.title = "Add Student";
+        addStudentButtonObj.type = "button";
+        addStudentButtonObj.className = "btn btn-default";
+        addStudentButtonObj.style.padding = "3px 6px";
+        addStudentButtonObj.innerHTML = '<i class="glyphicon glyphicon-plus-sign icon-plus-sign"></i>';
+        toolbarObj.appendChild(addStudentButtonObj);
         return toolbarObj;
     };
 
-    this.showStudentForm = function (cellObj) {
+    this.attachStudentsForm = function (cellObj, confObj) {
+        var studentFormWrapObj = new attachForm(confObj);
+        studentFormWrapObj.cell.form.innerHTML = getStudentForm();
+    };
+
+    this.showAddStudentForm = function (cellObj) {
         var _this = this;
-        appManagerLytObj.module = "";
+
         var studentFormConfObj = {
             "parent": cellObj,
             "hdrText": "Add Student",
+            "formType": "add",
             "name": "addstudent",
             "id": "addstudent"
         };
-        var studentFormWrapObj = new attachForm(studentFormConfObj);
-
-        studentFormWrapObj.cell.form.innerHTML = getStudentForm();
+        _this.attachStudentsForm(cellObj, studentFormConfObj);
         var studentFormObj = document.forms[studentFormConfObj.name];
+        $(studentFormObj.elements["status"].parentElement.parentElement).hide();
         $(studentFormObj.elements["save"]).click(function () {
-            _this.onStudentFormBtnClick("save", studentFormObj.name);
+            _this.onStudentFormBtnClick("save", studentFormConfObj);
         });
         // $(studentFormObj.elements["reset"]).click(function () {
-        //     _this.onStudentFormBtnClick("reset", studentFormObj.name);
+        //     _this.onStudentFormBtnClick("reset", studentFormConfObj);
         // });
         $(studentFormObj.elements["cancel"]).click(function () {
-            _this.onStudentFormBtnClick("cancel", studentFormObj.name);
+            _this.onStudentFormBtnClick("cancel", studentFormConfObj);
         });
-        // _this.onStudentFormBtnClick("clearBtn", studentFormObj.name);
+        // _this.onStudentFormBtnClick("clearBtn", studentFormConfObj);
     };
-    this.onStudentFormBtnClick = function (id, formName) {
+
+    this.showEditStudentForm = function (cellObj, student) {
+        var _this = this;
+
+        var studentFormConfObj = {
+            "parent": cellObj,
+            "hdrText": "Edit Student",
+            "formType": "edit",
+            "name": "editstudent",
+            "id": "editstudent"
+        };
+        _this.attachStudentsForm(cellObj, studentFormConfObj);
+        var student = getStudent(student.id);
+        _this.setStudentFormDetails(studentFormConfObj, student);
+        var studentFormObj = document.forms[studentFormConfObj.name];
+        $(studentFormObj.elements["reset"]).hide();
+        $(studentFormObj.elements["save"]).click(function () {
+            _this.onStudentFormBtnClick("save", studentFormConfObj);
+        });
+        // $(studentFormObj.elements["reset"]).click(function () {
+        //     _this.onStudentFormBtnClick("reset", studentFormConfObj);
+        // });
+        $(studentFormObj.elements["cancel"]).click(function () {
+            _this.onStudentFormBtnClick("cancel", studentFormConfObj);
+        });
+        // _this.onStudentFormBtnClick("clearBtn", studentFormConfObj);
+    };
+
+    this.showViewStudentForm = function (cellObj, student) {
+        var _this = this;
+        var studentFormConfObj = {
+            "parent": cellObj,
+            "hdrText": "View Student",
+            "formType": "view",
+            "name": "viewstudent",
+            "id": "viewstudent"
+        };
+        _this.attachStudentsForm(cellObj, studentFormConfObj);
+        var student = getStudent(student.id);
+        _this.setStudentFormDetails(studentFormConfObj, student);
+        var studentFormObj = document.forms[studentFormConfObj.name];
+        $(studentFormObj.elements["save"]).hide();
+        $(studentFormObj.elements["reset"]).hide();
+        $(studentFormObj.elements["cancel"]).text("Close");
+        $(studentFormObj.elements["cancel"]).click(function () {
+            _this.onStudentFormBtnClick("cancel", studentFormConfObj);
+        });
+        // _this.onStudentFormBtnClick("clearBtn", studentFormConfObj);
+    };
+
+    this.setStudentFormDetails = function (formConfObj, details) {
+        var studentFormObj = document.forms[formConfObj.name];
+    };
+
+    this.onStudentFormBtnClick = function (id, confObj) {
 
         var _this = this;
+        var formName = confObj.name;
         if (id === "save") {
             var formObj = document.forms[formName];
+            if (formObj["password"].value !== formObj["rePassword"].value) {
+                return;
+            }
+            var student = {};
+            if (confObj.formType === "add") {
+                response = addStudent(student);
+            } else {
+                student["id"] = formObj["id"].value;
+                response = editStudent(student);
+            }
+            if (response && response.success) {
+                _this.initStudentsGrid();
+            } else {
+                console.log(response);
+            }
         } else if (id === "reset") {
             clearFormDataByName(formName);
         } else if (id === "cancel") {
             _this.initStudentsGrid();
         }
+    };
 
+    this.deleteStudentFromGrid = function (student) {
+        var _this = this;
+        var response = deleteStudent(student.id);
+        if (response.success) {
+            _this.initStudentsGrid();
+        }
     };
 
     this.loadStudentsLyt();
@@ -196,17 +399,29 @@ function getStudentDetailsGridObj(toolbarObj, confObj) {
     return studentDetailsConfobj;
 }
 
+function getAllStudents() {
+    return appAjaxSync(appRestPath + "/student", "GET", "", "JSON");
+}
+
+function getStudent(studentId) {
+    return appAjaxSync(appRestPath + "/student/" + studentId, "GET", "", "JSON");
+}
+
+function addStudent(student) {
+    return appAjaxSync(appRestPath + "/student", "PUT", JSON.stringify(student), "JSON");
+}
+
+function editStudent(student) {
+    return appAjaxSync(appRestPath + "/student/" + student.id, "PUT", JSON.stringify(student), "JSON");
+}
+
+function deleteStudent(studentId) {
+    return appAjaxSync(appRestPath + "/student/" + studentId, "DELETE", "", "JSON");
+}
+
 function getStudentForm() {
     var form = document.getElementById("studentFormTpl").innerHTML;
     return form;
-}
-
-function getStudentsGridData() {
-    return [{
-        srNo: 1,
-        studentId: 7001,
-        name: 'abc'
-    }];
 }
 
 /*Student Layout Ends*/
@@ -290,7 +505,7 @@ function loadAdvisorLyt(cellObj) {
 
     this.showAddAdvisorForm = function (cellObj) {
         var _this = this;
-        appManagerLytObj.module = "";
+
         var advisorFormConfObj = {
             "parent": cellObj,
             "hdrText": "Add Advisor",
@@ -310,18 +525,12 @@ function loadAdvisorLyt(cellObj) {
         $(advisorFormObj.elements["cancel"]).click(function () {
             _this.onAdvisorFormBtnClick("cancel", advisorFormConfObj);
         });
-        $(advisorFormObj.elements["courceMoveLeft"]).click(function () {
-            _this.onAdvisorFormBtnClick("courceMoveLeft", advisorFormConfObj);
-        });
-        $(advisorFormObj.elements["courceMoveRight"]).click(function () {
-            _this.onAdvisorFormBtnClick("courceMoveRight", advisorFormConfObj);
-        });
         // _this.onAdvisorFormBtnClick("clearBtn", advisorFormConfObj);
     };
 
     this.showEditAdvisorForm = function (cellObj, advisor) {
         var _this = this;
-        appManagerLytObj.module = "";
+
         var advisorFormConfObj = {
             "parent": cellObj,
             "hdrText": "Edit Advisor",
@@ -348,7 +557,7 @@ function loadAdvisorLyt(cellObj) {
 
     this.showViewAdvisorForm = function (cellObj, advisor) {
         var _this = this;
-        appManagerLytObj.module = "";
+
         var advisorFormConfObj = {
             "parent": cellObj,
             "hdrText": "View Advisor",
@@ -365,6 +574,8 @@ function loadAdvisorLyt(cellObj) {
         $(advisorFormObj.elements["phone"]).attr('readonly', 'true');
         $(advisorFormObj.elements["notes"]).attr('readonly', 'true');
         $(advisorFormObj.elements["status"]).attr('disabled', 'disabled');
+        $(advisorFormObj.elements["password"]).hide();
+        $(advisorFormObj.elements["rePassword"]).hide();
         $(advisorFormObj.elements["save"]).hide();
         $(advisorFormObj.elements["reset"]).hide();
         $(advisorFormObj.elements["cancel"]).text("Close");
@@ -383,6 +594,8 @@ function loadAdvisorLyt(cellObj) {
         $(advisorFormObj.elements["phone"]).val(details.phone);
         $(advisorFormObj.elements["notes"]).val(details.notes);
         $(advisorFormObj.elements["status"]).val(details.status);
+        $(advisorFormObj.elements["password"]).val(details.appUser.password);
+        $(advisorFormObj.elements["rePassword"]).val(details.appUser.password);
     };
 
     this.onAdvisorFormBtnClick = function (id, confObj) {
@@ -391,6 +604,9 @@ function loadAdvisorLyt(cellObj) {
         var formName = confObj.name;
         if (id === "save") {
             var formObj = document.forms[formName];
+            if (formObj["password"].value !== formObj["rePassword"].value) {
+                return;
+            }
             var advisor = {};
             advisor["name"] = formObj["name"].value;
             advisor["email"] = formObj["mail"].value;
@@ -398,9 +614,11 @@ function loadAdvisorLyt(cellObj) {
             advisor["phone"] = formObj["phone"].value;
             advisor["notes"] = formObj["notes"].value;
             advisor["status"] = formObj["status"].value;
+            advisor["appUser"] = {
+                "password": formObj["password"].value
+            };
             var response;
             if (confObj.formType === "add") {
-                console.log(advisor);
                 response = addAdvisor(advisor);
             } else {
                 advisor["id"] = formObj["id"].value;
@@ -599,7 +817,7 @@ function loadConcentrationLyt(cellObj) {
 
     this.showAddConcentrationForm = function (cellObj) {
         var _this = this;
-        appManagerLytObj.module = "";
+
         var concentrationFormConfObj = {
             "parent": cellObj,
             "hdrText": "Add Concentration",
@@ -634,7 +852,7 @@ function loadConcentrationLyt(cellObj) {
 
     this.showEditConcentrationForm = function (cellObj, concentration) {
         var _this = this;
-        appManagerLytObj.module = "";
+
         var concentrationFormConfObj = {
             "parent": cellObj,
             "hdrText": "Edit Concentration",
@@ -667,7 +885,7 @@ function loadConcentrationLyt(cellObj) {
 
     this.showViewConcentrationForm = function (cellObj, concentration) {
         var _this = this;
-        appManagerLytObj.module = "";
+
         var concentrationFormConfObj = {
             "parent": cellObj,
             "hdrText": "View Concentration",
@@ -748,7 +966,6 @@ function loadConcentrationLyt(cellObj) {
             };
             var response;
             if (confObj.formType === "add") {
-                console.log(concentration);
                 response = addConcentration(concentration);
             } else {
                 concentration["id"] = formObj["concentrationId"].value;
@@ -952,7 +1169,7 @@ function loadCourceLyt(cellObj) {
 
     this.showAddCourceForm = function (cellObj) {
         var _this = this;
-        appManagerLytObj.module = "";
+
         var courceFormConfObj = {
             "parent": cellObj,
             "hdrText": "Add Cource",
@@ -977,7 +1194,7 @@ function loadCourceLyt(cellObj) {
 
     this.showEditCourceForm = function (cellObj, cource) {
         var _this = this;
-        appManagerLytObj.module = "";
+
         var courceFormConfObj = {
             "parent": cellObj,
             "hdrText": "Edit Cource",
@@ -1003,7 +1220,7 @@ function loadCourceLyt(cellObj) {
 
     this.showViewCourceForm = function (cellObj, cource) {
         var _this = this;
-        appManagerLytObj.module = "";
+
         var courceFormConfObj = {
             "parent": cellObj,
             "hdrText": "View Cource",

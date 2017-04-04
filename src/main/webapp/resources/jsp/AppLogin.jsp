@@ -41,7 +41,7 @@
     var appContextPath = "${pageContext.request.contextPath}";
     var accessToken = "${accessToken}"
     if (accessToken) {
-        window.location.href = appContextPath + "/resources/jsp/AppHome.jsp";
+        window.location.href = appContextPath + "/resources/jsp/DirectorHome.jsp";
     }
 
     function doLogin(e) {
@@ -58,7 +58,7 @@
             async: false,
             success: function (response) {
                 if (response.role == 'ADMIN') {
-                    window.location.href = appContextPath + "/resources/jsp/AppHome.jsp";
+                    window.location.href = appContextPath + "/resources/jsp/DirectorHome.jsp";
                 } else {
                     window.location.href = appContextPath + "/console.jsp";
                 }

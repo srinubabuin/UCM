@@ -7,21 +7,26 @@ package com.ucm.services.impl;
 
 import com.app.db.util.AppQueryReader;
 import com.app.util.DBUtil;
+import com.app.util.Role;
 import com.conn.pool.app.AppConnectionPool;
 import com.ucm.exception.ConstraintVilationException;
 import com.ucm.model.Advisor;
 import com.ucm.model.AppUser;
 import com.ucm.services.AdvisiorService;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
+
 import com.ucm.model.Concentration;
+
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
+
 import org.apache.log4j.Logger;
 import org.apache.log4j.Priority;
 
@@ -97,6 +102,11 @@ public class AdvisorServiceImpl implements AdvisiorService {
             pstm.setInt(pos, advisorId);
             rs = pstm.executeQuery();
             if (rs.next()) {
+                appUser = new AppUser();
+                appUser.setId(rs.getInt(DBUtil.COLUMN_ADVISORS_USER_ID));
+                appUser.setLoginId(rs.getString(DBUtil.COLUMN_ADVISORS_LOGIN_ID));
+                appUser.setPassword(rs.getString(DBUtil.COLUMN_ADVISORS_USER_PASSWORD));
+                appUser.setRole(Role.valueOf(rs.getString(DBUtil.COLUMN_ADVISORS_USER_ROLE)));
                 advisor = new Advisor();
                 concentration = new Concentration();
                 concentration.setId(rs.getInt(DBUtil.COLUMN_ADVISORS_CONCENTATION_ID));
@@ -114,6 +124,7 @@ public class AdvisorServiceImpl implements AdvisiorService {
                 advisor.setNotes(rs.getString(DBUtil.COLUMN_ADVISORS_NOTES));
                 advisor.setCreatedDate(rs.getDate(DBUtil.COLUMN_ADVISORS_DATE));
                 advisor.setName(rs.getString(DBUtil.COLUMN_ADVISORS_NAME));
+                advisor.setAppUser(appUser);
             }
         } catch (SQLException e) {
             LOGGER.log(Priority.ERROR, "Exception in getConcentationWithId method with advisorId:" + advisorId + " " + e.getMessage());
@@ -139,6 +150,11 @@ public class AdvisorServiceImpl implements AdvisiorService {
             rs = pstm.executeQuery();
             if (rs.next()) {
                 advisor = new Advisor();
+                appUser = new AppUser();
+                appUser.setId(rs.getInt(DBUtil.COLUMN_ADVISORS_USER_ID));
+                appUser.setLoginId(rs.getString(DBUtil.COLUMN_ADVISORS_LOGIN_ID));
+                appUser.setPassword(rs.getString(DBUtil.COLUMN_ADVISORS_USER_PASSWORD));
+                appUser.setRole(Role.valueOf(rs.getString(DBUtil.COLUMN_ADVISORS_USER_ROLE)));
                 concentration = new Concentration();
                 concentration.setId(rs.getInt(DBUtil.COLUMN_ADVISORS_CONCENTATION_ID));
                 concentration.setConcentrationName(rs.getString(DBUtil.COLUMN_ADVISORS_CONCENTATION_NAME));
@@ -155,6 +171,7 @@ public class AdvisorServiceImpl implements AdvisiorService {
                 advisor.setNotes(rs.getString(DBUtil.COLUMN_ADVISORS_NOTES));
                 advisor.setCreatedDate(rs.getDate(DBUtil.COLUMN_ADVISORS_DATE));
                 advisor.setName(rs.getString(DBUtil.COLUMN_ADVISORS_NAME));
+                advisor.setAppUser(appUser);
             }
         } catch (SQLException e) {
             LOGGER.log(Priority.ERROR, "Exception in getConcentationWithId method with advisorName:" + advisorName + " " + e.getMessage());
@@ -181,6 +198,11 @@ public class AdvisorServiceImpl implements AdvisiorService {
             pstm = con.prepareStatement(AppQueryReader.getDBQuery("com.ucm.services.impl.advisorservice.getalladvisors"));
             rs = pstm.executeQuery();
             while (rs.next()) {
+                appUser = new AppUser();
+                appUser.setId(rs.getInt(DBUtil.COLUMN_ADVISORS_USER_ID));
+                appUser.setLoginId(rs.getString(DBUtil.COLUMN_ADVISORS_LOGIN_ID));
+                appUser.setPassword(rs.getString(DBUtil.COLUMN_ADVISORS_USER_PASSWORD));
+                appUser.setRole(Role.valueOf(rs.getString(DBUtil.COLUMN_ADVISORS_USER_ROLE)));
                 advisor = new Advisor();
                 concentration = new Concentration();
                 concentration.setId(rs.getInt(DBUtil.COLUMN_ADVISORS_CONCENTATION_ID));
@@ -198,6 +220,7 @@ public class AdvisorServiceImpl implements AdvisiorService {
                 advisor.setNotes(rs.getString(DBUtil.COLUMN_ADVISORS_NOTES));
                 advisor.setCreatedDate(rs.getDate(DBUtil.COLUMN_ADVISORS_DATE));
                 advisor.setName(rs.getString(DBUtil.COLUMN_ADVISORS_NAME));
+                advisor.setAppUser(appUser);
                 advisors.add(advisor);
             }
         } catch (SQLException e) {
