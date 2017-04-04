@@ -27,6 +27,7 @@ public class Student implements Serializable {
     private String acceptedCodeOfConduct;
     private String notes;
     private Date createdDate;
+    private AppUser appUser;
 
     public int getId() {
         return id;
@@ -162,6 +163,14 @@ public class Student implements Serializable {
 
     public void setCreatedDate(Date createdDate) {
         this.createdDate = createdDate;
+    }
+
+    public AppUser getAppUser() {
+        return appUser;
+    }
+
+    public void setAppUser(AppUser appUser) {
+        this.appUser = appUser;
     }
 
 }

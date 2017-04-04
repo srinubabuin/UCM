@@ -10,6 +10,7 @@ import com.app.util.DBUtil;
 import com.conn.pool.app.AppConnectionPool;
 import com.ucm.exception.ConstraintVilationException;
 import com.ucm.model.Advisor;
+import com.ucm.model.AppUser;
 import com.ucm.services.AdvisiorService;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -87,6 +88,8 @@ public class AdvisorServiceImpl implements AdvisiorService {
         PreparedStatement pstm = null;
         ResultSet rs = null;
         Advisor advisor = null;
+        AppUser appUser = null;
+        Concentration concentration = null;
         try {
             int pos = 1;
             con = AppConnectionPool.getConnection();
@@ -95,7 +98,7 @@ public class AdvisorServiceImpl implements AdvisiorService {
             rs = pstm.executeQuery();
             if (rs.next()) {
                 advisor = new Advisor();
-                Concentration concentration = new Concentration();
+                concentration = new Concentration();
                 concentration.setId(rs.getInt(DBUtil.COLUMN_ADVISORS_CONCENTATION_ID));
                 concentration.setConcentrationName(rs.getString(DBUtil.COLUMN_ADVISORS_CONCENTATION_NAME));
                 concentration.setConcentrationStatus(rs.getString(DBUtil.COLUMN_ADVISORS_CONCENTATION_STATUS));
@@ -126,6 +129,8 @@ public class AdvisorServiceImpl implements AdvisiorService {
         PreparedStatement pstm = null;
         ResultSet rs = null;
         Advisor advisor = null;
+        AppUser appUser = null;
+        Concentration concentration = null;
         try {
             int pos = 1;
             con = AppConnectionPool.getConnection();
@@ -134,7 +139,7 @@ public class AdvisorServiceImpl implements AdvisiorService {
             rs = pstm.executeQuery();
             if (rs.next()) {
                 advisor = new Advisor();
-                Concentration concentration = new Concentration();
+                concentration = new Concentration();
                 concentration.setId(rs.getInt(DBUtil.COLUMN_ADVISORS_CONCENTATION_ID));
                 concentration.setConcentrationName(rs.getString(DBUtil.COLUMN_ADVISORS_CONCENTATION_NAME));
                 concentration.setConcentrationStatus(rs.getString(DBUtil.COLUMN_ADVISORS_CONCENTATION_STATUS));
@@ -166,9 +171,10 @@ public class AdvisorServiceImpl implements AdvisiorService {
         PreparedStatement pstm = null;
         ResultSet rs = null;
         List<Advisor> advisors = null;
+        Advisor advisor;
+        Concentration concentration;
+        AppUser appUser;
         try {
-            Advisor advisor;
-            Concentration concentration;
             advisors = new ArrayList<>();
 
             con = AppConnectionPool.getConnection();
@@ -193,6 +199,29 @@ public class AdvisorServiceImpl implements AdvisiorService {
                 advisor.setCreatedDate(rs.getDate(DBUtil.COLUMN_ADVISORS_DATE));
                 advisor.setName(rs.getString(DBUtil.COLUMN_ADVISORS_NAME));
                 advisors.add(advisor);
+            }
+        } catch (SQLException e) {
+            LOGGER.log(Priority.ERROR, "Exception in getAllAdvisors method " + e.getMessage());
+        } finally {
+            AppConnectionPool.release(rs, pstm, con);
+        }
+        return advisors;
+    }
+
+    @Override
+    public List<Integer> advisorsExistedInConcentrations() {
+        Connection con = null;
+        PreparedStatement pstm = null;
+        ResultSet rs = null;
+        List<Integer> advisors = null;
+        try {
+            advisors = new ArrayList();
+
+            con = AppConnectionPool.getConnection();
+            pstm = con.prepareStatement(AppQueryReader.getDBQuery("com.ucm.services.impl.advisorservice.advisorsexistedinconcentrations"));
+            rs = pstm.executeQuery();
+            while (rs.next()) {
+                advisors.add(rs.getInt(DBUtil.COLUMN_ADVISORS_ID));
             }
         } catch (SQLException e) {
             LOGGER.log(Priority.ERROR, "Exception in getAllAdvisors method " + e.getMessage());

@@ -510,6 +510,10 @@ function deleteAdvisor(advisorId) {
     return appAjaxSync(appRestPath + "/advisor/" + advisorId, "DELETE", "", "JSON");
 }
 
+function advisorsExistedInConcentrations(advisorId) {
+    return appAjaxSync(appRestPath + "/advisor/advisorsExistedInConcentrations", "GET", "", "JSON");
+}
+
 function getAdvisorForm() {
     var form = document.getElementById("advisorFormTpl").innerHTML;
     return form;

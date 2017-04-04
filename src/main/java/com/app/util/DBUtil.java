@@ -43,6 +43,10 @@ public class DBUtil {
     public final static String COLUMN_ADVISORS_CONCENTATION_STATUS = "CONCENTRATION_STATUS";
     public final static String COLUMN_ADVISORS_CONCENTATION_NOTES = "CONCENTRATION_NOTES";
     public final static String COLUMN_ADVISORS_CONCENTATION_CREATED_DATE = "CONCENTRATION_CREATED_DATE";
+    //advisor user alias
+    public final static String COLUMN_ADVISORS_USER_ID = "USER_ID";
+    public final static String COLUMN_ADVISORS_USER_PASSWORD = "USER_PASSWORD";
+    public final static String COLUMN_ADVISORS_USER_ROLE = "USER_ROLE";
     //Student columns
     public final static String COLUMN_STUDENTS_ID = "ID";
     public final static String COLUMN_STUDENTS_LOGIN_ID = "LOGIN_ID";

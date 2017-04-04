@@ -3,7 +3,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package com.ucm.service.helper;
 
 import com.app.util.DBUtil;
@@ -14,10 +13,6 @@ import com.ucm.services.AdvisiorService;
 import com.ucm.services.impl.AdvisorServiceImpl;
 import java.util.List;
 
-/**
- *
- * @author Srinu Babu
- */
 public class AdvisorServiceHelper {
 
     public RequestStatus addAdvisor(Advisor advisor) {
@@ -40,31 +35,39 @@ public class AdvisorServiceHelper {
         }
         return response;
     }
-    
-    public RequestStatus deleteAdvisor(int advisorId){
-        
+
+    public RequestStatus deleteAdvisor(int advisorId) {
+
         RequestStatus response = new RequestStatus();
-        
+
         int deleteCnt = new AdvisorServiceImpl().deleteAdvisor(advisorId);
-        
-        if(deleteCnt > 0){
+
+        if (deleteCnt > 0) {
             response.setSuccess(true);
             response.setMessage("Advisor deleted successfully");
             response.setId(advisorId);
-        }else{
+        } else {
             response.setMessage("Advisor not deleted");
             response.setId(advisorId);
         }
         return response;
     }
-    public Advisor getAdvisorWitId(int advisorId){
+
+    public Advisor getAdvisorWitId(int advisorId) {
         return new AdvisorServiceImpl().getAdvisorWitId(advisorId);
     }
-    public Advisor getAdvisorWitName(String advisorName){
+
+    public Advisor getAdvisorWitName(String advisorName) {
         return new AdvisorServiceImpl().getAdvisorWitName(advisorName);
     }
-    public List<Advisor> getAllAdvisors(){
-        
+
+    public List<Advisor> getAllAdvisors() {
+
         return new AdvisorServiceImpl().getAllAdvisors();
+    }
+
+    public List<Integer> advisorsExistedInConcentrations() {
+
+        return new AdvisorServiceImpl().advisorsExistedInConcentrations();
     }
 }

@@ -35,7 +35,7 @@ public class AppDataEncryptorDecryptor {
 
     public AppDataEncryptorDecryptor() throws AppException {
         try {
-            arEncryptionKey = "1vgnirtsteserdrowssaptibbartessa";
+            arEncryptionKey = "1vgnirtsdrowssapmcu";
             arEncryptionScheme = DESEDE_ENCRYPTION_SCHEME;
             arrayBytes = arEncryptionKey.getBytes(UNICODE_FORMAT);
             keySpec = new DESedeKeySpec(arrayBytes);

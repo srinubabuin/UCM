@@ -85,7 +85,6 @@ public class AdvisorService {
 //            return Response.status(405).header("Access-Control-Allow-Origin", "*").build();
 //        }
 //    }
-
     @GET
     @Consumes({"application/json"})
     @Produces({"application/json"})
@@ -93,6 +92,21 @@ public class AdvisorService {
 
         try {
             List<Advisor> advisors = new AdvisorServiceHelper().getAllAdvisors();
+            return Response.ok().header("Access-Control-Allow-Origin", "*").entity(advisors).build();
+        } catch (Exception ex) {
+            LOGGER.info("Error while fetching the advisor");
+            return Response.status(405).header("Access-Control-Allow-Origin", "*").build();
+        }
+    }
+
+    @GET
+    @Path("/advisorsExistedInConcentrations")
+    @Consumes({"application/json"})
+    @Produces({"application/json"})
+    public Response advisorsExistedInConcentrations() {
+
+        try {
+            List<Integer> advisors = new AdvisorServiceHelper().advisorsExistedInConcentrations();
             return Response.ok().header("Access-Control-Allow-Origin", "*").entity(advisors).build();
         } catch (Exception ex) {
             LOGGER.info("Error while fetching the advisor");

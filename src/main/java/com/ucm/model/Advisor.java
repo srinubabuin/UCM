@@ -3,14 +3,13 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package com.ucm.model;
 
 import java.io.Serializable;
 import java.util.Date;
 
 public class Advisor implements Serializable {
-    
+
     private int id;
     private String name;
     private String loginId;
@@ -20,6 +19,7 @@ public class Advisor implements Serializable {
     private String status;
     private Date createdDate;
     private Concentration concentration;
+    private AppUser appUser;
 
     public int getId() {
         return id;
@@ -52,7 +52,7 @@ public class Advisor implements Serializable {
     public void setPhone(String phone) {
         this.phone = phone;
     }
-    
+
     public String getName() {
         return name;
     }
@@ -68,7 +68,7 @@ public class Advisor implements Serializable {
     public void setNotes(String notes) {
         this.notes = notes;
     }
-    
+
     public String getStatus() {
         return status;
     }
@@ -92,6 +92,13 @@ public class Advisor implements Serializable {
     public void setConcentration(Concentration concentration) {
         this.concentration = concentration;
     }
-    
-    
+
+    public AppUser getAppUser() {
+        return appUser;
+    }
+
+    public void setAppUser(AppUser appUser) {
+        this.appUser = appUser;
+    }
+
 }
