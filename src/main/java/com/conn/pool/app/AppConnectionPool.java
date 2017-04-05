@@ -15,10 +15,6 @@ import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- *
- * @author Srinu Babu
- */
 public class AppConnectionPool {
 
     private static AppDBProps appDBProps;

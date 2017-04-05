@@ -6,10 +6,6 @@
 
 package com.ucm.exception;
 
-/**
- *
- * @author Srinu Babu
- */
 public class ConstraintVilationException extends Exception{
 
     public ConstraintVilationException() {

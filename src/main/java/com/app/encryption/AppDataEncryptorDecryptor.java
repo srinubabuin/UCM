@@ -35,7 +35,7 @@ public class AppDataEncryptorDecryptor {
 
     public AppDataEncryptorDecryptor() throws AppException {
         try {
-            arEncryptionKey = "1vgnirtsdrowssapmcu";
+            arEncryptionKey = "1vgnirtscedcnedrowssapmcu";
             arEncryptionScheme = DESEDE_ENCRYPTION_SCHEME;
             arrayBytes = arEncryptionKey.getBytes(UNICODE_FORMAT);
             keySpec = new DESedeKeySpec(arrayBytes);
@@ -72,10 +72,11 @@ public class AppDataEncryptorDecryptor {
         }
         return decryptedText;
     }
-    public static void main(String[] args) throws Exception{
-        
+
+    public static void main(String[] args) throws Exception {
+
         AppDataEncryptorDecryptor td = new AppDataEncryptorDecryptor();
-        String target = "aaa";
+        String target = "admin";
         String encrypted = td.encrypt(target);
         String decrypted = td.decrypt(encrypted);
         System.out.println("String To Encrypt: " + target);
@@ -83,4 +84,3 @@ public class AppDataEncryptorDecryptor {
         System.out.println("Decrypted String:" + decrypted);
     }
 }
-

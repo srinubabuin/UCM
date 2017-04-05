@@ -10,10 +10,6 @@ import com.ucm.exception.ConstraintVilationException;
 import com.ucm.model.Student;
 import java.util.List;
 
-/**
- *
- * @author Srinu Babu
- */
 public interface StudentService {
     
     public int addStudent(Student student)throws ConstraintVilationException;

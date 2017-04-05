@@ -7,7 +7,6 @@
 package com.app.db.util;
 
 import com.app.util.ApplicationUtil;
-import com.conn.pool.app.AppConnectionPool;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -15,10 +14,7 @@ import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- *
- * @author Srinu Babu
- */
+
 public class AppQueryReader {
     
 private static final LinkedProperties queryProperties = new LinkedProperties();

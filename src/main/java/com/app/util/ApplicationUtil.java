@@ -23,10 +23,6 @@ import java.util.Properties;
 import org.apache.log4j.Logger;
 import org.apache.log4j.Priority;
 
-/**
- *
- * @author Srinu Babu
- */
 public class ApplicationUtil {
 
     public static String APP_FILE_SEPERATOR = "\\";
@@ -38,7 +34,7 @@ public class ApplicationUtil {
     public static Properties _appEmailProps;
     public static String appUrl = "";
     private static final Logger LOGGER = Logger.getLogger(ApplicationUtil.class);
-    
+
     public static String setAppFileSeperator(String serverDetails) {
 
         serverDetails = serverDetails.toLowerCase();
@@ -130,41 +126,92 @@ public class ApplicationUtil {
     public static void setAppEmailProps(Properties appEmailProps) {
         ApplicationUtil._appEmailProps = appEmailProps;
     }
-    
-    public static AppUser getDynamicLoginCredentials(){
-        
+
+    public static AppUser getDynamicLoginCredentials() {
+
         AppUser appUser = null;
-        try{
-            UserLoginService userService = new UserLoginServiceImpl();
+        try {
             AppDataEncryptorDecryptor appDataEnc = new AppDataEncryptorDecryptor();
             appUser = new AppUser();
-            int maxId = userService.getMaxId()-1;
-            String loginId = getLoginId(String.valueOf(maxId));
+            String loginId = getLoginId();
             String password = appDataEnc.encrypt(passwordGenerator(10));
             appUser.setLoginId(loginId);
             appUser.setPassword(password);
-            
-        }catch(AppException e){
-            LOGGER.log(Priority.ERROR, "Error while generating the credentials in getDynamicLoginCredentials"+e.getMessage(), e);
+
+        } catch (AppException e) {
+            LOGGER.log(Priority.ERROR, "Error while generating the credentials in getDynamicLoginCredentials" + e.getMessage(), e);
         }
         return appUser;
     }
-    
-    public static String getLoginId(String id){
-        
+
+    public static AppUser getUserLoginDetails() {
+
+        AppUser appUser = null;
+        try {
+            appUser = getDynamicLoginCredentials();
+            appUser.setRole(Role.STUDENT);
+
+        } catch (Exception e) {
+            LOGGER.log(Priority.ERROR, "Error while generating the credentials in getUserLoginDetails" + e.getMessage(), e);
+        }
+        return appUser;
+    }
+
+    public static AppUser getAdvisorLoginDetails(String password) {
+
+        AppUser appUser = null;
+        try {
+            AppDataEncryptorDecryptor appDataEnc = new AppDataEncryptorDecryptor();
+            appUser = new AppUser();
+            String loginId = getLoginId();
+            appUser.setLoginId(loginId);
+            appUser.setPassword(encryptValue(password));
+            appUser.setRole(Role.ADVISOR);
+
+        } catch (AppException e) {
+            LOGGER.log(Priority.ERROR, "Error while generating the credentials in getDynamicLoginCredentials" + e.getMessage(), e);
+        }
+        return appUser;
+    }
+
+    public static String encryptValue(String value) {
+        String encryptedValue = null;
+        try {
+            AppDataEncryptorDecryptor appDataEnc = new AppDataEncryptorDecryptor();
+            encryptedValue = appDataEnc.encrypt(value);
+        } catch (Exception e) {
+            LOGGER.log(Priority.ERROR, "Error occuerd in method encryptValue while encrypting value " + e.getMessage(), e);
+        }
+        return encryptedValue;
+    }
+
+    public static String decryptValue(String value) {
+        String decryptedValue = null;
+        try {
+            AppDataEncryptorDecryptor appDataEnc = new AppDataEncryptorDecryptor();
+            decryptedValue = appDataEnc.decrypt(value);
+        } catch (Exception e) {
+            LOGGER.log(Priority.ERROR, "Error occuerd in method decryptValue while decrypting value " + e.getMessage(), e);
+        }
+        return decryptedValue;
+    }
+
+    public static String getLoginId() {
+        UserLoginService userService = new UserLoginServiceImpl();
+        String id = String.valueOf(userService.getMaxId() - 1);
         String appLoginId = "00000007";
         StringBuilder idBuilder = new StringBuilder();
         String userId = idBuilder.append(id).reverse().toString();
         int idLen = id.length();
         idBuilder.setLength(0);
         idBuilder.append(appLoginId);
-        appLoginId = idBuilder.replace(0,  idLen, userId).toString();
+        appLoginId = idBuilder.replace(0, idLen, userId).toString();
         idBuilder.setLength(0);
         return idBuilder.append(appLoginId).reverse().toString();
     }
-    
-    public static String passwordGenerator(int passwordLength){
-    
+
+    public static String passwordGenerator(int passwordLength) {
+
         StringBuilder password = new StringBuilder();
         for (int i = passwordLength; i > 0; i -= 12) {
             int n = min(12, abs(i));
@@ -172,6 +219,7 @@ public class ApplicationUtil {
         }
         return password.toString();
     }
+
     public static String leftPad(String originalString, int length,
             char padCharacter) {
         String paddedString = originalString;

@@ -11,10 +11,6 @@ import java.util.Enumeration;
 import java.util.LinkedHashSet;
 import java.util.Properties;
 
-/**
- *
- * @author Srinu Babu
- */
 public class LinkedProperties extends Properties {
    
     private final LinkedHashSet<Object> keys = new LinkedHashSet<>(); 

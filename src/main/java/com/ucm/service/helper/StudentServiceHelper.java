@@ -13,10 +13,6 @@ import com.ucm.services.StudentService;
 import com.ucm.services.impl.StudentServiceImpl;
 import java.util.List;
 
-/**
- *
- * @author Srinu Babu
- */
 public class StudentServiceHelper {
 
     public RequestStatus addStudent(Student student) {

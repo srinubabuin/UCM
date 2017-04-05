@@ -6,10 +6,6 @@
 
 package com.ucm.exception;
 
-/**
- *
- * @author Srinu Babu
- */
 public class CourceNotFoundException extends Exception{
 
     public CourceNotFoundException() {

@@ -6,6 +6,7 @@
 package com.ucm.services.impl;
 
 import com.app.db.util.AppQueryReader;
+import com.app.util.ApplicationUtil;
 import com.app.util.DBUtil;
 import com.app.util.Role;
 import com.conn.pool.app.AppConnectionPool;
@@ -22,6 +23,7 @@ import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
 
 import com.ucm.model.Concentration;
+import com.ucm.services.UserLoginService;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -43,19 +45,24 @@ public class AdvisorServiceImpl implements AdvisiorService {
         int advId = 0;
         try {
             int pos = 1;
-            con = AppConnectionPool.getConnection();
-            pstm = con.prepareStatement(AppQueryReader.getDBQuery("com.ucm.services.impl.advisorservice.addadvisor"), new String[]{DBUtil.COLUMN_ADVISORS_ID});
-            pstm.setString(pos, advisor.getLoginId());
-            pstm.setString(++pos, advisor.getEmail());
-            pstm.setString(++pos, advisor.getName());
-            pstm.setString(++pos, advisor.getStatus());
-            pstm.setString(++pos, advisor.getPhone());
-            pstm.setString(++pos, advisor.getNotes());
-            pstm.setTimestamp(++pos, new Timestamp(new Date().getTime()));
-            if (pstm.executeUpdate() > 0) {
-                rs = pstm.getGeneratedKeys();
-                rs.next();
-                advId = rs.getInt(1);
+            UserLoginService userService = new UserLoginServiceImpl();
+            AppUser appUser = ApplicationUtil.getAdvisorLoginDetails(advisor.getAppUser().getPassword());
+            int loginId = userService.insertUser(appUser);
+            if (loginId > 0) {
+                con = AppConnectionPool.getConnection();
+                pstm = con.prepareStatement(AppQueryReader.getDBQuery("com.ucm.services.impl.advisorservice.addadvisor"), new String[]{DBUtil.COLUMN_ADVISORS_ID});
+                pstm.setString(pos, appUser.getLoginId());
+                pstm.setString(++pos, advisor.getEmail());
+                pstm.setString(++pos, advisor.getName());
+                pstm.setString(++pos, advisor.getStatus());
+                pstm.setString(++pos, advisor.getPhone());
+                pstm.setString(++pos, advisor.getNotes());
+                pstm.setTimestamp(++pos, new Timestamp(new Date().getTime()));
+                if (pstm.executeUpdate() > 0) {
+                    rs = pstm.getGeneratedKeys();
+                    rs.next();
+                    advId = rs.getInt(1);
+                }
             }
         } catch (SQLIntegrityConstraintViolationException e) {
             LOGGER.log(Priority.ERROR, "Exception while adding advisor method addAdvisor " + e.getMessage());

@@ -33,7 +33,7 @@ public class UserLoginServiceImpl implements UserLoginService {
             pstm = con.prepareStatement(AppQueryReader.getDBQuery("com.ucm.services.impl.userloginservice.insertuser"), new String[]{DBUtil.COLUMN_USERS_ID});
             pstm.setString(pos, appUser.getLoginId());
             pstm.setString(++pos, appUser.getPassword());
-            pstm.setString(++pos, appUser.getRole().getName());
+            pstm.setString(++pos, appUser.getRole().toString());
             if (pstm.executeUpdate() > 0) {
                 rs = pstm.getGeneratedKeys();
                 rs.next();

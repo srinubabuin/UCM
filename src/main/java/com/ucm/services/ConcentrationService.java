@@ -10,10 +10,6 @@ import com.ucm.exception.ConstraintVilationException;
 import com.ucm.model.Concentration;
 import java.util.List;
 
-/**
- *
- * @author Srinu Babu
- */
 public interface ConcentrationService {
 
     public int addConcentation(Concentration concentation) throws ConstraintVilationException;

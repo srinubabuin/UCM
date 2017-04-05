@@ -6,10 +6,6 @@
 
 package com.app.util;
 
-/**
- *
- * @author Srinu Babu
- */
 public class RequestStatus {
 
     private String message;

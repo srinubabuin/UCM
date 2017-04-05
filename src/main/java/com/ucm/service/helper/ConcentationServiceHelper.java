@@ -14,10 +14,6 @@ import com.ucm.services.ConcentrationService;
 import com.ucm.services.impl.ConcentrationServiceImpl;
 import java.util.List;
 
-/**
- *
- * @author Srinu Babu
- */
 public class ConcentationServiceHelper {
 
     public RequestStatus addConcentration(Concentration concentation) {

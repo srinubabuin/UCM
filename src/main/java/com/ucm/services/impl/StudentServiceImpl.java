@@ -30,10 +30,6 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- *
- * @author Srinu Babu
- */
 public class StudentServiceImpl implements StudentService {
 
     private static final Logger LOGGER = Logger.getLogger(StudentServiceImpl.class.getName());
@@ -47,38 +43,37 @@ public class StudentServiceImpl implements StudentService {
         try {
             int pos = 1;
             UserLoginService userService = new UserLoginServiceImpl();
-            AppUser appUser = ApplicationUtil.getDynamicLoginCredentials();
-            appUser.setRole(Role.STUDENT);
+            AppUser appUser = ApplicationUtil.getUserLoginDetails();
             int loginId = userService.insertUser(appUser);
-            if(loginId > 0){
-            con = AppConnectionPool.getConnection();
-            pstm = con.prepareStatement(AppQueryReader.getDBQuery("com.ucm.services.impl.studentservice.addstudent"), new String[]{DBUtil.COLUMN_STUDENTS_ID});
-            pstm.setString(pos, appUser.getLoginId());
-            pstm.setString(++pos, student.getFirstName());
-            pstm.setString(++pos, student.getLastName());
-            pstm.setString(++pos, student.getEmail());
-            pstm.setString(++pos, student.getSecondaryEmail());
-            pstm.setString(++pos, student.getPhoneNumber());
-            pstm.setString(++pos, student.getAddress());
-            pstm.setString(++pos, student.getScores());
-            pstm.setInt(++pos, student.getConcentration().getId());
-            pstm.setString(++pos, student.getStudentStatus());
-            pstm.setTimestamp(++pos, new Timestamp(new Date().getTime()));
-            pstm.setString(++pos, student.getStatus());
-            pstm.setString(++pos, student.getTestDetails());
-            pstm.setString(++pos, student.getAcceptedCodeOfConduct());
-            pstm.setString(++pos, student.getNotes());
-            pstm.setTimestamp(++pos, new Timestamp(new Date().getTime()));
-            if (pstm.executeUpdate() > 0) {
-                rs = pstm.getGeneratedKeys();
-                rs.next();
-                studentId = rs.getInt(1);
-                AppEmail appMail = EmailMessageBuilder.getStudentLoginDetails(student, appUser);
-                Runnable studentEmail = new EmailSenderThread(appMail); 
-                Thread emailthread = new Thread(studentEmail);
-                emailthread.start();
+            if (loginId > 0) {
+                con = AppConnectionPool.getConnection();
+                pstm = con.prepareStatement(AppQueryReader.getDBQuery("com.ucm.services.impl.studentservice.addstudent"), new String[]{DBUtil.COLUMN_STUDENTS_ID});
+                pstm.setString(pos, appUser.getLoginId());
+                pstm.setString(++pos, student.getFirstName());
+                pstm.setString(++pos, student.getLastName());
+                pstm.setString(++pos, student.getEmail());
+                pstm.setString(++pos, student.getSecondaryEmail());
+                pstm.setString(++pos, student.getPhoneNumber());
+                pstm.setString(++pos, student.getAddress());
+                pstm.setString(++pos, student.getScores());
+                pstm.setInt(++pos, student.getConcentration().getId());
+                pstm.setString(++pos, student.getStudentStatus());
+                pstm.setTimestamp(++pos, new Timestamp(new Date().getTime()));
+                pstm.setString(++pos, student.getStatus());
+                pstm.setString(++pos, student.getTestDetails());
+                pstm.setString(++pos, student.getAcceptedCodeOfConduct());
+                pstm.setString(++pos, student.getNotes());
+                pstm.setTimestamp(++pos, new Timestamp(new Date().getTime()));
+                if (pstm.executeUpdate() > 0) {
+                    rs = pstm.getGeneratedKeys();
+                    rs.next();
+                    studentId = rs.getInt(1);
+                    AppEmail appMail = EmailMessageBuilder.getStudentLoginDetails(student, appUser);
+                    Runnable studentEmail = new EmailSenderThread(appMail);
+                    Thread emailthread = new Thread(studentEmail);
+                    emailthread.start();
+                }
             }
-        }
         } catch (SQLException e) {
             LOGGER.log(Level.SEVERE, "Exception occured in addStudent method {0}", e.getMessage());
             throw new ConstraintVilationException(e.getMessage());
@@ -239,7 +234,7 @@ public class StudentServiceImpl implements StudentService {
                 students.add(student);
             }
         } catch (SQLException e) {
-            LOGGER.log(Level.SEVERE, "Exception in getStudentByName method with {1}", new Object[]{ e.getMessage()});
+            LOGGER.log(Level.SEVERE, "Exception in getStudentByName method with {1}", new Object[]{e.getMessage()});
         } finally {
             AppConnectionPool.release(rs, pstm, con);
         }

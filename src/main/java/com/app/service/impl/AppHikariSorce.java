@@ -15,10 +15,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import com.app.service.AppPoolService;
 
-/**
- *
- * @author Srinu Babu
- */
 public final class AppHikariSorce implements AppPoolService{
 
     private HikariDataSource hikariDataSource = null;

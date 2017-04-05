@@ -5,10 +5,6 @@
  */
 package com.app.db.util;
 
-/**
- *
- * @author Srinu Babu
- */
 public class AppDBProps {
 
     private String driver;

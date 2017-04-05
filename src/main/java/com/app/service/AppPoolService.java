@@ -8,10 +8,6 @@ package com.app.service;
 
 import java.sql.Connection;
 
-/**
- *
- * @author Srinu Babu
- */
 public interface AppPoolService {
 
     public Connection getConnection();

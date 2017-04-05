@@ -10,10 +10,6 @@ import com.ucm.exception.CourceNotFoundException;
 import com.ucm.model.Cource;
 import java.util.List;
 
-/**
- *
- * @author Srinu Babu
- */
 public interface CourceService {
 
     public int addCource(Cource cource) throws ConstraintVilationException;

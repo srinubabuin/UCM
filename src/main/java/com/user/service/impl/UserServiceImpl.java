@@ -6,6 +6,7 @@
 package com.user.service.impl;
 
 import com.app.util.AppSessionUtil;
+import com.app.util.ApplicationUtil;
 import com.app.util.DBUtil;
 import com.app.util.Role;
 import com.conn.pool.app.AppConnectionPool;
@@ -17,10 +18,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-/**
- *
- * @author Srinu Babu
- */
 public class UserServiceImpl implements UserService {
 
     @Override
@@ -83,7 +80,7 @@ public class UserServiceImpl implements UserService {
             con = AppConnectionPool.getConnection();
             pstm = con.prepareStatement("SELECT * FROM USERS WHERE LOGIN_ID = ? AND PASSWORD = ?");
             pstm.setString(1, user.getLoginId());
-            pstm.setString(2, user.getPassword());
+            pstm.setString(2, ApplicationUtil.encryptValue(user.getPassword()));
             rs = pstm.executeQuery();
             if (rs.next()) {
                 appUser = new AppUser();
