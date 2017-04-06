@@ -805,6 +805,9 @@ function attachForm(confObj) {
     af.className = "form-horizontal";
     af.name = confObj.name;
     af.id = confObj.id;
+    af.onsubmit = function () {
+        return false;
+    }
     afcBody.appendChild(af);
     afc.appendChild(afcBody);
     ac.appendChild(afc)

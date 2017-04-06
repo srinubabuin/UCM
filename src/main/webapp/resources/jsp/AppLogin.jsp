@@ -25,11 +25,12 @@
     <div class="wrapper">
 
         <!--<form action="/EDIPaged/ediAuth/doLogin" method="post" name="ediLoginForm" class="form-signin">-->
-        <form action="" method="post" name="loginForm" onsubmit="javascript:doLogin();return false;" id="loginForm" class="form-signin">
-            <h3 class="form-signin-heading">UCM</h3>
+        <form action="" method="post" name="loginForm" onsubmit="javascript:doLogin();return false;" id="loginForm"
+              class="form-signin">
+            <h3 class="form-signin-heading">Login</h3>
 
-            <input type="text" class="form-control" name="username"  placeholder="Login Id" autofocus=""/>
-            <input type="password" class="form-control" name="password" placeholder="Password"/>
+            <input type="text" class="form-control" name="username" placeholder="UCM Login Id" autofocus=""/>
+            <input type="password" class="form-control" name="password" placeholder="UCM Password"/>
             <button class="btn btn-lg btn-primary btn-block" onclick="doLogin()" name="Submit" value="Login"
                     type="submit">Login
             </button>
@@ -57,10 +58,14 @@
             dataType: 'json',
             async: false,
             success: function (response) {
-                if (response.role == 'ADMIN') {
+                if (response.role == 'ADMIN' || response.role == 'DIRECTOR') {
                     window.location.href = appContextPath + "/resources/jsp/DirectorHome.jsp";
+                } else if (response.role == 'ADVISOR') {
+                    window.location.href = appContextPath + "/resources/jsp/AdvisorHome.jsp";
+                } else if (response.role == 'STUDENT') {
+                    window.location.href = appContextPath + "/resources/jsp/StudentHome.jsp";
                 } else {
-                    window.location.href = appContextPath + "/console.jsp";
+                    $('span#errorMessage').html("User with this role is not allowed to login");
                 }
             },
             error: function (xhr) {

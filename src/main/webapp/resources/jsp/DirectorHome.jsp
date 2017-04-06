@@ -39,12 +39,13 @@
 <div id='formTempletes' style="display: none;">
     <div id="studentSearchFormTpl">
         <div class="form-group">
-            <div class="form-group">
-                <label class="col-sm-3 control-label required">Student Id</label>
-                <div class="col-sm-8">
-                    <input type="text" name="studentId" class="form-control" placeholder="Student Id">
-                </div>
+            <label class="col-sm-3 control-label required">Student Id</label>
+            <div class="col-sm-8">
+                <input type="text" name="studentId" class="form-control" placeholder="Student Id">
             </div>
+        </div>
+        <div class="col-md-12 text-center">
+            <span id="errorMessage" style="color: red;"></span>
         </div>
         <div class="col-md-12 text-center">
             <button name="search" class="btn btn-success" type="button">Search</button>

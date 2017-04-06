@@ -51,41 +51,85 @@ function loadStudentSearchLyt(cellObj) {
         var _this = this;
         var studentSearchFormConfObj = {
             "parent": cellObj,
-            "hdrText": "Add Student Search",
-            "formType": "add",
-            "name": "addstudentSearch",
-            "id": "addstudentSearch"
+            "hdrText": "Search Student",
+            "formType": "search",
+            "name": "studentSearch",
+            "id": "studentSearch"
         };
         _this.attachStudentSearchForm(cellObj, studentSearchFormConfObj);
         var studentSearchFormObj = document.forms[studentSearchFormConfObj.name];
         $(studentSearchFormObj.elements["search"]).click(function () {
             _this.onStudentSearchFormBtnClick("search", studentSearchFormConfObj);
         });
+
+        $(studentSearchFormObj.elements["reset"]).click(function () {
+            _this.onStudentSearchFormBtnClick("reset", studentSearchFormConfObj);
+        });
+    };
+
+    this.onStudentSearchFormBtnClick = function (id, confObj) {
+        var _this = this;
+        var formName = confObj.name;
+        $('span#errorMessage').html("");
+        if (id === "search") {
+            var formObj = document.forms[formName];
+            var studentId = formObj["studentId"].value || "";
+            if (!studentId) {
+                return;
+            }
+            _this.clearStudentFormCell(_this.detailsCellObj);
+            var response = getStudent(studentId);
+            if (response && response.success) {
+                _this.showEditStudentSearchForm(_this.detailsCellObj, response);
+            } else {
+                _this.showEditStudentSearchForm(_this.detailsCellObj);
+                console.log(response);
+                $('span#errorMessage').html("Student with id \"" + studentId + "\" doesn't exists");
+            }
+        } else if (id === "reset") {
+            $('span#errorMessage').html("");
+        }
+    };
+
+    this.clearStudentFormCell = function (cellObj) {
+        if (!cellObj) {
+            return;
+        }
+        var cellParent = cellObj.parentElement;
+        for (var childCount = 1; childCount < cellParent.childElementCount; childCount++) {
+            $(cellParent.childNodes[childCount]).remove();
+        }
+    };
+
+    this.attachStudentForm = function (cellObj, confObj) {
+        var studentFormWrapObj = new attachForm(confObj);
+        studentFormWrapObj.cell.form.innerHTML = getStudentForm();
     };
 
     this.showEditStudentSearchForm = function (cellObj, studentSearch) {
         var _this = this;
-
+        console.log(cellObj);
+        var detailsObj = cellObj.parentElement.appendChild(cellObj.cloneNode())
         var studentSearchFormConfObj = {
-            "parent": cellObj,
+            "parent": detailsObj,
             "hdrText": "Edit Student Search",
             "formType": "edit",
             "name": "editstudentSearch",
             "id": "editstudentSearch"
         };
-        _this.attachStudentSearchForm(cellObj, studentSearchFormConfObj);
-        var studentSearch = getStudentSearch(studentSearch.id);
+        _this.attachStudentForm(detailsObj, studentSearchFormConfObj);
+        // var studentSearch = getStudentSearch(studentSearch.id);
         _this.setStudentSearchFormDetails(studentSearchFormConfObj, studentSearch);
         var studentSearchFormObj = document.forms[studentSearchFormConfObj.name];
         $(studentSearchFormObj.elements["reset"]).hide();
         $(studentSearchFormObj.elements["save"]).click(function () {
-            _this.onStudentSearchFormBtnClick("save", studentSearchFormConfObj);
+            // _this.onStudentSearchFormBtnClick("save", studentSearchFormConfObj);
         });
         // $(studentSearchFormObj.elements["reset"]).click(function () {
         //     _this.onStudentSearchFormBtnClick("reset", studentSearchFormConfObj);
         // });
         $(studentSearchFormObj.elements["cancel"]).click(function () {
-            _this.onStudentSearchFormBtnClick("cancel", studentSearchFormConfObj);
+            // _this.onStudentSearchFormBtnClick("cancel", studentSearchFormConfObj);
         });
         // _this.onStudentSearchFormBtnClick("clearBtn", studentSearchFormConfObj);
     };
@@ -93,42 +137,6 @@ function loadStudentSearchLyt(cellObj) {
     this.setStudentSearchFormDetails = function (formConfObj, details) {
         var studentSearchFormObj = document.forms[formConfObj.name];
     };
-
-    this.onStudentSearchFormBtnClick = function (id, confObj) {
-        var _this = this;
-        var formName = confObj.name;
-        if (id === "save") {
-            var formObj = document.forms[formName];
-            if (formObj["password"].value !== formObj["rePassword"].value) {
-                return;
-            }
-            var studentSearch = {};
-            if (confObj.formType === "add") {
-                response = addStudentSearch(studentSearch);
-            } else {
-                studentSearch["id"] = formObj["id"].value;
-                response = editStudentSearch(studentSearch);
-            }
-            if (response && response.success) {
-                _this.initStudentSearchGrid();
-            } else {
-                console.log(response);
-            }
-        } else if (id === "reset") {
-            clearFormDataByName(formName);
-        } else if (id === "cancel") {
-            _this.initStudentSearchGrid();
-        }
-    };
-
-    this.deleteStudentSearchFromGrid = function (studentSearch) {
-        var _this = this;
-        var response = deleteStudentSearch(studentSearch.id);
-        if (response.success) {
-            _this.initStudentSearchGrid();
-        }
-    };
-
     this.loadStudentSearchLyt();
 }
 
@@ -574,8 +582,8 @@ function loadAdvisorLyt(cellObj) {
         $(advisorFormObj.elements["phone"]).attr('readonly', 'true');
         $(advisorFormObj.elements["notes"]).attr('readonly', 'true');
         $(advisorFormObj.elements["status"]).attr('disabled', 'disabled');
-        $(advisorFormObj.elements["password"]).hide();
-        $(advisorFormObj.elements["rePassword"]).hide();
+        $(advisorFormObj.elements["password"].parentElement.parentElement).hide();
+        $(advisorFormObj.elements["rePassword"].parentElement.parentElement).hide();
         $(advisorFormObj.elements["save"]).hide();
         $(advisorFormObj.elements["reset"]).hide();
         $(advisorFormObj.elements["cancel"]).text("Close");
