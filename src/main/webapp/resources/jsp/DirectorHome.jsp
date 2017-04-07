@@ -321,7 +321,7 @@
                         Student Search
                     </a>
                 </li>
-                <li class="active" itemId="STUDENTS">
+                <li itemId="STUDENTS">
                     <a href="javascript:void(0);" onclick="onMainNavItemClick('STUDENTS')" title="Students">
                         Students
                     </a>

@@ -1,3 +1,4 @@
+/* Director Home Starts */
 function onMainNavItemClick(itemId) {
     if (itemId == appManagerLytObj.module) {
         return;
@@ -108,7 +109,6 @@ function loadStudentSearchLyt(cellObj) {
 
     this.showEditStudentSearchForm = function (cellObj, studentSearch) {
         var _this = this;
-        console.log(cellObj);
         var detailsObj = cellObj.parentElement.appendChild(cellObj.cloneNode())
         var studentSearchFormConfObj = {
             "parent": detailsObj,
@@ -359,50 +359,50 @@ function getStudentDetailsGridObj(toolbarObj, confObj) {
             "data-unique-id": "srNo"
         },
         columns: [{
-            title: "#",
-            field: "srNo",
-            align: "left"
-        }, {
-            title: "700#",
-            field: "studentId",
-            align: "left"
-        }, {
-            title: "Name",
-            field: "name",
-            align: "left"
+                title: "#",
+                field: "srNo",
+                align: "left"
+            }, {
+                title: "700#",
+                field: "studentId",
+                align: "left"
+            }, {
+                title: "Name",
+                field: "name",
+                align: "left"
 
-        }, {
-            title: "Mail",
-            field: "mail",
-            align: "left"
-        }, {
-            title: "Phone #",
-            field: "phone",
-            align: "left"
-        }, {
-            title: "Concentration",
-            field: "concentration",
-            align: "left"
+            }, {
+                title: "Mail",
+                field: "mail",
+                align: "left"
+            }, {
+                title: "Phone #",
+                field: "phone",
+                align: "left"
+            }, {
+                title: "Concentration",
+                field: "concentration",
+                align: "left"
 
-        }, {
-            title: "Entry Date",
-            field: "entryDate",
-            align: "left"
+            }, {
+                title: "Entry Date",
+                field: "entryDate",
+                align: "left"
 
-        }, {
-            title: "Operate",
-            field: "operate",
-            align: 'center',
-            events: confObj.me.operateEvent(),
-            formatter: [
-                '<button class="studentEdit" title="Edit">',
-                '<i class="glyphicon glyphicon-pencil icon-pencil"></i>',
-                '</button>  ',
-                '<button class="studentRemove" title="Remove">',
-                '<i class="glyphicon glyphicon-remove-sign icon-remove-sign"></i>',
-                '</button>'
-            ].join('')
-        }]
+            }, {
+                title: "Operate",
+                field: "operate",
+                align: 'center',
+                events: confObj.me.operateEvent(),
+                formatter: [
+                    '<button class="studentEdit" title="Edit">',
+                    '<i class="glyphicon glyphicon-pencil icon-pencil"></i>',
+                    '</button>  ',
+                    '<button class="studentRemove" title="Remove">',
+                    '<i class="glyphicon glyphicon-remove-sign icon-remove-sign"></i>',
+                    '</button>'
+                ].join('')
+            }]
     };
     return studentDetailsConfobj;
 }
@@ -670,43 +670,43 @@ function getAdvisorDetailsGridObj(toolbarObj, confObj) {
             "data-unique-id": "srNo"
         },
         columns: [{
-            title: "#",
-            field: "srNo",
-            align: "left"
-        }, {
-            title: "700#",
-            field: "loginId",
-            align: "left"
-        }, {
-            title: "Name",
-            field: "name",
-            align: "left"
-        }, {
-            title: "Mail",
-            field: "email",
-            align: "left"
-        }, {
-            title: "Concentration",
-            field: "concentration",
-            align: "left"
-        }, {
-            title: "Status",
-            field: "status",
-            align: "left"
-        }, {
-            title: "Operate",
-            field: "operate",
-            align: 'center',
-            events: confObj.me.operateEvent(),
-            formatter: [
-                '<button class="advisorEdit" title="Edit">',
-                '<i class="glyphicon glyphicon-pencil icon-pencil"></i>',
-                '</button>  ',
-                '<button class="advisorRemove" title="Remove">',
-                '<i class="glyphicon glyphicon-remove-sign icon-remove-sign"></i>',
-                '</button>'
-            ].join('')
-        }]
+                title: "#",
+                field: "srNo",
+                align: "left"
+            }, {
+                title: "700#",
+                field: "loginId",
+                align: "left"
+            }, {
+                title: "Name",
+                field: "name",
+                align: "left"
+            }, {
+                title: "Mail",
+                field: "email",
+                align: "left"
+            }, {
+                title: "Concentration",
+                field: "concentration",
+                align: "left"
+            }, {
+                title: "Status",
+                field: "status",
+                align: "left"
+            }, {
+                title: "Operate",
+                field: "operate",
+                align: 'center',
+                events: confObj.me.operateEvent(),
+                formatter: [
+                    '<button class="advisorEdit" title="Edit">',
+                    '<i class="glyphicon glyphicon-pencil icon-pencil"></i>',
+                    '</button>  ',
+                    '<button class="advisorRemove" title="Remove">',
+                    '<i class="glyphicon glyphicon-remove-sign icon-remove-sign"></i>',
+                    '</button>'
+                ].join('')
+            }]
     };
     return advisorDetailsConfobj;
 }
@@ -1026,48 +1026,48 @@ function getConcentrationDetailsGridObj(toolbarObj, confObj) {
             "data-unique-id": "srNo"
         },
         columns: [{
-            title: "#",
-            field: "srNo",
-            align: "left"
-        }, {
-            title: "Name",
-            field: "concentrationName",
-            align: "left"
-        }, {
-            title: "Cources",
-            field: "cources",
-            align: "left",
-            formatter: function (value, row, index) {
-                var courceNames = [];
-                if (value && value.length) {
-                    for (var i = 0; i < value.length; i++) {
-                        courceNames.push(value[i].courceName + " (" + value[i].courcePrefix + " ," + value[i].courceCode + ")");
+                title: "#",
+                field: "srNo",
+                align: "left"
+            }, {
+                title: "Name",
+                field: "concentrationName",
+                align: "left"
+            }, {
+                title: "Cources",
+                field: "cources",
+                align: "left",
+                formatter: function (value, row, index) {
+                    var courceNames = [];
+                    if (value && value.length) {
+                        for (var i = 0; i < value.length; i++) {
+                            courceNames.push(value[i].courceName + " (" + value[i].courcePrefix + " ," + value[i].courceCode + ")");
+                        }
                     }
+                    return courceNames.join(', ');
                 }
-                return courceNames.join(', ');
-            }
-        }, {
-            title: "Notes",
-            field: "notes",
-            align: "left"
-        }, {
-            title: "Status",
-            field: "concentrationStatus",
-            align: "left"
-        }, {
-            title: "Operate",
-            field: "operate",
-            align: 'center',
-            events: confObj.me.operateEvent(),
-            formatter: [
-                '<button class="concentrationEdit" title="Edit">',
-                '<i class="glyphicon glyphicon-pencil icon-pencil"></i>',
-                '</button>  ',
-                '<button class="concentrationRemove" title="Remove">',
-                '<i class="glyphicon glyphicon-remove-sign icon-remove-sign"></i>',
-                '</button>'
-            ].join('')
-        }]
+            }, {
+                title: "Notes",
+                field: "notes",
+                align: "left"
+            }, {
+                title: "Status",
+                field: "concentrationStatus",
+                align: "left"
+            }, {
+                title: "Operate",
+                field: "operate",
+                align: 'center',
+                events: confObj.me.operateEvent(),
+                formatter: [
+                    '<button class="concentrationEdit" title="Edit">',
+                    '<i class="glyphicon glyphicon-pencil icon-pencil"></i>',
+                    '</button>  ',
+                    '<button class="concentrationRemove" title="Remove">',
+                    '<i class="glyphicon glyphicon-remove-sign icon-remove-sign"></i>',
+                    '</button>'
+                ].join('')
+            }]
     };
     return concentrationDetailsConfobj;
 }
@@ -1341,43 +1341,43 @@ function getCourceDetailsGridObj(toolbarObj, confObj) {
             "data-unique-id": "srNo"
         },
         columns: [{
-            title: "#",
-            field: "srNo",
-            align: "left"
-        }, {
-            title: "Name",
-            field: "courceName",
-            align: "left"
-        }, {
-            title: "Prefix",
-            field: "courcePrefix",
-            align: "left"
-        }, {
-            title: "Code",
-            field: "courceCode",
-            align: "left"
-        }, {
-            title: "Notes",
-            field: "notes",
-            align: "left"
-        }, {
-            title: "Status",
-            field: "courceStatus",
-            align: "left"
-        }, {
-            title: "Operate",
-            field: "operate",
-            align: 'center',
-            events: confObj.me.operateEvent(),
-            formatter: [
-                '<button class="courceEdit" title="Edit">',
-                '<i class="glyphicon glyphicon-pencil icon-pencil"></i>',
-                '</button>  ',
-                '<button class="courceRemove" title="Remove">',
-                '<i class="glyphicon glyphicon-remove-sign icon-remove-sign"></i>',
-                '</button>'
-            ].join('')
-        }]
+                title: "#",
+                field: "srNo",
+                align: "left"
+            }, {
+                title: "Name",
+                field: "courceName",
+                align: "left"
+            }, {
+                title: "Prefix",
+                field: "courcePrefix",
+                align: "left"
+            }, {
+                title: "Code",
+                field: "courceCode",
+                align: "left"
+            }, {
+                title: "Notes",
+                field: "notes",
+                align: "left"
+            }, {
+                title: "Status",
+                field: "courceStatus",
+                align: "left"
+            }, {
+                title: "Operate",
+                field: "operate",
+                align: 'center',
+                events: confObj.me.operateEvent(),
+                formatter: [
+                    '<button class="courceEdit" title="Edit">',
+                    '<i class="glyphicon glyphicon-pencil icon-pencil"></i>',
+                    '</button>  ',
+                    '<button class="courceRemove" title="Remove">',
+                    '<i class="glyphicon glyphicon-remove-sign icon-remove-sign"></i>',
+                    '</button>'
+                ].join('')
+            }]
     };
     return courceDetailsConfobj;
 }
@@ -1421,3 +1421,133 @@ function getAdvisorsAsOptions() {
     }
     return options;
 }
+
+/*Director Home Ends*/
+
+/*Student Home Starts*/
+function onStudentMainNavItemClick(itemId) {
+    if (itemId == appManagerLytObj.module) {
+        return;
+    }
+    if (appManagerLytObj.module) {
+        $("#appNavBar").find('li[itemId="' + appManagerLytObj.module + '"]').removeClass('active');
+    } else {
+        $("#appNavBar").find('.active').removeClass('active');
+    }
+    $("#appNavBar").find('li[itemId="' + itemId + '"]').addClass('active');
+    if (itemId === "QUESTIONNAIRES") {
+        appManagerLytObj.module = itemId;
+        studentLytObj = new loadStudentQuestionnaireLyt(appManagerLytObj.domObj);
+    } else if (itemId === "CODEOFCONDUCT") {
+        appManagerLytObj.module = itemId;
+        studentLytObj = new loadCodeOfCounductLyt(appManagerLytObj.domObj);
+    } else if (itemId === "LOGOUT") {
+        doLogout();
+    }
+}
+
+function loadStudentQuestionnaireLyt(cellObj) {
+    this.lytConfObj = {
+        "pattern": "1C",
+        "parent": cellObj
+    };
+
+    this.questionnaireSubItems = {
+        'takenCource': ['takenCourceDesc'],
+        'planToWork': ['planToWorkDesc'],
+        'currentEmployee': ['currentEmployeePosition', 'residenceFromWarrensburgCampus']
+    };
+    this.lytObj = new appLayout(this.lytConfObj);
+    this.detailsCellObj = this.lytObj.cells.a.obj;
+    this.loadStudentQuestionnaireLyt = function () {
+        var _this = this;
+        clearAllElementsInDiv(_this.detailsCellObj);
+        _this.showStudentQuestionnaireForm(_this.detailsCellObj);
+    };
+
+    this.attachStudentQuestionnaireForm = function (cellObj, confObj) {
+        var studentQuestionnaireFormWrapObj = new attachForm(confObj);
+        studentQuestionnaireFormWrapObj.cell.form.innerHTML = getStudentQuestionnaireForm();
+    };
+
+    this.showStudentQuestionnaireForm = function (cellObj) {
+        var _this = this;
+        var studentQuestionnaireFormConfObj = {
+            "parent": cellObj,
+            "hdrText": "Student Questionnaire",
+            "formType": "questionnnaire",
+            "name": "studentQuestionnaire",
+            "id": "studentQuestionnaire"
+        };
+        _this.attachStudentQuestionnaireForm(cellObj, studentQuestionnaireFormConfObj);
+        var studentQuestionnaireFormObj = document.forms[studentQuestionnaireFormConfObj.name];
+        $(studentQuestionnaireFormObj.elements["submitQuestionnaire"]).click(function () {
+            _this.onStudentQuestionnaireFormBtnClick("submit", studentQuestionnaireFormConfObj);
+        });
+
+        $(studentQuestionnaireFormObj.elements["reset"]).click(function () {
+            _this.onStudentQuestionnaireFormBtnClick("reset", studentQuestionnaireFormConfObj);
+        });
+    };
+
+    this.onStudentQuestionnaireFormBtnClick = function (id, confObj) {
+        var _this = this;
+        var formName = confObj.name;
+        if (id === "submit") {
+            var formObj = document.forms[formName];
+            var studentId = formObj["studentId"].value || "";
+            if (!studentId) {
+                return;
+            }
+            var response = ""//getStudent(studentId);
+            if (response && response.success) {
+                _this.showEditStudentQuestionnaireForm(_this.detailsCellObj, response);
+            } else {
+                console.log(response);
+            }
+        } else if (id === "reset") {
+            hideAllQuestionnaireSubItems();
+        }
+    };
+
+    this.loadStudentQuestionnaireLyt();
+}
+
+function getStudentQuestionnaireForm() {
+    var form = document.getElementById("studentQuestionnairesFormTpl").innerHTML;
+    return form;
+}
+
+function hideAllQuestionnaireSubItems() {
+    for (var itemId in questionnaireSubItems) {
+        onStudentQuestionnaireFormChange(itemId, 'no');
+    }
+}
+
+function onStudentQuestionnaireFormChange(itemId, value) {
+
+    if (!questionnaireSubItems[itemId]) {
+        return;
+    }
+    var studentQuestionnaireFormObj = document.forms['studentQuestionnaire'];
+    if (!studentQuestionnaireFormObj) {
+        return;
+    }
+    var itemObj = studentQuestionnaireFormObj[itemId];
+    if (!itemObj) {
+        return;
+    }
+    var itemValue = value || itemObj.value;
+    var subItems = questionnaireSubItems[itemId];
+    if (itemValue === 'yes') {
+        for (var itemInd = 0; itemInd < subItems.length; itemInd++) {
+            $(studentQuestionnaireFormObj.elements[subItems[itemInd]].parentElement.parentElement).show();
+        }
+    } else {
+        for (var itemInd = 0; itemInd < subItems.length; itemInd++) {
+            $(studentQuestionnaireFormObj.elements[subItems[itemInd]].parentElement.parentElement).hide();
+        }
+    }
+}
+
+/*Student Home Ends*/
