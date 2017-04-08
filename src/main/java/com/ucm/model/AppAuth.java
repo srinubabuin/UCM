@@ -43,12 +43,12 @@ public class AppAuth {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("class SigninToken {\n");
-
-        sb.append("    token: ").append(toIndentedString(token)).append("\n");
-        sb.append("}");
-        return sb.toString();
+//        StringBuilder sb = new StringBuilder();
+//        sb.append("class SigninToken {\n");
+//
+//        sb.append("    token: ").append(toIndentedString(token)).append("\n");
+//        sb.append("}");
+        return "{\"token\":\"" + this.token + "\", \"role\": \"" + role.toString() + "\"}";
     }
 
     /**

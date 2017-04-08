@@ -1424,6 +1424,146 @@ function getAdvisorsAsOptions() {
 
 /*Director Home Ends*/
 
+/*Advisor Home Starts*/
+function onAdvisorMainNavItemClick(itemId) {
+    if (itemId == appManagerLytObj.module) {
+        return;
+    }
+    if (appManagerLytObj.module) {
+        $("#appNavBar").find('li[itemId="' + appManagerLytObj.module + '"]').removeClass('active');
+    } else {
+        $("#appNavBar").find('.active').removeClass('active');
+    }
+    $("#appNavBar").find('li[itemId="' + itemId + '"]').addClass('active');
+    if (itemId === "STUDENTS") {
+        appManagerLytObj.module = itemId;
+        studentLytObj = new loadStudentLyt(appManagerLytObj.domObj);
+    } else if (itemId === "PROFILE") {
+        appManagerLytObj.module = itemId;
+        advisorProfileLytObj = new loadAdvisorProfileLyt(appManagerLytObj.domObj);
+    } else if (itemId === "LOGOUT") {
+        doLogout();
+    }
+}
+
+function loadAdvisorProfileLyt(cellObj) {
+    this.lytConfObj = {
+        "pattern": "1C",
+        "parent": cellObj
+    };
+    this.lytObj = new appLayout(this.lytConfObj);
+    this.detailsCellObj = this.lytObj.cells.a.obj;
+    this.loadAdvisorProfilesLyt = function () {
+        var _this = this;
+        clearAllElementsInDiv(_this.detailsCellObj);
+        _this.showEditAdvisorProfileForm(_this.detailsCellObj);
+    };
+
+    this.attachAdvisorProfilesForm = function (cellObj, confObj) {
+        var advisorProfileFormWrapObj = new attachForm(confObj);
+        advisorProfileFormWrapObj.cell.form.innerHTML = getAdvisorProfileForm();
+    };
+
+    this.showEditAdvisorProfileForm = function (cellObj, advisorProfile) {
+        var _this = this;
+
+        var advisorProfileFormConfObj = {
+            "parent": cellObj,
+            "hdrText": "Profile",
+            "formType": "edit",
+            "name": "editadvisorProfile",
+            "id": "editadvisorProfile"
+        };
+        _this.attachAdvisorProfilesForm(cellObj, advisorProfileFormConfObj);
+//        var advisorProfile = getAdvisor(advisorProfile.id);
+//        _this.setAdvisorProfileFormDetails(advisorProfileFormConfObj, advisorProfile);
+        var advisorProfileFormObj = document.forms[advisorProfileFormConfObj.name];
+        $(advisorProfileFormObj.elements["name"]).attr('readonly', 'true');
+        $(advisorProfileFormObj.elements["mail"]).attr('readonly', 'true');
+        $(advisorProfileFormObj.elements["status"]).attr('disabled', 'disabled');
+        $(advisorProfileFormObj.elements["reset"]).hide();
+        $(advisorProfileFormObj.elements["cancel"]).hide();
+        $(advisorProfileFormObj.elements["save"]).click(function () {
+            _this.onAdvisorProfileFormBtnClick("save", advisorProfileFormConfObj);
+        });
+        // $(advisorProfileFormObj.elements["reset"]).click(function () {
+        //     _this.onAdvisorProfileFormBtnClick("reset", advisorProfileFormConfObj);
+        // });
+//        $(advisorProfileFormObj.elements["cancel"]).click(function () {
+//            _this.onAdvisorProfileFormBtnClick("cancel", advisorProfileFormConfObj);
+//        });
+        // _this.onAdvisorProfileFormBtnClick("clearBtn", advisorProfileFormConfObj);
+    };
+
+    this.setAdvisorProfileFormDetails = function (formConfObj, details) {
+        var advisorProfileFormObj = document.forms[formConfObj.name];
+        $(advisorProfileFormObj.elements["id"]).val(details.id);
+        $(advisorProfileFormObj.elements["name"]).val(details.name);
+        $(advisorProfileFormObj.elements["mail"]).val(details.email);
+        $(advisorProfileFormObj.elements["loginId"]).val(details.loginId);
+        $(advisorProfileFormObj.elements["phone"]).val(details.phone);
+        $(advisorProfileFormObj.elements["notes"]).val(details.notes);
+        $(advisorProfileFormObj.elements["status"]).val(details.status);
+        $(advisorProfileFormObj.elements["password"]).val(details.appUser.password);
+        $(advisorProfileFormObj.elements["rePassword"]).val(details.appUser.password);
+    };
+
+    this.onAdvisorProfileFormBtnClick = function (id, confObj) {
+
+        var _this = this;
+        var formName = confObj.name;
+        if (id === "save") {
+            var formObj = document.forms[formName];
+            if (formObj["password"].value !== formObj["rePassword"].value) {
+                return;
+            }
+            var advisorProfile = {};
+            advisorProfile["name"] = formObj["name"].value;
+            advisorProfile["email"] = formObj["mail"].value;
+            advisorProfile["loginId"] = formObj["loginId"].value;
+            advisorProfile["phone"] = formObj["phone"].value;
+            advisorProfile["notes"] = formObj["notes"].value;
+            advisorProfile["status"] = formObj["status"].value;
+            advisorProfile["appUser"] = {
+                "password": formObj["password"].value
+            };
+            var response;
+            if (confObj.formType === "add") {
+                response = addAdvisorProfile(advisorProfile);
+            } else {
+                advisorProfile["id"] = formObj["id"].value;
+                response = editAdvisorProfile(advisorProfile);
+            }
+            if (response && response.success) {
+                _this.initAdvisorProfilesGrid();
+            } else {
+                console.log(response);
+            }
+        } else if (id === "reset") {
+            clearFormDataByName(formName);
+        } else if (id === "cancel") {
+            _this.initAdvisorProfilesGrid();
+        }
+    };
+
+    this.deleteAdvisorProfileFromGrid = function (advisorProfile) {
+        var _this = this;
+        var response = deleteAdvisorProfile(advisorProfile.id);
+        if (response.success) {
+            _this.initAdvisorProfilesGrid();
+        }
+    };
+
+    this.loadAdvisorProfilesLyt();
+}
+
+function getAdvisorProfileForm() {
+    var form = document.getElementById("advisorFormTpl").innerHTML;
+    return form;
+}
+/*Advisor Home Ends*/
+
+
 /*Student Home Starts*/
 function onStudentMainNavItemClick(itemId) {
     if (itemId == appManagerLytObj.module) {
