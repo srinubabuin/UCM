@@ -240,6 +240,8 @@ function loadStudentLyt(cellObj) {
         };
         _this.attachStudentsForm(cellObj, studentFormConfObj);
         var studentFormObj = document.forms[studentFormConfObj.name];
+        var concentrationOptions = getConcentrationAsOptions();
+        $(studentFormObj.elements["concentration"]).append(concentrationOptions);
         $(studentFormObj.elements["status"].parentElement.parentElement).hide();
         $(studentFormObj.elements["save"]).click(function () {
             _this.onStudentFormBtnClick("save", studentFormConfObj);
@@ -312,10 +314,24 @@ function loadStudentLyt(cellObj) {
         var formName = confObj.name;
         if (id === "save") {
             var formObj = document.forms[formName];
-            if (formObj["password"].value !== formObj["rePassword"].value) {
-                return;
-            }
             var student = {};
+            var scores = {};
+            student["loginId"] = formObj["loginId"].value;
+            student["firstName"] = formObj["firstName"].value;
+            student["lastName"] = formObj["lastName"].value;
+            student["email"] =  formObj["mail"].value
+            student["secondaryEmail"] =  formObj["personalMail"].value;
+            student["phoneNumber"] =  formObj["phone"].value;
+            student["address"] =  formObj["address"].value;
+            scores["verbal"] =  formObj["verbal"].value;
+            scores["quantitative"] =  formObj["quantitative"].value;
+            scores["analytical"] =  formObj["analytical"].value;
+            scores["gpa"] =  formObj["gpa"].value;
+            student["concentration"] = {
+                id: formObj["concentration"].value
+            };
+            scores["scoreType"] = formObj["scoreType"].value;
+            student["scores"] = JSON.stringify(scores);
             if (confObj.formType === "add") {
                 response = addStudent(student);
             } else {
@@ -360,33 +376,33 @@ function getStudentDetailsGridObj(toolbarObj, confObj) {
         },
         columns: [{
             title: "#",
-            field: "srNo",
+            field: "id",
             align: "left"
         }, {
             title: "700#",
-            field: "studentId",
+            field: "loginId",
             align: "left"
         }, {
             title: "Name",
-            field: "name",
+            field: "firstName",
             align: "left"
 
         }, {
             title: "Mail",
-            field: "mail",
+            field: "email",
             align: "left"
         }, {
             title: "Phone #",
-            field: "phone",
+            field: "phoneNumber",
             align: "left"
         }, {
             title: "Concentration",
-            field: "concentration",
+            field: "concentration.concentrationName",
             align: "left"
 
         }, {
             title: "Entry Date",
-            field: "entryDate",
+            field: "createdDate",
             align: "left"
 
         }, {

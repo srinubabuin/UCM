@@ -22,7 +22,7 @@ public class Student implements Serializable {
     private Concentration concentration;
     private String studentStatus;
     private Date studentStatusDate;
-    private String status;
+    private String status = "ACTIVE";
     private String testDetails;
     private String acceptedCodeOfConduct;
     private String notes;
