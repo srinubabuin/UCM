@@ -48,6 +48,27 @@ public class UserLoginServiceImpl implements UserLoginService {
     }
 
     @Override
+    public int modifyUser(AppUser appUser) {
+        Connection con = null;
+        PreparedStatement pstm = null;
+        ResultSet rs = null;
+        int count = 0;
+        try {
+            int pos = 1;
+            con = AppConnectionPool.getConnection();
+            pstm = con.prepareStatement(AppQueryReader.getDBQuery("com.ucm.services.impl.userloginservice.modifyuser"), new String[]{DBUtil.COLUMN_USERS_ID});
+            pstm.setString(pos, appUser.getPassword());
+            pstm.setString(++pos, appUser.getLoginId());
+            count = pstm.executeUpdate();
+        } catch (SQLException e) {
+            LOGGER.log(Priority.ERROR, "Exception while inserting the user" + e.getMessage());
+        } finally {
+            AppConnectionPool.release(rs, pstm, con);
+        }
+        return count;
+    }
+
+    @Override
     public int getMaxId() {
         Connection con = null;
         PreparedStatement pstm = null;

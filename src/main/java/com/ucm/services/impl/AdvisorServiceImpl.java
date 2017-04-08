@@ -11,6 +11,7 @@ import com.app.util.DBUtil;
 import com.app.util.Role;
 import com.conn.pool.app.AppConnectionPool;
 import com.ucm.exception.ConstraintVilationException;
+import com.ucm.exception.ObjectNotFoundException;
 import com.ucm.model.Advisor;
 import com.ucm.model.AppUser;
 import com.ucm.services.AdvisiorService;
@@ -73,6 +74,47 @@ public class AdvisorServiceImpl implements AdvisiorService {
             AppConnectionPool.release(rs, pstm, con);
         }
         return advId;
+    }
+
+    @Override
+    public int modifyAdvisor(Advisor advisor) throws ConstraintVilationException, ObjectNotFoundException {
+
+        Connection con = null;
+        PreparedStatement pstm = null;
+        ResultSet rs = null;
+        int advisorUpdateCount = 0;
+        try {
+            int pos = 1;
+            UserLoginService userService = new UserLoginServiceImpl();
+            AppUser appUser = new AppUser();
+            appUser.setLoginId(advisor.getLoginId());
+            appUser.setPassword(ApplicationUtil.encryptValue(advisor.getAppUser().getPassword()));
+            int userUpdatedCount = userService.modifyUser(appUser);
+            if (userUpdatedCount > 0) {
+                con = AppConnectionPool.getConnection();
+                pstm = con.prepareStatement(AppQueryReader.getDBQuery("com.ucm.services.impl.advisorservice.modifyadvisor"));
+                pstm.setString(pos, advisor.getEmail());
+                pstm.setString(++pos, advisor.getName());
+                pstm.setString(++pos, advisor.getStatus());
+                pstm.setString(++pos, advisor.getPhone());
+                pstm.setString(++pos, advisor.getNotes());
+                pstm.setInt(++pos, advisor.getId());
+                advisorUpdateCount = pstm.executeUpdate();
+                if (advisorUpdateCount <= 0) {
+                    throw new ObjectNotFoundException();
+                }
+            } else {
+                throw new ObjectNotFoundException();
+            }
+        } catch (SQLIntegrityConstraintViolationException e) {
+            LOGGER.log(Priority.ERROR, "Exception while updating advisor method modifyAdvisor " + e.getMessage());
+            throw new ConstraintVilationException(e.getMessage());
+        } catch (SQLException se) {
+            LOGGER.log(Priority.ERROR, "Exception while updating advisor method modifyAdvisor " + se.getMessage());
+        } finally {
+            AppConnectionPool.release(rs, pstm, con);
+        }
+        return advisorUpdateCount;
     }
 
     @Override

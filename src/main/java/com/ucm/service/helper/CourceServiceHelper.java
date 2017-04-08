@@ -8,7 +8,7 @@ package com.ucm.service.helper;
 import com.app.util.DBUtil;
 import com.app.util.RequestStatus;
 import com.ucm.exception.ConstraintVilationException;
-import com.ucm.exception.CourceNotFoundException;
+import com.ucm.exception.ObjectNotFoundException;
 import com.ucm.model.Cource;
 import com.ucm.services.CourceService;
 import com.ucm.services.impl.CourceServiceImpl;
@@ -35,8 +35,33 @@ public class CourceServiceHelper {
                 response.setId(courceId);
             }
         } catch (ConstraintVilationException cve) {
-                response.setMessage(DBUtil.getCustomDBMessage(cve.getMessage()));
-                response.setId(0);
+            response.setMessage(DBUtil.getCustomDBMessage(cve.getMessage()));
+            response.setId(0);
+        }
+        return response;
+    }
+
+    public RequestStatus modifyCource(Cource cource) {
+
+        RequestStatus response = new RequestStatus();
+        CourceService courceService;
+        try {
+            courceService = new CourceServiceImpl();
+            int courceUpdateInd = courceService.modifyCource(cource);
+            if (courceUpdateInd > 0) {
+                response.setSuccess(true);
+                response.setMessage("Cource updated successfully.");
+                response.setId(courceUpdateInd);
+            } else {
+                response.setMessage("Cource not updated.");
+                response.setId(courceUpdateInd);
+            }
+        } catch (ConstraintVilationException cve) {
+            response.setMessage(DBUtil.getCustomDBMessage(cve.getMessage()));
+            response.setId(0);
+        } catch (ObjectNotFoundException cve) {
+            response.setMessage(DBUtil.getCustomDBMessage("COUR_NOT_FOUND"));
+            response.setId(0);
         }
         return response;
     }
@@ -50,7 +75,7 @@ public class CourceServiceHelper {
         Cource cource = null;
         try {
             cource = new CourceServiceImpl().getCourceById(courceId);
-        } catch (CourceNotFoundException ce) {
+        } catch (ObjectNotFoundException ce) {
             Logger.getLogger(CourceServiceHelper.class.getName()).log(Level.SEVERE, null, ce);
         }
         return cource;
@@ -69,9 +94,9 @@ public class CourceServiceHelper {
                 response.setMessage("Cource not deleted.");
                 response.setId(courceId);
             }
-        } catch (CourceNotFoundException cnfe) {
-                response.setMessage(cnfe.getMessage());
-                response.setId(courceId);
+        } catch (ObjectNotFoundException cnfe) {
+            response.setMessage(cnfe.getMessage());
+            response.setId(courceId);
         }
         return response;
     }

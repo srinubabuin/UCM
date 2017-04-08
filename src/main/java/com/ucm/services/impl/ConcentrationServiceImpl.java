@@ -9,11 +9,13 @@ import com.app.db.util.AppQueryReader;
 import com.app.util.DBUtil;
 import com.conn.pool.app.AppConnectionPool;
 import com.ucm.exception.ConstraintVilationException;
+import com.ucm.exception.ObjectNotFoundException;
 import com.ucm.model.Advisor;
 import com.ucm.model.Concentration;
 import com.ucm.model.Cource;
 import com.ucm.services.ConcentrationService;
 import com.ucm.services.CourceService;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -23,6 +25,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
 import org.apache.log4j.Logger;
 import org.apache.log4j.Priority;
 
@@ -65,6 +68,38 @@ public class ConcentrationServiceImpl implements ConcentrationService {
     }
 
     @Override
+    public int modifyConcentation(Concentration concentation) throws ConstraintVilationException, ObjectNotFoundException {
+
+        Connection con = null;
+        PreparedStatement pstm = null;
+        ResultSet rs = null;
+        int concentationUpdate = 0;
+        try {
+            int pos = 1;
+            con = AppConnectionPool.getConnection();
+            pstm = con.prepareStatement(AppQueryReader.getDBQuery("com.ucm.services.impl.concentratioservice.modifyconcentation"), new String[]{DBUtil.COLUMN_CONCENTATIONS_ID});
+            pstm.setString(pos, concentation.getConcentrationName());
+            pstm.setInt(++pos, concentation.getAdvisor().getId());
+            pstm.setString(++pos, concentation.getConcentrationStatus());
+            pstm.setString(++pos, concentation.getNotes());
+            pstm.setInt(++pos, concentation.getId());
+            addConcentrationCources(concentation);
+            concentationUpdate = pstm.executeUpdate();
+            if (concentationUpdate <= 0) {
+                throw new ObjectNotFoundException();
+            }
+        } catch (SQLIntegrityConstraintViolationException e) {
+            LOGGER.log(Priority.ERROR, "Exception while modifying the Concentation " + e.getMessage());
+            throw new ConstraintVilationException(e.getMessage());
+        } catch (SQLException ex) {
+            LOGGER.log(Priority.ERROR, "Exception while modifying the Concentation " + ex.getMessage());
+        } finally {
+            AppConnectionPool.release(rs, pstm, con);
+        }
+        return concentationUpdate;
+    }
+
+    @Override
     public int addConcentrationCources(Concentration concentation) {
 
         Connection con = null;
@@ -73,8 +108,9 @@ public class ConcentrationServiceImpl implements ConcentrationService {
         int conCources = 0;
         try {
             int pos = 1;
+            deleteConcentrationCources(concentation);
             con = AppConnectionPool.getConnection();
-            pstm = con.prepareStatement(AppQueryReader.getDBQuery("com.ucm.services.impl.concentratioservice.inserticoncentrationwcources"), new String[]{DBUtil.COLUMN_CONCENTATIONS_ID});
+            pstm = con.prepareStatement(AppQueryReader.getDBQuery("com.ucm.services.impl.concentratioservice.insertconcentrationcources"), new String[]{DBUtil.COLUMN_CONCENTATIONS_ID});
             for (Cource cource : concentation.getCources()) {
                 pstm.setInt(pos, concentation.getId());
                 pstm.setInt(++pos, cource.getId());
@@ -94,6 +130,29 @@ public class ConcentrationServiceImpl implements ConcentrationService {
             AppConnectionPool.release(rs, pstm, con);
         }
         return conCources;
+    }
+
+    @Override
+    public int deleteConcentrationCources(Concentration concentation) {
+
+        Connection con = null;
+        PreparedStatement pstm = null;
+        ResultSet rs = null;
+        int deletedConCources = 0;
+        try {
+            int pos = 1;
+            con = AppConnectionPool.getConnection();
+            pstm = con.prepareStatement(AppQueryReader.getDBQuery("com.ucm.services.impl.concentratioservice.deleteconcentrationcources"));
+            pstm.setInt(pos, concentation.getId());
+            deletedConCources = pstm.executeUpdate();
+        } catch (SQLIntegrityConstraintViolationException e) {
+            LOGGER.log(Priority.ERROR, "Exception while deleting the Concentation in deleteConcentrationCources" + e.getMessage());
+        } catch (SQLException ex) {
+            LOGGER.log(Priority.ERROR, "Exception while deleting the Concentation in deleteConcentrationCources " + ex.getMessage());
+        } finally {
+            AppConnectionPool.release(rs, pstm, con);
+        }
+        return deletedConCources;
     }
 
     @Override

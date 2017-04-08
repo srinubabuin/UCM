@@ -8,6 +8,7 @@ package com.ucm.rest;
 import com.app.util.RequestStatus;
 import com.ucm.model.Concentration;
 import com.ucm.service.helper.ConcentationServiceHelper;
+
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
@@ -19,6 +20,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
+
 import org.apache.log4j.Logger;
 
 @Path("/concentration")
@@ -48,11 +50,11 @@ public class ConcentrationService {
     @Path("/{param}")
     @Consumes({"application/json"})
     @Produces({"application/json"})
-    public Response update(@PathParam("param") int concentrationId) {
+    public Response update(@PathParam("param") int concentrationId, Concentration concentration) {
 
         try {
             ConcentationServiceHelper helper = new ConcentationServiceHelper();
-            RequestStatus reqStatus = null;
+            RequestStatus reqStatus = helper.modifyConcentation(concentration);
             return Response.ok().header("Access-Control-Allow-Origin", "*").entity(reqStatus).build();
         } catch (Exception e) {
             LOGGER.info("Insert Concentration error");

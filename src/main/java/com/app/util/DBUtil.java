@@ -80,12 +80,20 @@ public class DBUtil {
                 message = "Cource Prefix already exists.";
             } else if (message.contains("COUR_UNQ_CODE")) {
                 message = "Cource Code already exists.";
+            } else if (message.contains("COUR_NOT_FOUND")) {
+                message = "Cource not found.";
             } else if (message.contains("CON_NAME_UK")) {
                 message = "Concentation already exists.";
-            } else if (message.contains("STU_MAIL_Uk")) {
+            } else if (message.contains("CON_NOT_FOUND")) {
+                message = "Concentation not found.";
+            } else if (message.contains("ADV_NOT_FOUND")) {
+                message = "Advisor not found.";
+            } else if (message.contains("STU_MAIL_UK")) {
                 message = "Student Primary mail  already exists.";
             } else if (message.contains("STU_PHONE_Uk")) {
                 message = "Student phone number already exists.";
+            } else {
+                message = "Invalid Operation";
             }
         }
         return message;

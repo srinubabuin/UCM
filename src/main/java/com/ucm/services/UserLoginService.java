@@ -11,5 +11,6 @@ import com.ucm.model.AppUser;
 public interface UserLoginService {
 
     public int insertUser(AppUser appUser);
+    public int modifyUser(AppUser appUser);
     public int getMaxId();
 }

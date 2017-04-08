@@ -9,7 +9,7 @@ import com.app.db.util.AppQueryReader;
 import com.app.util.DBUtil;
 import com.conn.pool.app.AppConnectionPool;
 import com.ucm.exception.ConstraintVilationException;
-import com.ucm.exception.CourceNotFoundException;
+import com.ucm.exception.ObjectNotFoundException;
 import com.ucm.model.Cource;
 import com.ucm.services.CourceService;
 
@@ -62,12 +62,38 @@ public class CourceServiceImpl implements CourceService {
     }
 
     @Override
-    public int modifyCource(Cource cource) throws CourceNotFoundException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public int modifyCource(Cource cource) throws ObjectNotFoundException, ConstraintVilationException {
+        Connection con = null;
+        PreparedStatement pstm = null;
+        ResultSet rs = null;
+        int updatedCount = 0;
+        try {
+            int pos = 1;
+            con = AppConnectionPool.getConnection();
+            pstm = con.prepareStatement(AppQueryReader.getDBQuery("com.ucm.services.impl.courceservice.modifycource"));
+            pstm.setString(pos, cource.getCourceName());
+            pstm.setString(++pos, cource.getCourcePrefix());
+            pstm.setString(++pos, cource.getCourceCode());
+            pstm.setString(++pos, cource.getCourceStatus());
+            pstm.setString(++pos, cource.getNotes());
+            pstm.setInt(++pos, cource.getId());
+            updatedCount = pstm.executeUpdate();
+            if (updatedCount <= 0) {
+                throw new ObjectNotFoundException();
+            }
+        } catch (SQLIntegrityConstraintViolationException ex) {
+            LOGGER.log(Level.SEVERE, "Exception while updating the cource in modifyCource {0}", ex.getMessage());
+            throw new ConstraintVilationException(ex.getMessage());
+        } catch (SQLException ex) {
+            LOGGER.log(Level.SEVERE, "Exception while updating the cource in modifyCource {0}", ex.getMessage());
+        } finally {
+            AppConnectionPool.release(rs, pstm, con);
+        }
+        return updatedCount;
     }
 
     @Override
-    public int deleteCource(int courceId) throws CourceNotFoundException {
+    public int deleteCource(int courceId) throws ObjectNotFoundException {
         Connection con = null;
         PreparedStatement pstm = null;
         int deletecnt = 0;
@@ -78,7 +104,7 @@ public class CourceServiceImpl implements CourceService {
             deletecnt = pstm.executeUpdate();
         } catch (SQLException ex) {
             LOGGER.log(Level.SEVERE, "Exception while deleting the cource in deleteCource {0}", ex.getMessage());
-            throw new CourceNotFoundException();
+            throw new ObjectNotFoundException();
         } finally {
             AppConnectionPool.release(null, pstm, con);
         }
@@ -116,7 +142,7 @@ public class CourceServiceImpl implements CourceService {
     }
 
     @Override
-    public Cource getCourceById(int courceId) throws CourceNotFoundException {
+    public Cource getCourceById(int courceId) throws ObjectNotFoundException {
         Connection con = null;
         PreparedStatement pstm = null;
         ResultSet rs = null;
@@ -137,7 +163,7 @@ public class CourceServiceImpl implements CourceService {
                 cource.setCourceCreatedDate(rs.getDate(DBUtil.COLUMN_COURCES_CREATED_DATE));
             }
             if (cource == null) {
-                throw new CourceNotFoundException();
+                throw new ObjectNotFoundException();
             }
 
         } catch (SQLException ex) {
@@ -149,13 +175,13 @@ public class CourceServiceImpl implements CourceService {
     }
 
     @Override
-    public Cource getCourceByName(String corceName) throws CourceNotFoundException {
+    public Cource getCourceByName(String corceName) throws ObjectNotFoundException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
     public List<Cource> getAllCourcesByConcentrationId(int concentrationId) {
-        
+
         Connection con = null;
         PreparedStatement pstm = null;
         ResultSet rs = null;
@@ -179,7 +205,7 @@ public class CourceServiceImpl implements CourceService {
                 cources.add(cource);
             }
         } catch (SQLException ex) {
-            LOGGER.log(Level.SEVERE, "Exception getAllCourcesByConcentrationId WITH  concentrationId:"+concentrationId, ex.getMessage());
+            LOGGER.log(Level.SEVERE, "Exception getAllCourcesByConcentrationId WITH  concentrationId:" + concentrationId, ex.getMessage());
         } finally {
             AppConnectionPool.release(rs, pstm, con);
         }

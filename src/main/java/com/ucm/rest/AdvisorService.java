@@ -8,6 +8,7 @@ package com.ucm.rest;
 import com.app.util.RequestStatus;
 import com.ucm.model.Advisor;
 import com.ucm.service.helper.AdvisorServiceHelper;
+
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
@@ -19,6 +20,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
+
 import org.apache.log4j.Logger;
 
 @Path("/advisor")
@@ -38,6 +40,22 @@ public class AdvisorService {
             return Response.ok().header("Access-Control-Allow-Origin", "*").entity(req).build();
         } catch (Exception ex) {
             LOGGER.info("Error while inserting the advisor");
+            return Response.status(405).header("Access-Control-Allow-Origin", "*").build();
+        }
+    }
+
+    @PUT
+    @Path("/{param}")
+    @Consumes({"application/json"})
+    @Produces({"application/json"})
+    public Response update(@PathParam("param") int advisorId, Advisor advisor) {
+        RequestStatus advisorResponseObj;
+        AdvisorServiceHelper advisorServiceHelper;
+        try {
+            advisorServiceHelper = new AdvisorServiceHelper();
+            advisorResponseObj = advisorServiceHelper.modifyAdvisor(advisor);
+            return Response.ok().header("Access-Control-Allow-Origin", "*").entity(advisorResponseObj).build();
+        } catch (Exception nre) {
             return Response.status(405).header("Access-Control-Allow-Origin", "*").build();
         }
     }
@@ -72,7 +90,7 @@ public class AdvisorService {
         }
     }
 
-//    @GET
+    //    @GET
 //    @Consumes({"application/json"})
 //    @Produces({"application/json"})
 //    public Response getAdvisorByName(@PathParam("param") String advName) {

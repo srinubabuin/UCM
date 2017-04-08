@@ -9,9 +9,11 @@ package com.ucm.service.helper;
 import com.app.util.DBUtil;
 import com.app.util.RequestStatus;
 import com.ucm.exception.ConstraintVilationException;
+import com.ucm.exception.ObjectNotFoundException;
 import com.ucm.model.Concentration;
 import com.ucm.services.ConcentrationService;
 import com.ucm.services.impl.ConcentrationServiceImpl;
+
 import java.util.List;
 
 public class ConcentationServiceHelper {
@@ -36,31 +38,58 @@ public class ConcentationServiceHelper {
         }
         return response;
     }
-    
-    public RequestStatus deleteConcentration(int concentationId){
-        
+
+    public RequestStatus modifyConcentation(Concentration concentation) {
+
         RequestStatus response = new RequestStatus();
-        
+        try {
+            ConcentrationService conService = new ConcentrationServiceImpl();
+            int concentationUpdatedCnt = conService.modifyConcentation(concentation);
+            if (concentationUpdatedCnt > 0) {
+                response.setSuccess(true);
+                response.setMessage("Concentration updated successfully.");
+                response.setId(concentationUpdatedCnt);
+            } else {
+                response.setMessage("Concentration not updated.");
+                response.setId(concentationUpdatedCnt);
+            }
+        } catch (ObjectNotFoundException cve) {
+            response.setMessage(DBUtil.getCustomDBMessage("CON_NOT_FOUND"));
+            response.setId(0);
+        } catch (ConstraintVilationException cve) {
+            response.setMessage(DBUtil.getCustomDBMessage(cve.getMessage()));
+            response.setId(0);
+        }
+        return response;
+    }
+
+    public RequestStatus deleteConcentration(int concentationId) {
+
+        RequestStatus response = new RequestStatus();
+
         int deleteCnt = new ConcentrationServiceImpl().deleteConcentation(concentationId);
-        
-        if(deleteCnt > 0){
+
+        if (deleteCnt > 0) {
             response.setSuccess(true);
             response.setMessage("Concentration deleted successfully");
             response.setId(concentationId);
-        }else{
+        } else {
             response.setMessage("Concentration not deleted");
             response.setId(concentationId);
         }
         return response;
     }
-    public Concentration getConcentrationWitId(int concentationId){
+
+    public Concentration getConcentrationWitId(int concentationId) {
         return new ConcentrationServiceImpl().getConcentationWithId(concentationId);
     }
-    public Concentration getConcentrationWitName(String concentationName){
+
+    public Concentration getConcentrationWitName(String concentationName) {
         return new ConcentrationServiceImpl().getConcentationWithName(concentationName);
     }
-    public List<Concentration> getAllConcentrations(){
-        
+
+    public List<Concentration> getAllConcentrations() {
+
         return new ConcentrationServiceImpl().getAllConcentations();
     }
 }

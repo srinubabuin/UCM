@@ -8,9 +8,11 @@ package com.ucm.service.helper;
 import com.app.util.DBUtil;
 import com.app.util.RequestStatus;
 import com.ucm.exception.ConstraintVilationException;
+import com.ucm.exception.ObjectNotFoundException;
 import com.ucm.model.Advisor;
 import com.ucm.services.AdvisiorService;
 import com.ucm.services.impl.AdvisorServiceImpl;
+
 import java.util.List;
 
 public class AdvisorServiceHelper {
@@ -29,6 +31,31 @@ public class AdvisorServiceHelper {
                 response.setMessage("Advisor not added.");
                 response.setId(advId);
             }
+        } catch (ConstraintVilationException cve) {
+            response.setMessage(DBUtil.getCustomDBMessage(cve.getMessage()));
+            response.setId(0);
+        }
+        return response;
+    }
+
+    public RequestStatus modifyAdvisor(Advisor advisor) {
+
+        RequestStatus response = new RequestStatus();
+        try {
+            AdvisiorService advService = new AdvisorServiceImpl();
+            int advId = advService.modifyAdvisor(advisor);
+            if (advId > 0) {
+                response.setSuccess(true);
+                response.setMessage("Advisor updated successfully.");
+                response.setId(advId);
+            } else {
+                response.setMessage("Advisor not updated.");
+                response.setId(advId);
+            }
+
+        } catch (ObjectNotFoundException oe) {
+            response.setMessage(DBUtil.getCustomDBMessage("ADV_NOT_FOUND"));
+            response.setId(0);
         } catch (ConstraintVilationException cve) {
             response.setMessage(DBUtil.getCustomDBMessage(cve.getMessage()));
             response.setId(0);

@@ -6,12 +6,16 @@
 package com.ucm.services;
 
 import com.ucm.exception.ConstraintVilationException;
+import com.ucm.exception.ObjectNotFoundException;
 import com.ucm.model.Advisor;
+
 import java.util.List;
 
 public interface AdvisiorService {
 
     public int addAdvisor(Advisor advisor) throws ConstraintVilationException;
+
+    public int modifyAdvisor(Advisor advisor) throws ConstraintVilationException, ObjectNotFoundException;
 
     public int deleteAdvisor(int advisorId);
 

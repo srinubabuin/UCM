@@ -43,7 +43,7 @@ public class CourceService {
         CourceServiceHelper courceServiceHelper;
         try {
             courceServiceHelper = new CourceServiceHelper();
-            courceResponseObj = courceServiceHelper.addCource(cource);
+            courceResponseObj = courceServiceHelper.modifyCource(cource);
             return Response.ok().header("Access-Control-Allow-Origin", "*").entity(courceResponseObj).build();
         } catch (Exception nre) {
             logger.info("delete cource error");

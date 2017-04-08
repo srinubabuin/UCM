@@ -225,7 +225,7 @@
                                 style="padding: 3px 6px; width: 70px;">&gt;&gt;</button>
                         </br>
                         </br>
-                        <button name="courceMoveRight" class="btn btn-danger" type="reset"
+                        <button name="courceMoveRight" class="btn btn-danger" type="button"
                                 style="padding: 3px 6px; width: 70px;">&lt;&lt;</button>
                     </div>
                     <div class="col-md-5">
