@@ -27,11 +27,8 @@
             type="text/javascript"></script>
     <%
         String accessToken = (String) session.getAttribute("accessToken");
-        String userRole;
-        if (accessToken != null) {
-            AppAuth appAuth = (AppAuth) session.getAttribute("appAuth");
-            userRole = appAuth.getRole().toString();
-        }
+        String userRole = (String) session.getAttribute("role");
+        String loginId = (String) session.getAttribute("loginId");
     %>
 </head>
 <body onload="doOnLoad()">
@@ -360,9 +357,10 @@
     appContextPath = "${pageContext.request.contextPath}";
     appRestPath = appContextPath + "/rest";
     accessToken = "${accessToken}";
+    userRole = "${userRole}";
+    loginId = "${loginId}";
     var appManagerLytObj;
     var studentLytObj, advisorLytObj, courceLytObj, concentrationLytObj;
-    var userRole = "${userRole}";
 
     if (!accessToken) {
         window.location.href = "<%=request.getContextPath()%>/resources/jsp/AppLogin.jsp";

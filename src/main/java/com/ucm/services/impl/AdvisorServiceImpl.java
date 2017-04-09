@@ -124,10 +124,14 @@ public class AdvisorServiceImpl implements AdvisiorService {
         ResultSet rs = null;
         int delecnt = 0;
         try {
-            con = AppConnectionPool.getConnection();
-            pstm = con.prepareStatement(AppQueryReader.getDBQuery("com.ucm.services.impl.advisorservice.deleteadvisor"));
-            pstm.setInt(1, advisorId);
-            delecnt = pstm.executeUpdate();
+            Advisor advisor = getAdvisorWitId(advisorId);
+            int advisorCnt = (new UserLoginServiceImpl()).deleteUser(advisor.getLoginId());
+            if (advisorCnt > 0) {
+                con = AppConnectionPool.getConnection();
+                pstm = con.prepareStatement(AppQueryReader.getDBQuery("com.ucm.services.impl.advisorservice.deleteadvisor"));
+                pstm.setInt(1, advisorId);
+                delecnt = pstm.executeUpdate();
+            }
         } catch (SQLException e) {
             LOGGER.log(Priority.ERROR, "Exception in deleteAdvisor method with advisorId:" + advisorId + " " + e.getMessage());
         } finally {

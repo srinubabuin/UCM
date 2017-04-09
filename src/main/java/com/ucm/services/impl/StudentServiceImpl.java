@@ -14,11 +14,13 @@ import com.app.util.Role;
 import com.conn.pool.app.AppConnectionPool;
 import com.ucm.email.EmailMessageBuilder;
 import com.ucm.exception.ConstraintVilationException;
+import com.ucm.exception.ObjectNotFoundException;
 import com.ucm.model.AppUser;
 import com.ucm.model.Concentration;
 import com.ucm.model.Student;
 import com.ucm.services.StudentService;
 import com.ucm.services.UserLoginService;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -89,10 +91,14 @@ public class StudentServiceImpl implements StudentService {
         PreparedStatement pstm = null;
         int deletecnt = 0;
         try {
-            con = AppConnectionPool.getConnection();
-            pstm = con.prepareStatement(AppQueryReader.getDBQuery("com.ucm.services.impl.studentservice.deletestudent"));
-            pstm.setInt(1, studentId);
-            deletecnt = pstm.executeUpdate();
+            Student student = getStudent(String.valueOf(studentId), "id");
+            int studentCnt = (new UserLoginServiceImpl()).deleteUser(student.getLoginId());
+            if (studentCnt > 0) {
+                con = AppConnectionPool.getConnection();
+                pstm = con.prepareStatement(AppQueryReader.getDBQuery("com.ucm.services.impl.studentservice.deletestudent"));
+                pstm.setInt(1, studentId);
+                deletecnt = pstm.executeUpdate();
+            }
         } catch (SQLException ex) {
             LOGGER.log(Level.SEVERE, "Exception while deleting student in deleteStudent {0} " + studentId, ex.getMessage());
         } finally {
@@ -102,16 +108,24 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public Student getStudentById(int studentId) {
+    public Student getStudent(String value, String type) {
         Connection con = null;
         PreparedStatement pstm = null;
         ResultSet rs = null;
         Student student = null;
+        String queryStr = "";
         try {
             int pos = 1;
             con = AppConnectionPool.getConnection();
-            pstm = con.prepareStatement(AppQueryReader.getDBQuery("com.ucm.services.impl.studentservice.getstudentbyid"));
-            pstm.setInt(pos, studentId);
+            if ("loginid".equals(type)) {
+                queryStr = AppQueryReader.getDBQuery("com.ucm.services.impl.studentservice.getstudent");
+                queryStr = queryStr + " WHERE STU.LOGIN_ID = ?";
+            } else {
+                queryStr = AppQueryReader.getDBQuery("com.ucm.services.impl.studentservice.getstudent");
+                queryStr = queryStr + " WHERE STU.ID = ?";
+            }
+            pstm = con.prepareStatement(queryStr);
+            pstm.setString(pos, value);
             rs = pstm.executeQuery();
             if (rs.next()) {
                 student = new Student();
@@ -140,7 +154,7 @@ public class StudentServiceImpl implements StudentService {
                 student.setCreatedDate(rs.getDate(DBUtil.COLUMN_STUDENTS_CREATED_DATE));
             }
         } catch (SQLException e) {
-            LOGGER.log(Level.SEVERE, "Exception in getStudentById method with studentId:{0} {1}", new Object[]{studentId, e.getMessage()});
+            LOGGER.log(Level.SEVERE, "Exception in getStudentById method with studentId:{0} {1}", new Object[]{value, e.getMessage()});
         } finally {
             AppConnectionPool.release(rs, pstm, con);
         }
@@ -241,4 +255,29 @@ public class StudentServiceImpl implements StudentService {
         return students;
     }
 
+    @Override
+    public int updateStudentQuestionnaires(Student student) throws ObjectNotFoundException {
+        Connection con = null;
+        PreparedStatement pstm = null;
+        ResultSet rs = null;
+        int studentUpdateCount = 0;
+        try {
+            int pos = 1;
+            con = AppConnectionPool.getConnection();
+            pstm = con.prepareStatement(AppQueryReader.getDBQuery("com.ucm.services.impl.studentservice.updatestudentquestionnaires"));
+            pstm.setString(pos, student.getTestDetails());
+            pstm.setString(++pos, student.getAcceptedCodeOfConduct());
+            pstm.setString(++pos, student.getLoginId());
+            pstm.setInt(++pos, student.getId());
+            studentUpdateCount = pstm.executeUpdate();
+            if (studentUpdateCount <= 0) {
+                throw new ObjectNotFoundException();
+            }
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, "Exception occured in updateStudentQuestionnaires method {0}", e.getMessage());
+        } finally {
+            AppConnectionPool.release(rs, pstm, con);
+        }
+        return studentUpdateCount;
+    }
 }

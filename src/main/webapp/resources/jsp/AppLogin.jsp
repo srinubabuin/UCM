@@ -25,7 +25,7 @@
     <div class="wrapper">
 
         <!--<form action="/EDIPaged/ediAuth/doLogin" method="post" name="ediLoginForm" class="form-signin">-->
-        <form action="" method="post" name="loginForm" onsubmit="javascript:doLogin();return false;" id="loginForm"
+        <form action="" method="post" name="loginForm" onsubmit="return false;" id="loginForm"
               class="form-signin">
             <h3 class="form-signin-heading">Login</h3>
 

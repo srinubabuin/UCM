@@ -1,3 +1,59 @@
+var userRole, loginId, loginUser;
+
+/*questionnaireInputDetails starts*/
+var questionnaireSubItems = {
+    'takenCource': ['takenCourceDesc'],
+    'planToWork': ['planToWorkDesc'],
+    'currentEmployee': ['currentEmployeeWork', 'currentEmployeePosition']
+};
+
+var questionnaireInputDetails = {
+    "takenCource": {
+        "type": "radio"
+    }, "takenCourceDesc": {
+        "type": "text"
+    }, "classesPerSemester": {
+        "type": "text"
+    }, "classesPlanSummer": {
+        "type": "text"
+    }, "planToWork": {
+        "type": "radio"
+    }, "planToWorkDesc": {
+        "type": "text"
+    }, "currentEmployee": {
+        "type": "radio"
+    }, "currentEmployeeWork": {
+        "type": "text"
+    }, "currentEmployeePosition": {
+        "type": "text"
+    }, "residenceFromWarrensburgCampus": {
+        "type": "text"
+    }, "workLocFromWarrensburgCampus": {
+        "type": "text"
+    }, "childrenWhomYouAreResp": {
+        "type": "text"
+    }, "areYouSigleParent": {
+        "type": "radio"
+    }, "difficultySchedulingMorning": {
+        "type": "radio"
+    }, "difficultySchedulingAfternoon": {
+        "type": "radio"
+    }, "difficultySchedulingNight": {
+        "type": "radio"
+    }, "difficultySchedulingWeekend": {
+        "type": "radio"
+    }, "motivationPursingMBA": {
+        "type": "radio"
+    }, "positionSeedAfterMBA": {
+        "type": "radio"
+    }, "positionSeedAfterMBA": {
+        "type": "select"
+    }, "attractedProgramAtUCM": {
+        "type": "select"
+    }
+}
+/*questionnaireInputDetails ends*/
+
 /* Director Home Starts */
 function onMainNavItemClick(itemId) {
     if (itemId == appManagerLytObj.module) {
@@ -319,16 +375,17 @@ function loadStudentLyt(cellObj) {
             student["loginId"] = formObj["loginId"].value;
             student["firstName"] = formObj["firstName"].value;
             student["lastName"] = formObj["lastName"].value;
-            student["email"] =  formObj["mail"].value
-            student["secondaryEmail"] =  formObj["personalMail"].value;
-            student["phoneNumber"] =  formObj["phone"].value;
-            student["address"] =  formObj["address"].value;
-            scores["verbal"] =  formObj["verbal"].value;
-            scores["quantitative"] =  formObj["quantitative"].value;
-            scores["analytical"] =  formObj["analytical"].value;
-            scores["gpa"] =  formObj["gpa"].value;
+            student["email"] = formObj["mail"].value
+            student["secondaryEmail"] = formObj["personalMail"].value;
+            student["phoneNumber"] = formObj["phone"].value;
+            student["address"] = formObj["address"].value;
+            scores["verbal"] = formObj["verbal"].value;
+            scores["quantitative"] = formObj["quantitative"].value;
+            scores["analytical"] = formObj["analytical"].value;
+            scores["gpa"] = formObj["gpa"].value;
             student["concentration"] = {
-                id: formObj["concentration"].value
+                id: formObj["concentration"].value,
+                concentrationName: $(formObj["concentration"]).find(":selected").text()
             };
             scores["scoreType"] = formObj["scoreType"].value;
             student["scores"] = JSON.stringify(scores);
@@ -429,6 +486,14 @@ function getAllStudents() {
 
 function getStudent(studentId) {
     return appAjaxSync(appRestPath + "/student/" + studentId, "GET", "", "JSON");
+}
+
+function getStudentByLoginId(loginId) {
+    return appAjaxSync(appRestPath + "/student/loginId/" + loginId, "GET", "", "JSON");
+}
+
+function updateStudentQuestionnaire(student) {
+    return appAjaxSync(appRestPath + "/student/updateQuestionnaire", "PUT", JSON.stringify(student), "JSON");
 }
 
 function addStudent(student) {
@@ -1594,13 +1659,36 @@ function onStudentMainNavItemClick(itemId) {
     $("#appNavBar").find('li[itemId="' + itemId + '"]').addClass('active');
     if (itemId === "QUESTIONNAIRES") {
         appManagerLytObj.module = itemId;
-        studentLytObj = new loadStudentQuestionnaireLyt(appManagerLytObj.domObj);
-    } else if (itemId === "CODEOFCONDUCT") {
-        appManagerLytObj.module = itemId;
-        studentLytObj = new loadCodeOfCounductLyt(appManagerLytObj.domObj);
+        if (loginUser.testDetails) {
+            studentQuestionnaireLytObj = new loadQuestionnaireCompletedLyt(appManagerLytObj.domObj);
+        } else {
+            studentQuestionnaireLytObj = new loadStudentQuestionnaireLyt(appManagerLytObj.domObj);
+        }
     } else if (itemId === "LOGOUT") {
         doLogout();
     }
+}
+
+function loadQuestionnaireCompletedLyt(cellObj) {
+    this.lytConfObj = {
+        "pattern": "1C",
+        "parent": cellObj
+    };
+
+    this.lytObj = new appLayout(this.lytConfObj);
+    this.detailsCellObj = this.lytObj.cells.a.obj;
+    this.loadQuestionnaireCompletedLyt = function () {
+        var _this = this;
+        clearAllElementsInDiv(_this.detailsCellObj);
+        _this.showStudentQuestionnaireForm(_this.detailsCellObj);
+    };
+
+    this.showStudentQuestionnaireForm = function (cellObj) {
+        var _this = this;
+        cellObj.innerHTML = "<b style='color: #7bbf69;'>Already completed Questionnaire. Please wait for approval</b>";
+        cellObj.style['text-align'] = 'center';
+    };
+    this.loadQuestionnaireCompletedLyt();
 }
 
 function loadStudentQuestionnaireLyt(cellObj) {
@@ -1609,11 +1697,6 @@ function loadStudentQuestionnaireLyt(cellObj) {
         "parent": cellObj
     };
 
-    this.questionnaireSubItems = {
-        'takenCource': ['takenCourceDesc'],
-        'planToWork': ['planToWorkDesc'],
-        'currentEmployee': ['currentEmployeePosition', 'residenceFromWarrensburgCampus']
-    };
     this.lytObj = new appLayout(this.lytConfObj);
     this.detailsCellObj = this.lytObj.cells.a.obj;
     this.loadStudentQuestionnaireLyt = function () {
@@ -1652,13 +1735,21 @@ function loadStudentQuestionnaireLyt(cellObj) {
         var formName = confObj.name;
         if (id === "submit") {
             var formObj = document.forms[formName];
-            var studentId = formObj["studentId"].value || "";
+            var studentId = loginUser ? loginUser.id : "";
             if (!studentId) {
                 return;
             }
-            var response = ""//getStudent(studentId);
+            var questionnaireDetails = getStudentQuestionnaireFormDetails(formName);
+            var student = {
+                'id': studentId,
+                'loginId': loginUser.loginId,
+                'acceptedCodeOfConduct': !formObj['codeOfConduct'].checked ? "no" : "yes",
+                'testDetails': JSON.stringify(questionnaireDetails)
+            }
+            var response = updateStudentQuestionnaire(student);
             if (response && response.success) {
-                _this.showEditStudentQuestionnaireForm(_this.detailsCellObj, response);
+                _this.attachStudentQuestionnaireCompletedCell();
+                console.log(response)
             } else {
                 console.log(response);
             }
@@ -1667,7 +1758,27 @@ function loadStudentQuestionnaireLyt(cellObj) {
         }
     };
 
+    this.attachStudentQuestionnaireCompletedCell = function () {
+        clearAllElementsInDiv(_this.detailsCellObj);
+        cellObj.innerHTML = "<b style='color: #7bbf69;'>Completed Questionnaire. Please wait for approval</b>";
+        cellObj.style['text-align'] = 'center';
+    };
+
     this.loadStudentQuestionnaireLyt();
+}
+
+function getStudentQuestionnaireFormDetails(formName) {
+    var formObj = document.forms[formName],
+        itemObj, questionnaireDetailsObj = {};
+
+    for (var itemKey in questionnaireInputDetails) {
+        itemObj = formObj[itemKey];
+        if (!itemObj) {
+            return true;
+        }
+        questionnaireDetailsObj[itemKey] = itemObj.value;
+    }
+    return questionnaireDetailsObj;
 }
 
 function getStudentQuestionnaireForm() {

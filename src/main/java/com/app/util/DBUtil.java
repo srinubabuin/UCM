@@ -92,6 +92,8 @@ public class DBUtil {
                 message = "Student Primary mail  already exists.";
             } else if (message.contains("STU_PHONE_Uk")) {
                 message = "Student phone number already exists.";
+            } else if (message.contains("STU_NOT_FOUND")) {
+                message = "Student not found.";
             } else {
                 message = "Invalid Operation";
             }

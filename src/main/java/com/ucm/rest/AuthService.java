@@ -5,6 +5,7 @@ import com.ucm.exception.NoUserException;
 import com.ucm.model.AppUser;
 import com.ucm.model.AppAuth;
 import com.ucm.service.helper.UserServiceHelper;
+
 import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -46,9 +47,12 @@ public class AuthService {
             AppAuth appAuth = new AppAuth();
             appAuth.setToken(accessToken);
             appAuth.setRole(appUser.getRole());
+            appAuth.setLoginId(appUser.getLoginId());
             HttpSession session = request.getSession(true);
             if (session != null) {
                 session.setAttribute("accessToken", accessToken);
+                session.setAttribute("role", appUser.getRole().toString());
+                session.setAttribute("loginId", appUser.getLoginId());
                 session.setAttribute("appAuth", appAuth);
             }
             return Response.ok().header("Access-Control-Allow-Origin", "*").entity(appAuth).build();
@@ -71,7 +75,7 @@ public class AuthService {
 
             userServiceHelper = new UserServiceHelper();
             userServiceHelper.deleteAccessTokens(authorization);
-            
+
             if (request.getSession(false) != null) {
                 request.getSession(false).invalidate();
             }

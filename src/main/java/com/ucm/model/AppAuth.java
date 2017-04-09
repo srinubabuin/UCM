@@ -1,12 +1,14 @@
 package com.ucm.model;
 
 import com.app.util.Role;
+
 import java.util.Objects;
 
 public class AppAuth {
 
     private String token = null;
     private Role role = null;
+    private String loginId = null;
 
     public String getToken() {
         return token;
@@ -22,6 +24,14 @@ public class AppAuth {
 
     public void setRole(Role role) {
         this.role = role;
+    }
+
+    public String loginId() {
+        return loginId;
+    }
+
+    public void setLoginId(String loginId) {
+        this.loginId = loginId;
     }
 
     @Override

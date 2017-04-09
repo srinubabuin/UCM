@@ -12,5 +12,6 @@ public interface UserLoginService {
 
     public int insertUser(AppUser appUser);
     public int modifyUser(AppUser appUser);
+    public int deleteUser(String loginId);
     public int getMaxId();
 }

@@ -8,6 +8,7 @@ package com.ucm.rest;
 import com.app.util.RequestStatus;
 import com.ucm.model.Student;
 import com.ucm.service.helper.StudentServiceHelper;
+
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
@@ -19,6 +20,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
+
 import org.apache.log4j.Logger;
 
 @Path("/student")
@@ -77,6 +79,22 @@ public class StudentService {
     }
 
     @GET
+    @Path("/loginId/{param}")
+    @Consumes({"application/json"})
+    @Produces({"application/json"})
+    public Response getStudentByLoginId(@PathParam("param") String loginId) {
+
+        try {
+            StudentServiceHelper helper = new StudentServiceHelper();
+            Student student = helper.getStudentByLoginId(loginId);
+            return Response.ok().header("Access-Control-Allow-Origin", "*").entity(student).build();
+        } catch (Exception e) {
+            LOGGER.info("Get student wit id error");
+            return Response.status(405).header("Access-Control-Allow-Origin", "*").build();
+        }
+    }
+
+    @GET
     @Consumes({"application/json"})
     @Produces({"application/json"})
     public Response getAllStudents() {
@@ -87,6 +105,23 @@ public class StudentService {
             return Response.ok().header("Access-Control-Allow-Origin", "*").entity(students).build();
         } catch (Exception e) {
             LOGGER.info("Get student wit id error");
+            return Response.status(405).header("Access-Control-Allow-Origin", "*").build();
+        }
+    }
+
+    @PUT
+    @Path("/updateQuestionnaire")
+    @Consumes({"application/json"})
+    @Produces({"application/json"})
+    public Response updateStudentQuestionnaires(Student student) {
+
+        RequestStatus reqStatus = null;
+        try {
+            StudentServiceHelper helper = new StudentServiceHelper();
+            reqStatus = helper.updateStudentQuestionnaires(student);
+            return Response.ok().header("Access-Control-Allow-Origin", "*").entity(reqStatus).build();
+        } catch (Exception ex) {
+            LOGGER.info("Insert student error");
             return Response.status(405).header("Access-Control-Allow-Origin", "*").build();
         }
     }
