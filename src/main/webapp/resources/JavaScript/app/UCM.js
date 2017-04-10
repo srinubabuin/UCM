@@ -43,16 +43,51 @@ var questionnaireInputDetails = {
     }, "difficultySchedulingWeekend": {
         "type": "radio"
     }, "motivationPursingMBA": {
-        "type": "radio"
+        "type": "text"
     }, "positionSeedAfterMBA": {
-        "type": "radio"
-    }, "positionSeedAfterMBA": {
+        "type": "text"
+    }, "awareMBAatUCM": {
         "type": "select"
     }, "attractedProgramAtUCM": {
         "type": "select"
     }
 }
 /*questionnaireInputDetails ends*/
+
+/*Student Details Starts*/
+var studentInputDetails = {
+    "firstName": {
+        "type": "text"
+    }, "lastName": {
+        "type": "text"
+    }, "concentration": {
+        "type": "select"
+    }, "mail": {
+        "type": "text"
+    }, "personalMail": {
+        "type": "text"
+    }, "phone": {
+        "type": "text"
+    }, "address": {
+        "type": "text"
+    }, "scoreType": {
+        "type": "text",
+    }, "verbal": {
+        "type": "text"
+    }, "quantitative": {
+        "type": "text"
+    }, "analytical": {
+        "type": "text"
+    }, "gpa": {
+        "type": "text"
+    }, "status": {
+        "type": "select"
+    }
+};
+
+var studentSkipInputs = ["lastName", "verbal", "quantitative", "analytical", "gpa"];
+
+/*Student Details Ends*/
 
 /* Director Home Starts */
 function onMainNavItemClick(itemId) {
@@ -95,6 +130,7 @@ function loadStudentSearchLyt(cellObj) {
     this.detailsCellObj = this.lytObj.cells.a.obj;
     this.loadStudentSearchLyt = function () {
         var _this = this;
+        _this.studentEditFormPosition = 0;
         clearAllElementsInDiv(_this.detailsCellObj);
         _this.showStudentSearchForm(_this.detailsCellObj);
     };
@@ -128,19 +164,18 @@ function loadStudentSearchLyt(cellObj) {
         var _this = this;
         var formName = confObj.name;
         $('span#errorMessage').html("");
+        _this.clearStudentFormCell(_this.detailsCellObj);
+        _this.studentEditFormPosition = 0;
         if (id === "search") {
             var formObj = document.forms[formName];
             var studentId = formObj["studentId"].value || "";
             if (!studentId) {
                 return;
             }
-            _this.clearStudentFormCell(_this.detailsCellObj);
-            var response = getStudent(studentId);
-            if (response && response.success) {
+            var response = getStudentByLoginId(studentId);
+            if (response) {
                 _this.showEditStudentSearchForm(_this.detailsCellObj, response);
             } else {
-                _this.showEditStudentSearchForm(_this.detailsCellObj);
-                console.log(response);
                 $('span#errorMessage').html("Student with id \"" + studentId + "\" doesn't exists");
             }
         } else if (id === "reset") {
@@ -160,39 +195,176 @@ function loadStudentSearchLyt(cellObj) {
 
     this.attachStudentForm = function (cellObj, confObj) {
         var studentFormWrapObj = new attachForm(confObj);
-        studentFormWrapObj.cell.form.innerHTML = getStudentForm();
+        studentFormWrapObj.cell.form.innerHTML = getStudentAndQuestionarieForm();
     };
 
     this.showEditStudentSearchForm = function (cellObj, studentSearch) {
         var _this = this;
         var detailsObj = cellObj.parentElement.appendChild(cellObj.cloneNode())
-        var studentSearchFormConfObj = {
+        var studentFormConfObj = {
             "parent": detailsObj,
             "hdrText": "Edit Student Search",
             "formType": "edit",
             "name": "editstudentSearch",
             "id": "editstudentSearch"
         };
-        _this.attachStudentForm(detailsObj, studentSearchFormConfObj);
+        _this.attachStudentForm(detailsObj, studentFormConfObj);
         // var studentSearch = getStudentSearch(studentSearch.id);
-        _this.setStudentSearchFormDetails(studentSearchFormConfObj, studentSearch);
-        var studentSearchFormObj = document.forms[studentSearchFormConfObj.name];
-        $(studentSearchFormObj.elements["reset"]).hide();
+        // _this.setStudentSearchFormDetails(studentFormConfObj, studentSearch);
+        var studentSearchFormObj = document.forms[studentFormConfObj.name];
         $(studentSearchFormObj.elements["save"]).click(function () {
-            // _this.onStudentSearchFormBtnClick("save", studentSearchFormConfObj);
+            _this.onStudentSearchFormDetailsBtnClick("save", studentFormConfObj);
         });
-        // $(studentSearchFormObj.elements["reset"]).click(function () {
-        //     _this.onStudentSearchFormBtnClick("reset", studentSearchFormConfObj);
-        // });
+        $(studentSearchFormObj.elements["next"]).click(function () {
+            _this.onStudentSearchFormDetailsBtnClick("next", studentFormConfObj);
+        });
+        $(studentSearchFormObj.elements["previous"]).click(function () {
+            _this.onStudentSearchFormDetailsBtnClick("previous", studentFormConfObj);
+        });
         $(studentSearchFormObj.elements["cancel"]).click(function () {
-            // _this.onStudentSearchFormBtnClick("cancel", studentSearchFormConfObj);
+            _this.onStudentSearchFormDetailsBtnClick("cancel", studentFormConfObj);
         });
-        // _this.onStudentSearchFormBtnClick("clearBtn", studentSearchFormConfObj);
+        _this.onStudentSearchFormDetailsBtnClick("next", studentFormConfObj);
+        setStudentFormDetails(studentFormConfObj, studentSearch);
+        setStudentQuestionnaireFormDetails(studentFormConfObj, studentSearch);
+        _this.disableStudentSearchForm(studentFormConfObj);
     };
 
-    this.setStudentSearchFormDetails = function (formConfObj, details) {
-        var studentSearchFormObj = document.forms[formConfObj.name];
+    this.disableStudentSearchForm = function (formConfObj) {
+        var formObj = document.forms[formConfObj.name];
+        $("input[type=radio]").attr('disabled', true);
+        $("input[type=checkbox]").attr('disabled', true);
+        // $(formObj).find("input[type=radio]").attr('disabled', true);
+        for (var itemKey in studentInputDetails) {
+            if (studentInputDetails[itemKey].type === "text") {
+                $(formObj.elements[itemKey]).attr('readonly', 'true');
+            } else if (studentInputDetails[itemKey].type === "select") {
+                $(formObj.elements[itemKey]).attr('disabled', 'true');
+            }
+        }
+        for (var itemKey in questionnaireInputDetails) {
+            if (questionnaireInputDetails[itemKey].type === "text") {
+                $(formObj.elements[itemKey]).attr('readonly', 'true');
+            } else if (questionnaireInputDetails[itemKey].type === "select") {
+                $(formObj.elements[itemKey]).attr('disabled', 'true');
+            }
+        }
     };
+
+    this.onStudentSearchFormDetailsBtnClick = function (id, formConfObj) {
+        var _this = this;
+        var formName = formConfObj.name;
+        if (id === "save") {
+
+        } else if (id === "cancel") {
+            _this.clearStudentFormCell(_this.detailsCellObj);
+        } else if (id === "next") {
+            _this.studentEditFormPosition = _this.studentEditFormPosition + 1;
+            _this.showHideStudentDetails(formConfObj);
+        } else if (id === "previous") {
+            _this.studentEditFormPosition = _this.studentEditFormPosition - 1;
+            _this.showHideStudentDetails(formConfObj);
+        }
+    };
+
+    this.showHideStudentDetails = function (formConfObj) {
+        var _this = this;
+        if (_this.studentEditFormPosition == 1) {
+            this.showHideStudentForm(formConfObj, true);
+        } else if (_this.studentEditFormPosition == 2) {
+            this.showHideStudentQuestionnaireForm(formConfObj, true);
+        } else if (_this.studentEditFormPosition == 3) {
+            this.showHideStudentPrerequisiteForm(formConfObj, true);
+        }
+    };
+
+    this.showHideStudentForm = function (formConfObj, show) {
+        var _this = this;
+        var formObj = document.forms[formConfObj.name];
+        if (!formObj) {
+            return;
+        }
+        if (show) {
+            this.showHideStudentQuestionnaireForm(formConfObj, false);
+            this.showHideStudentPrerequisiteForm(formConfObj, false);
+        }
+        $(formObj.elements["previous"]).hide();
+        $(formObj.elements["save"]).hide();
+        $(formObj.elements["cancel"]).show();
+        $(formObj.elements["next"]).show();
+
+        if (show) {
+            $("#studentFormItems").show();
+        } else {
+            $("#studentFormItems").hide();
+        }
+
+        /*        for (var itemKey in studentInputDetails) {
+         if (studentSkipInputs.indexOf(itemKey) <= -1) {
+         if (show) {
+         $(formObj.elements[studentInputDetails[itemKey]].parentElement.parentElement).show();
+         } else {
+         $(formObj.elements[studentInputDetails[itemKey]].parentElement.parentElement).hide();
+         }
+         }
+         }*/
+    };
+
+    this.showHideStudentQuestionnaireForm = function (formConfObj, show) {
+        var _this = this;
+        var formObj = document.forms[formConfObj.name];
+        if (!formObj) {
+            return;
+        }
+
+        if (show) {
+            this.showHideStudentForm(formConfObj, false);
+            this.showHideStudentPrerequisiteForm(formConfObj, false);
+        }
+
+        $(formObj.elements["previous"]).show();
+        $(formObj.elements["save"]).hide();
+        $(formObj.elements["cancel"]).show();
+        $(formObj.elements["next"]).show();
+        if (show) {
+            $("#studentQuestionnairesFormItems").show();
+        } else {
+            $("#studentQuestionnairesFormItems").hide();
+        }
+        /*for (var itemKey in questionnaireSubItems) {
+         if (studentSkipInputs.indexOf(itemKey) <= -1) {
+         if (show) {
+         $(formObj.elements[questionnaireSubItems[itemKey]].parentElement.parentElement).show();
+         } else {
+         $(formObj.elements[questionnaireSubItems[itemKey]].parentElement.parentElement).hide();
+         }
+         }
+         }*/
+    };
+
+    this.showHideStudentPrerequisiteForm = function (formConfObj, show) {
+        var _this = this;
+        var formObj = document.forms[formConfObj.name];
+        if (!formObj) {
+            return;
+        }
+        if (show) {
+            this.showHideStudentForm(formConfObj, false);
+            this.showHideStudentQuestionnaireForm(formConfObj, false);
+        }
+
+        $(formObj.elements["previous"]).show();
+        $(formObj.elements["save"]).show();
+        $(formObj.elements["cancel"]).show();
+        $(formObj.elements["next"]).hide();
+        if (show) {
+            $("#studentPrerequisiteFormItems").show();
+        } else {
+            $("#studentPrerequisiteFormItems").hide();
+        }
+        // $(formObj.elements['studentSearchPrerequisite'].parentElement.parentElement).show();
+    };
+
     this.loadStudentSearchLyt();
 }
 
@@ -510,7 +682,16 @@ function deleteStudent(studentId) {
 
 function getStudentForm() {
     var form = document.getElementById("studentFormTpl").innerHTML;
-    return form;
+    var formBtns = document.getElementById("studentFormTplBtns").innerHTML;
+    return form + formBtns;
+}
+
+function getStudentAndQuestionarieForm() {
+    var form = '<div id="studentFormItems">' + document.getElementById("studentFormTpl").innerHTML + '</div>';
+    var questionForm = '<div id="studentQuestionnairesFormItems">' + document.getElementById("studentQuestionnairesFormTpl").innerHTML + '</div>';
+    var prerequisiteForm = '<div id="studentPrerequisiteFormItems">' + document.getElementById("studentPrerequisiteFormTpl").innerHTML + '</div>';
+    var buttonsForm = document.getElementById("studentSearchFormTplButtons").innerHTML;
+    return form + questionForm + prerequisiteForm + buttonsForm;
 }
 
 /*Student Layout Ends*/
@@ -1749,7 +1930,6 @@ function loadStudentQuestionnaireLyt(cellObj) {
             var response = updateStudentQuestionnaire(student);
             if (response && response.success) {
                 _this.attachStudentQuestionnaireCompletedCell();
-                console.log(response)
             } else {
                 console.log(response);
             }
@@ -1759,6 +1939,7 @@ function loadStudentQuestionnaireLyt(cellObj) {
     };
 
     this.attachStudentQuestionnaireCompletedCell = function () {
+        var _this = this;
         clearAllElementsInDiv(_this.detailsCellObj);
         cellObj.innerHTML = "<b style='color: #7bbf69;'>Completed Questionnaire. Please wait for approval</b>";
         cellObj.style['text-align'] = 'center';
@@ -1819,3 +2000,59 @@ function onStudentQuestionnaireFormChange(itemId, value) {
 }
 
 /*Student Home Ends*/
+
+function setStudentFormDetails(formConfObj, details) {
+    var studentFormObj = document.forms[formConfObj.name];
+    var score = details.scores ? JSON.parse(details.scores) : {};
+    var concentrationOptions = getConcentrationAsOptions();
+    $(studentFormObj.elements["concentration"]).append(concentrationOptions);
+    $(studentFormObj.elements["id"]).val(details.id);
+    $(studentFormObj.elements["loginId"]).val(details.loginId);
+    $(studentFormObj.elements["firstName"]).val(details.firstName);
+    $(studentFormObj.elements["lastName"]).val(details.lastName);
+    $(studentFormObj.elements["concentration"]).val(details.concentration.id);
+    $(studentFormObj.elements["mail"]).val(details.email);
+    $(studentFormObj.elements["personalMail"]).val(details.secondaryEmail);
+    $(studentFormObj.elements["phone"]).val(details.phoneNumber);
+    $(studentFormObj.elements["address"]).val(details.address);
+    $(studentFormObj.elements["status"]).val(details.status);
+    $(studentFormObj.elements["scoreType"]).val(score.scoreType);
+    $(studentFormObj.elements["verbal"]).val(score.verbal);
+    $(studentFormObj.elements["quantitative"]).val(score.quantitative);
+    $(studentFormObj.elements["analytical"]).val(score.analytical);
+    $(studentFormObj.elements["gpa"]).val(score.gpa);
+};
+
+function setStudentFormDetails(formConfObj, details) {
+    var studentFormObj = document.forms[formConfObj.name];
+    var score = details.scores ? JSON.parse(details.scores) : {};
+    var concentrationOptions = getConcentrationAsOptions();
+    $(studentFormObj.elements["concentration"]).append(concentrationOptions);
+    $(studentFormObj.elements["id"]).val(details.id);
+    $(studentFormObj.elements["loginId"]).val(details.loginId);
+    $(studentFormObj.elements["firstName"]).val(details.firstName);
+    $(studentFormObj.elements["lastName"]).val(details.lastName);
+    $(studentFormObj.elements["concentration"]).val(details.concentration.id);
+    $(studentFormObj.elements["mail"]).val(details.email);
+    $(studentFormObj.elements["personalMail"]).val(details.secondaryEmail);
+    $(studentFormObj.elements["phone"]).val(details.phoneNumber);
+    $(studentFormObj.elements["address"]).val(details.address);
+    $(studentFormObj.elements["status"]).val(details.status);
+    $(studentFormObj.elements["scoreType"]).val(score.scoreType);
+    $(studentFormObj.elements["verbal"]).val(score.verbal);
+    $(studentFormObj.elements["quantitative"]).val(score.quantitative);
+    $(studentFormObj.elements["analytical"]).val(score.analytical);
+    $(studentFormObj.elements["gpa"]).val(score.gpa);
+};
+
+function setStudentQuestionnaireFormDetails(formConfObj, details) {
+    var studentFormObj = document.forms[formConfObj.name];
+    var testDetails = details.testDetails ? JSON.parse(details.testDetails) : {};
+    for (var itemKey in questionnaireInputDetails) {
+        if (questionnaireInputDetails[itemKey].type === 'radio') {
+            $('input[name=' + itemKey + '][value=' + testDetails[itemKey] + ']').attr('checked', true);
+        } else {
+            $(studentFormObj.elements[itemKey]).val(testDetails[itemKey]);
+        }
+    }
+}

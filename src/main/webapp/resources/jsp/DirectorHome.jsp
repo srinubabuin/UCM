@@ -49,6 +49,218 @@
             <button name="reset" class="btn btn-warning" type="reset">Reset</button>
         </div>
     </div>
+    <div id="studentQuestionnairesFormTpl">
+        <div class="form-group">
+            <label class="col-sm-6 control-label required">Have you taken a course like this?</label>
+            <div class="col-sm-6">
+                <label class="radio-inline"><input type="radio" value="yes" name="takenCource"
+                                                   onchange="onStudentQuestionnaireFormChange('takenCource')">Yes</label>
+                <label class="radio-inline"><input type="radio" value="no" name="takenCource"
+                                                   onchange="onStudentQuestionnaireFormChange('takenCource')"
+                                                   checked='checked'>No</label>
+            </div>
+        </div>
+        <div class="form-group" style='display: none;'>
+            <label class="col-sm-6 control-label">If so, at what school? What was the course prefix, number and
+                title?</label>
+            <div class="col-sm-6">
+                <textarea name="takenCourceDesc" rows="3" class="form-control textarea-no-resize"></textarea>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-6 control-label required">How many classes do you plan to take each fall / spring
+                semester?</label>
+            <div class="col-sm-6">
+                <input type="text" name="classesPerSemester" class="form-control"
+                       placeholder="How many classes do you plan per semester">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-6 control-label required">How many classes to you plan to take in the
+                summer?</label>
+            <div class="col-sm-6">
+                <input type="text" name="classesPlanSummer" class="form-control"
+                       placeholder="How many classes do you plan in summer?">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-6 control-label required">Do you plan to work while pursuing your MBA?</label>
+            <div class="col-sm-6">
+                <label class="radio-inline"><input type="radio" value="yes" name="planToWork"
+                                                   onchange="onStudentQuestionnaireFormChange('planToWork')">Yes</label>
+                <label class="radio-inline"><input type="radio" value="no" name="planToWork"
+                                                   onchange="onStudentQuestionnaireFormChange('planToWork')"
+                                                   checked='checked'>No</label>
+            </div>
+        </div>
+        <div class="form-group" style='display: none;'>
+            <label class="col-sm-6 control-label">If so, how many hours a week do you plan to work?</label>
+            <div class="col-sm-6">
+                <input type="text" name="planToWorkDesc" class="form-control" placeholder="Working Company">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-6 control-label required">If currently employed</label>
+            <div class="col-sm-6">
+                <label class="radio-inline"><input type="radio" value="yes" name="currentEmployee"
+                                                   onchange="onStudentQuestionnaireFormChange('currentEmployee')">Yes</label>
+                <label class="radio-inline"><input type="radio" value="no" name="currentEmployee"
+                                                   onchange="onStudentQuestionnaireFormChange('currentEmployee')"
+                                                   checked='checked'>No</label>
+            </div>
+        </div>
+        <div class="form-group" style='display: none;'>
+            <label class="col-sm-6 control-label">For whom do you work?</label>
+            <div class="col-sm-6">
+                <input type="text" name="currentEmployeeWork" class="form-control" placeholder="Working Company">
+            </div>
+        </div>
+        <div class="form-group" style='display: none;'>
+            <label class="col-sm-6 control-label">What is your position?</label>
+            <div class="col-sm-6">
+                <input type="text" name="currentEmployeePosition" class="form-control" placeholder="Position">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-6 control-label required">How far is your residence from UCM's Warrensburg
+                campus?</label>
+            <div class="col-sm-6">
+                <input type="text" name="residenceFromWarrensburgCampus" class="form-control"
+                       placeholder="Residence from UCM's Warrensburg campus?">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-6 control-label required">How far is your work location from UCM's Warresnburg
+                campus?</label>
+            <div class="col-sm-6">
+                <input type="text" name="workLocFromWarrensburgCampus" class="form-control"
+                       placeholder="Work location from UCM's Warrensburg campus?">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-6 control-label required">Do you have children for whom you are
+                responsible?</label>
+            <div class="col-sm-6">
+                <input type="text" name="childrenWhomYouAreResp" class="form-control"
+                       placeholder="Children for whom you are responsible?">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-6 control-label required">Are you a single parent?</label>
+            <div class="col-sm-6">
+                <label class="radio-inline"><input type="radio" value="yes" name="areYouSigleParent">Yes</label>
+                <label class="radio-inline"><input type="radio" value="no" name="areYouSigleParent"
+                                                   checked='checked'>No</label>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-6 control-label required">Will you have difficulty scheduling morning
+                classes?</label>
+            <div class="col-sm-6">
+                <label class="radio-inline"><input type="radio" value="yes"
+                                                   name="difficultySchedulingMorning">Yes</label>
+                <label class="radio-inline"><input type="radio" value="no" name="difficultySchedulingMorning"
+                                                   checked='checked'>No</label>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-6 control-label required">Will you have difficulty scheduling afternoon
+                classes?</label>
+            <div class="col-sm-6">
+                <label class="radio-inline"><input type="radio" value="yes"
+                                                   name="difficultySchedulingAfternoon">Yes</label>
+                <label class="radio-inline"><input type="radio" value="no" name="difficultySchedulingAfternoon"
+                                                   checked='checked'>No</label>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-6 control-label required">Will you have difficulty scheduling night
+                classes?</label>
+            <div class="col-sm-6">
+                <label class="radio-inline"><input type="radio" value="yes"
+                                                   name="difficultySchedulingNight">Yes</label>
+                <label class="radio-inline"><input type="radio" value="no" name="difficultySchedulingNight"
+                                                   checked='checked'>No</label>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-6 control-label required">Will you have difficulty scheduling weekend
+                classes?</label>
+            <div class="col-sm-6">
+                <label class="radio-inline"><input type="radio" value="yes"
+                                                   name="difficultySchedulingWeekend">Yes</label>
+                <label class="radio-inline"><input type="radio" value="no" name="difficultySchedulingWeekend"
+                                                   checked='checked'>No</label>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-6 control-label">What is your motivation in pursing an MBA?</label>
+            <div class="col-sm-6">
+                <textarea name="motivationPursingMBA" rows="3" class="form-control textarea-no-resize"></textarea>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-6 control-label">What type of position do you plan to seek after obtaining your
+                MBA?</label>
+            <div class="col-sm-6">
+                <textarea name="positionSeedAfterMBA" rows="3" class="form-control textarea-no-resize"></textarea>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-6 control-label required">How did you become aware of the MBA program at
+                UCM?</label>
+            <div class="col-sm-6">
+                <select name="awareMBAatUCM" class="form-control">
+                    <option value="internetSearch">Internet search</option>
+                    <option value="referralByFriend">Referral by a friend/co-worker</option>
+                    <option value="referralByManager">Referral by a manager at work</option>
+                    <option value="attendedUCMBefore">Attended UCM before</option>
+                    <option value="other">Other</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-6 control-label required">What attracted you to the MBA program at UCM</label>
+            <div class="col-sm-6">
+                <select name="attractedProgramAtUCM" class="form-control">
+                    <option value="cost">Cost</option>
+                    <option value="entranceRequirements">Entrance requirements</option>
+                    <option value="reputation">Reputation</option>
+                    <option value="proximityToWork">Proximity to work</option>
+                    <option value="proximityToHome">Proximity to home</option>
+                    <option value="familiarityWithUCM">Familiarity with UCM</option>
+                    <option value="knowOtherStudents">Know other students</option>
+                    <option value="aacsbAccreditation">AACSB Accreditation</option>
+                    <option value="other">Other</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-12 text-center">
+                <label class="checkbox-inline"><input type="checkbox" value="no" name="codeOfConduct">Accept Code of
+                    Counduct</label>
+            </div>
+        </div>
+    </div>
+    <div id="studentPrerequisiteFormTpl">
+        <div class="form-group">
+            <label class="col-sm-3 control-label required">Prerequisite</label>
+            <div class="col-sm-8">
+                <select type="text" name="studentSearchPrerequisite" class="form-control">
+                    <option value="met">Met</option>
+                    <option value="notmet" selected>Not Met</option>
+                </select>
+            </div>
+        </div>
+    </div>
+    <div id="studentSearchFormTplButtons">
+        <div class="col-sm-12 text-center">
+            <button name="previous" class="btn" type="button">Previous</button>
+            <button name="save" class="btn btn-success" type="button">Save</button>
+            <button name="cancel" class="btn btn-primary" type="button">Cancel</button>
+            <button name="next" class="btn" type="button">Next</button>
+        </div>
+    </div>
     <div id="studentFormTpl">
         <div class="form-group">
             <label class="col-sm-3 control-label required">Name</label>
@@ -134,6 +346,8 @@
         </div>
         <input type="hidden" name="id" value="-1">
         <input type="hidden" name="loginId" value="-1">
+    </div>
+    <div id="studentFormTplBtns">
         <div class="col-sm-12 text-center">
             <button name="save" class="btn btn-success" type="button">Save</button>
             <button name="reset" class="btn btn-warning" type="reset">Reset</button>
