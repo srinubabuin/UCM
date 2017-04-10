@@ -604,50 +604,50 @@ function getStudentDetailsGridObj(toolbarObj, confObj) {
             "data-unique-id": "srNo"
         },
         columns: [{
-            title: "#",
-            field: "id",
-            align: "left"
-        }, {
-            title: "700#",
-            field: "loginId",
-            align: "left"
-        }, {
-            title: "Name",
-            field: "firstName",
-            align: "left"
+                title: "#",
+                field: "id",
+                align: "left"
+            }, {
+                title: "700#",
+                field: "loginId",
+                align: "left"
+            }, {
+                title: "Name",
+                field: "firstName",
+                align: "left"
 
-        }, {
-            title: "Mail",
-            field: "email",
-            align: "left"
-        }, {
-            title: "Phone #",
-            field: "phoneNumber",
-            align: "left"
-        }, {
-            title: "Concentration",
-            field: "concentration.concentrationName",
-            align: "left"
+            }, {
+                title: "Mail",
+                field: "email",
+                align: "left"
+            }, {
+                title: "Phone #",
+                field: "phoneNumber",
+                align: "left"
+            }, {
+                title: "Concentration",
+                field: "concentration.concentrationName",
+                align: "left"
 
-        }, {
-            title: "Entry Date",
-            field: "createdDate",
-            align: "left"
+            }, {
+                title: "Entry Date",
+                field: "createdDate",
+                align: "left"
 
-        }, {
-            title: "Operate",
-            field: "operate",
-            align: 'center',
-            events: confObj.me.operateEvent(),
-            formatter: [
-                '<button class="studentEdit" title="Edit">',
-                '<i class="glyphicon glyphicon-pencil icon-pencil"></i>',
-                '</button>  ',
-                '<button class="studentRemove" title="Remove">',
-                '<i class="glyphicon glyphicon-remove-sign icon-remove-sign"></i>',
-                '</button>'
-            ].join('')
-        }]
+            }, {
+                title: "Operate",
+                field: "operate",
+                align: 'center',
+                events: confObj.me.operateEvent(),
+                formatter: [
+                    '<button class="studentEdit" title="Edit">',
+                    '<i class="glyphicon glyphicon-pencil icon-pencil"></i>',
+                    '</button>  ',
+                    '<button class="studentRemove" title="Remove">',
+                    '<i class="glyphicon glyphicon-remove-sign icon-remove-sign"></i>',
+                    '</button>'
+                ].join('')
+            }]
     };
     return studentDetailsConfobj;
 }
@@ -932,43 +932,43 @@ function getAdvisorDetailsGridObj(toolbarObj, confObj) {
             "data-unique-id": "srNo"
         },
         columns: [{
-            title: "#",
-            field: "srNo",
-            align: "left"
-        }, {
-            title: "700#",
-            field: "loginId",
-            align: "left"
-        }, {
-            title: "Name",
-            field: "name",
-            align: "left"
-        }, {
-            title: "Mail",
-            field: "email",
-            align: "left"
-        }, {
-            title: "Concentration",
-            field: "concentration",
-            align: "left"
-        }, {
-            title: "Status",
-            field: "status",
-            align: "left"
-        }, {
-            title: "Operate",
-            field: "operate",
-            align: 'center',
-            events: confObj.me.operateEvent(),
-            formatter: [
-                '<button class="advisorEdit" title="Edit">',
-                '<i class="glyphicon glyphicon-pencil icon-pencil"></i>',
-                '</button>  ',
-                '<button class="advisorRemove" title="Remove">',
-                '<i class="glyphicon glyphicon-remove-sign icon-remove-sign"></i>',
-                '</button>'
-            ].join('')
-        }]
+                title: "#",
+                field: "srNo",
+                align: "left"
+            }, {
+                title: "700#",
+                field: "loginId",
+                align: "left"
+            }, {
+                title: "Name",
+                field: "name",
+                align: "left"
+            }, {
+                title: "Mail",
+                field: "email",
+                align: "left"
+            }, {
+                title: "Concentration",
+                field: "concentration",
+                align: "left"
+            }, {
+                title: "Status",
+                field: "status",
+                align: "left"
+            }, {
+                title: "Operate",
+                field: "operate",
+                align: 'center',
+                events: confObj.me.operateEvent(),
+                formatter: [
+                    '<button class="advisorEdit" title="Edit">',
+                    '<i class="glyphicon glyphicon-pencil icon-pencil"></i>',
+                    '</button>  ',
+                    '<button class="advisorRemove" title="Remove">',
+                    '<i class="glyphicon glyphicon-remove-sign icon-remove-sign"></i>',
+                    '</button>'
+                ].join('')
+            }]
     };
     return advisorDetailsConfobj;
 }
@@ -1289,48 +1289,48 @@ function getConcentrationDetailsGridObj(toolbarObj, confObj) {
             "data-unique-id": "srNo"
         },
         columns: [{
-            title: "#",
-            field: "srNo",
-            align: "left"
-        }, {
-            title: "Name",
-            field: "concentrationName",
-            align: "left"
-        }, {
-            title: "Cources",
-            field: "cources",
-            align: "left",
-            formatter: function (value, row, index) {
-                var courceNames = [];
-                if (value && value.length) {
-                    for (var i = 0; i < value.length; i++) {
-                        courceNames.push(value[i].courceName + " (" + value[i].courcePrefix + " ," + value[i].courceCode + ")");
+                title: "#",
+                field: "srNo",
+                align: "left"
+            }, {
+                title: "Name",
+                field: "concentrationName",
+                align: "left"
+            }, {
+                title: "Cources",
+                field: "cources",
+                align: "left",
+                formatter: function (value, row, index) {
+                    var courceNames = [];
+                    if (value && value.length) {
+                        for (var i = 0; i < value.length; i++) {
+                            courceNames.push(value[i].courceName + " (" + value[i].courcePrefix + " ," + value[i].courceCode + ")");
+                        }
                     }
+                    return courceNames.join(', ');
                 }
-                return courceNames.join(', ');
-            }
-        }, {
-            title: "Notes",
-            field: "notes",
-            align: "left"
-        }, {
-            title: "Status",
-            field: "concentrationStatus",
-            align: "left"
-        }, {
-            title: "Operate",
-            field: "operate",
-            align: 'center',
-            events: confObj.me.operateEvent(),
-            formatter: [
-                '<button class="concentrationEdit" title="Edit">',
-                '<i class="glyphicon glyphicon-pencil icon-pencil"></i>',
-                '</button>  ',
-                '<button class="concentrationRemove" title="Remove">',
-                '<i class="glyphicon glyphicon-remove-sign icon-remove-sign"></i>',
-                '</button>'
-            ].join('')
-        }]
+            }, {
+                title: "Notes",
+                field: "notes",
+                align: "left"
+            }, {
+                title: "Status",
+                field: "concentrationStatus",
+                align: "left"
+            }, {
+                title: "Operate",
+                field: "operate",
+                align: 'center',
+                events: confObj.me.operateEvent(),
+                formatter: [
+                    '<button class="concentrationEdit" title="Edit">',
+                    '<i class="glyphicon glyphicon-pencil icon-pencil"></i>',
+                    '</button>  ',
+                    '<button class="concentrationRemove" title="Remove">',
+                    '<i class="glyphicon glyphicon-remove-sign icon-remove-sign"></i>',
+                    '</button>'
+                ].join('')
+            }]
     };
     return concentrationDetailsConfobj;
 }
@@ -1604,43 +1604,43 @@ function getCourceDetailsGridObj(toolbarObj, confObj) {
             "data-unique-id": "srNo"
         },
         columns: [{
-            title: "#",
-            field: "srNo",
-            align: "left"
-        }, {
-            title: "Name",
-            field: "courceName",
-            align: "left"
-        }, {
-            title: "Prefix",
-            field: "courcePrefix",
-            align: "left"
-        }, {
-            title: "Code",
-            field: "courceCode",
-            align: "left"
-        }, {
-            title: "Notes",
-            field: "notes",
-            align: "left"
-        }, {
-            title: "Status",
-            field: "courceStatus",
-            align: "left"
-        }, {
-            title: "Operate",
-            field: "operate",
-            align: 'center',
-            events: confObj.me.operateEvent(),
-            formatter: [
-                '<button class="courceEdit" title="Edit">',
-                '<i class="glyphicon glyphicon-pencil icon-pencil"></i>',
-                '</button>  ',
-                '<button class="courceRemove" title="Remove">',
-                '<i class="glyphicon glyphicon-remove-sign icon-remove-sign"></i>',
-                '</button>'
-            ].join('')
-        }]
+                title: "#",
+                field: "srNo",
+                align: "left"
+            }, {
+                title: "Name",
+                field: "courceName",
+                align: "left"
+            }, {
+                title: "Prefix",
+                field: "courcePrefix",
+                align: "left"
+            }, {
+                title: "Code",
+                field: "courceCode",
+                align: "left"
+            }, {
+                title: "Notes",
+                field: "notes",
+                align: "left"
+            }, {
+                title: "Status",
+                field: "courceStatus",
+                align: "left"
+            }, {
+                title: "Operate",
+                field: "operate",
+                align: 'center',
+                events: confObj.me.operateEvent(),
+                formatter: [
+                    '<button class="courceEdit" title="Edit">',
+                    '<i class="glyphicon glyphicon-pencil icon-pencil"></i>',
+                    '</button>  ',
+                    '<button class="courceRemove" title="Remove">',
+                    '<i class="glyphicon glyphicon-remove-sign icon-remove-sign"></i>',
+                    '</button>'
+                ].join('')
+            }]
     };
     return courceDetailsConfobj;
 }
@@ -1950,7 +1950,7 @@ function loadStudentQuestionnaireLyt(cellObj) {
 
 function getStudentQuestionnaireFormDetails(formName) {
     var formObj = document.forms[formName],
-        itemObj, questionnaireDetailsObj = {};
+            itemObj, questionnaireDetailsObj = {};
 
     for (var itemKey in questionnaireInputDetails) {
         itemObj = formObj[itemKey];
@@ -2021,7 +2021,7 @@ function setStudentFormDetails(formConfObj, details) {
     $(studentFormObj.elements["quantitative"]).val(score.quantitative);
     $(studentFormObj.elements["analytical"]).val(score.analytical);
     $(studentFormObj.elements["gpa"]).val(score.gpa);
-};
+}
 
 function setStudentFormDetails(formConfObj, details) {
     var studentFormObj = document.forms[formConfObj.name];
@@ -2043,7 +2043,7 @@ function setStudentFormDetails(formConfObj, details) {
     $(studentFormObj.elements["quantitative"]).val(score.quantitative);
     $(studentFormObj.elements["analytical"]).val(score.analytical);
     $(studentFormObj.elements["gpa"]).val(score.gpa);
-};
+}
 
 function setStudentQuestionnaireFormDetails(formConfObj, details) {
     var studentFormObj = document.forms[formConfObj.name];
