@@ -79,7 +79,7 @@ public class AppDataEncryptorDecryptor {
         String target = "admin";
         String encrypted = td.encrypt(target);
         String decrypted = td.decrypt(encrypted);
-        System.out.println(td.decrypt("I9u6Hpeuho4QdvC/As/Vjg=="));
+        System.out.println(td.decrypt("QmxBSb/KmNw0YLrk65PNEQ=="));
         System.out.println("String To Encrypt: " + target);
         System.out.println("Encrypted String:" + encrypted);
         System.out.println("Decrypted String:" + decrypted);

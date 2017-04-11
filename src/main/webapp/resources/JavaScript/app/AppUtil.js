@@ -404,11 +404,11 @@ function showMessage(message, type, closeDelay) {
     }
     type = type || "info";
     var alert = $('<div class="alert alert-' + type + ' fade-in message-inner-position">')
-            .append(
-                    $('<button type="button" class="close" data-dismiss="alert">')
-                    .append("&times;")
-                    )
-            .append(message);
+        .append(
+            $('<button type="button" class="close" data-dismiss="alert">')
+                .append("&times;")
+        )
+        .append(message);
     $("#alerts-container").append(alert);
     $('.alert .close').on("click", function (e) {
         $(alert).remove();
@@ -655,6 +655,13 @@ var validateValue = {
     },
     isPhoneNumber: function (str) {
         var pattern = /^\d{10}$/;
+        return pattern.test(str);  // returns a boolean
+    },
+    isValidPhoneNumber: function (str) {
+        if (str) {
+            str = str.replace(/-/g, '').replace(/\+/g, '').replace(/\./g, '');
+        }
+        var pattern = /^\d+$/;
         return pattern.test(str);  // returns a boolean
     },
     isSame: function (str1, str2) {

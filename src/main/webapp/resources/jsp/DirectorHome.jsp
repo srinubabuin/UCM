@@ -36,7 +36,7 @@
 <div id='formTempletes' style="display: none;">
     <div id="studentSearchFormTpl">
         <div class="form-group">
-            <label class="col-sm-3 control-label required">Student Id</label>
+            <label class="col-sm-3 control-label required">Student #</label>
             <div class="col-sm-8">
                 <input type="text" name="studentId" class="form-control" placeholder="Student Id">
             </div>

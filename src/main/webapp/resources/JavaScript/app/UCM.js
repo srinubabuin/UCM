@@ -7,6 +7,8 @@ var questionnaireSubItems = {
     'currentEmployee': ['currentEmployeeWork', 'currentEmployeePosition']
 };
 
+var questionnaireNotRequiredItems = ['takenCourceDesc', 'planToWorkDesc', 'currentEmployeeWork', 'currentEmployeePosition'];
+
 var questionnaireInputDetails = {
     "takenCource": {
         "type": "radio"
@@ -160,6 +162,7 @@ function loadStudentSearchLyt(cellObj) {
         };
         _this.attachStudentSearchForm(cellObj, studentSearchFormConfObj);
         var studentSearchFormObj = document.forms[studentSearchFormConfObj.name];
+        studentSearchFormObj.elements['studentId'].focus();
         $(studentSearchFormObj.elements["search"]).click(function () {
             _this.onStudentSearchFormBtnClick("search", studentSearchFormConfObj);
         });
@@ -177,12 +180,35 @@ function loadStudentSearchLyt(cellObj) {
         _this.studentEditFormPosition = 0;
         if (id === "search") {
             var formObj = document.forms[formName];
-            var studentId = formObj["studentId"].value || "";
-            if (!studentId) {
-                return;
+            var validateItems = {
+                "studentId": {
+                    "validations": {
+                        "isNotEmpty": "Please enter Student #"
+                    }
+                }
             }
+            if (!validateForm(formName, validateItems)) {
+                return false;
+            }
+
+            if (userRole === "ADVISOR") {
+                if (loginUser.concentration && !loginUser.concentration.id) {
+                    $('span#errorMessage').html("Student not belongs to advisor concentration");
+                    return;
+                }
+            }
+
+            var studentId = formObj["studentId"].value || "";
             var response = getStudentByLoginId(studentId);
             if (response) {
+                if (userRole === "ADVISOR") {
+                    var advConcId = loginUser.concentration ? loginUser.concentration.id : "";
+                    if (advConcId && response.concentration && response.concentration.id != advConcId) {
+                        $('span#errorMessage').html("Student not belongs to advisor concentration");
+                        return;
+                    }
+                }
+
                 if (response.testDetails) {
                     _this.showEditStudentSearchForm(_this.detailsCellObj, response);
                 } else {
@@ -498,6 +524,7 @@ function loadStudentLyt(cellObj) {
         };
         _this.attachStudentsForm(cellObj, studentFormConfObj);
         var studentFormObj = document.forms[studentFormConfObj.name];
+        studentFormObj.elements['firstName'].focus();
         var concentrationOptions = getConcentrationAsOptions();
         $(studentFormObj.elements["concentration"]).append(concentrationOptions);
         $(studentFormObj.elements["status"].parentElement.parentElement).hide();
@@ -530,6 +557,7 @@ function loadStudentLyt(cellObj) {
         var student = getStudent(student.id);
         setStudentFormDetails(studentFormConfObj, student);
         var studentFormObj = document.forms[studentFormConfObj.name];
+        studentFormObj.elements['firstName'].focus();
         $(studentFormObj.elements["reset"]).hide();
         $(studentFormObj.elements["save"]).click(function () {
             _this.onStudentFormBtnClick("save", studentFormConfObj);
@@ -600,6 +628,50 @@ function loadStudentLyt(cellObj) {
         var formName = confObj.name;
         if (id === "save") {
             var formObj = document.forms[formName];
+
+            var validateItems = {
+                "firstName": {
+                    "validations": {
+                        "isNotEmpty": "Please enter Student First Name",
+                        "isMaxLengthReached": "Please enter Student First Name below 64 characters"
+                    }, "maxLength": 128
+                },
+                "lastName": {
+                    "validations": {
+                        "isNotEmpty": "Please enter Student Last Name",
+                        "isMaxLengthReached": "Please enter Student Last Name below 64 characters"
+                    }, "maxLength": 128
+                }, "concentration": {"validations": {"isSelectValid": "Please select Concentration"}},
+                "mail": {
+                    "validations": {
+                        "isNotEmpty": "Please enter Student email",
+                        "isEmailAddress": "Please enter valid email address",
+                        "isMaxLengthReached": "Please enter Student email below 128 characters",
+                    }, "maxLength": 128
+                },
+                "personalMail": {
+                    "validations": {
+                        "isNotEmpty": "Please enter Student personal email",
+                        "isEmailAddress": "Please enter valid personal email address",
+                        "isMaxLengthReached": "Please enter Student personal email below 128 characters",
+                    }, "maxLength": 128
+                },
+                "phone": {
+                    "validations": {
+                        "isNotEmpty": "Please enter Student phone #",
+                        "isValidPhoneNumber": "Please enter valid Student phone #"
+                    }
+                },
+                "address": {
+                    "validations": {
+                        "isNotEmpty": "Please enter Student Address",
+                        "isMaxLengthReached": "Please enter Student address below 1000 characters",
+                    }, "maxLength": 1000
+                }
+            };
+            if (!validateForm(formName, validateItems)) {
+                return false;
+            }
             var student = {};
             var scores = {};
             student["loginId"] = formObj["loginId"].value;
@@ -672,53 +744,57 @@ function getStudentDetailsGridObj(toolbarObj, confObj) {
             "data-unique-id": "srNo"
         },
         columns: [{
-                title: "#",
-                field: "id",
-                align: "left",
-                formatter: function (value, row, index) {
-                    return (index + 1);
-                }
-            }, {
-                title: "700#",
-                field: "loginId",
-                align: "left"
-            }, {
-                title: "Name",
-                field: "firstName",
-                align: "left"
+            title: "#",
+            field: "id",
+            align: "left",
+            formatter: function (value, row, index) {
+                return (index + 1);
+            }
+        }, {
+            title: "700#",
+            field: "loginId",
+            align: "left"
+        }, {
+            title: "Name",
+            field: "firstName",
+            align: "left"
 
-            }, {
-                title: "Mail",
-                field: "email",
-                align: "left"
-            }, {
-                title: "Phone #",
-                field: "phoneNumber",
-                align: "left"
-            }, {
-                title: "Concentration",
-                field: "concentration.concentrationName",
-                align: "left"
+        }, {
+            title: "Mail",
+            field: "email",
+            align: "left"
+        }, {
+            title: "Phone #",
+            field: "phoneNumber",
+            align: "left"
+        }, {
+            title: "Notes",
+            field: "notes",
+            align: "left"
+        }, {
+            title: "Concentration",
+            field: "concentration.concentrationName",
+            align: "left"
 
-            }, {
-                title: "Entry Date",
-                field: "createdDate",
-                align: "left"
+        }, {
+            title: "Entry Date",
+            field: "createdDate",
+            align: "left"
 
-            }, {
-                title: "Operate",
-                field: "operate",
-                align: 'center',
-                events: confObj.me.operateEvent(),
-                formatter: [
-                    '<button class="studentEdit" title="Edit">',
-                    '<i class="glyphicon glyphicon-pencil icon-pencil"></i>',
-                    '</button>  ',
-                    '<button class="studentRemove" title="Remove">',
-                    '<i class="glyphicon glyphicon-remove-sign icon-remove-sign"></i>',
-                    '</button>'
-                ].join('')
-            }]
+        }, {
+            title: "Operate",
+            field: "operate",
+            align: 'center',
+            events: confObj.me.operateEvent(),
+            formatter: [
+                '<button class="studentEdit" title="Edit">',
+                '<i class="glyphicon glyphicon-pencil icon-pencil"></i>',
+                '</button>  ',
+                '<button class="studentRemove" title="Remove">',
+                '<i class="glyphicon glyphicon-remove-sign icon-remove-sign"></i>',
+                '</button>'
+            ].join('')
+        }]
     };
     return studentDetailsConfobj;
 }
@@ -860,6 +936,7 @@ function loadAdvisorLyt(cellObj) {
         };
         _this.attachAdvisorsForm(cellObj, advisorFormConfObj);
         var advisorFormObj = document.forms[advisorFormConfObj.name];
+        advisorFormObj.elements['name'].focus();
         $(advisorFormObj.elements["status"].parentElement.parentElement).hide();
         $(advisorFormObj.elements["save"]).click(function () {
             _this.onAdvisorFormBtnClick("save", advisorFormConfObj);
@@ -887,6 +964,7 @@ function loadAdvisorLyt(cellObj) {
         var advisor = getAdvisor(advisor.id);
         _this.setAdvisorFormDetails(advisorFormConfObj, advisor);
         var advisorFormObj = document.forms[advisorFormConfObj.name];
+        advisorFormObj.elements['name'].focus();
         $(advisorFormObj.elements["reset"]).hide();
         $(advisorFormObj.elements["save"]).click(function () {
             _this.onAdvisorFormBtnClick("save", advisorFormConfObj);
@@ -952,6 +1030,35 @@ function loadAdvisorLyt(cellObj) {
             if (formObj["password"].value !== formObj["rePassword"].value) {
                 return;
             }
+            var validateItems = {
+                "name": {
+                    "validations": {
+                        "isNotEmpty": "Please enter Advisor Name",
+                        "isMaxLengthReached": "Please enter Advisor Name below 128 characters"
+                    }, "maxLength": 128
+                },
+                "mail": {
+                    "validations": {
+                        "isNotEmpty": "Please enter Advisor mail",
+                        "isEmailAddress": "Please enter valid email address",
+                        "isMaxLengthReached": "Please enter Advisor mail below 128 characters",
+                    }, "maxLength": 128
+                },
+                "phone": {
+                    "validations": {
+                        "isNotEmpty": "Please enter Advisor phone #",
+                        "isValidPhoneNumber": "Please enter valid Advisor phone #"
+                    }
+                },
+                "notes": {
+                    "validations": {"isMaxLengthReached": "Please enter notes below 400 characters"},
+                    "maxLength": 400
+                }
+            };
+            if (!validateForm(formName, validateItems)) {
+                return false;
+            }
+
             var advisor = {};
             advisor["name"] = formObj["name"].value;
             advisor["email"] = formObj["mail"].value;
@@ -1010,52 +1117,52 @@ function getAdvisorDetailsGridObj(toolbarObj, confObj) {
             "data-unique-id": "srNo"
         },
         columns: [{
-                title: "#",
-                field: "srNo",
-                align: "left",
-                formatter: function (value, row, index) {
-                    return (index + 1);
+            title: "#",
+            field: "srNo",
+            align: "left",
+            formatter: function (value, row, index) {
+                return (index + 1);
+            }
+        }, {
+            title: "700#",
+            field: "loginId",
+            align: "left"
+        }, {
+            title: "Name",
+            field: "name",
+            align: "left"
+        }, {
+            title: "Mail",
+            field: "email",
+            align: "left"
+        }, {
+            title: "Concentration",
+            field: "concentration",
+            align: "left",
+            formatter: function (value, row, index) {
+                if (value && value.concentrationName) {
+                    return value.concentrationName;
                 }
-            }, {
-                title: "700#",
-                field: "loginId",
-                align: "left"
-            }, {
-                title: "Name",
-                field: "name",
-                align: "left"
-            }, {
-                title: "Mail",
-                field: "email",
-                align: "left"
-            }, {
-                title: "Concentration",
-                field: "concentration",
-                align: "left",
-                formatter: function (value, row, index) {
-                    if (value && value.concentrationName) {
-                        return value.concentrationName;
-                    }
-                    return '';
-                }
-            }, {
-                title: "Status",
-                field: "status",
-                align: "left"
-            }, {
-                title: "Operate",
-                field: "operate",
-                align: 'center',
-                events: confObj.me.operateEvent(),
-                formatter: [
-                    '<button class="advisorEdit" title="Edit">',
-                    '<i class="glyphicon glyphicon-pencil icon-pencil"></i>',
-                    '</button>  ',
-                    '<button class="advisorRemove" title="Remove">',
-                    '<i class="glyphicon glyphicon-remove-sign icon-remove-sign"></i>',
-                    '</button>'
-                ].join('')
-            }]
+                return '';
+            }
+        }, {
+            title: "Status",
+            field: "status",
+            align: "left"
+        }, {
+            title: "Operate",
+            field: "operate",
+            align: 'center',
+            events: confObj.me.operateEvent(),
+            formatter: [
+                '<button class="advisorEdit" title="Edit">',
+                '<i class="glyphicon glyphicon-pencil icon-pencil"></i>',
+                '</button>  ',
+                '<button class="advisorRemove" title="Remove">',
+                '<i class="glyphicon glyphicon-remove-sign icon-remove-sign"></i>',
+                '</button>'
+            ].join('')
+        }]
     };
     return advisorDetailsConfobj;
 }
@@ -1188,6 +1295,7 @@ function loadConcentrationLyt(cellObj) {
         };
         _this.attachConcentrationsForm(cellObj, concentrationFormConfObj);
         var concentrationFormObj = document.forms[concentrationFormConfObj.name];
+        concentrationFormObj.elements['name'].focus();
         $(concentrationFormObj.elements["status"].parentElement.parentElement).hide();
         var courceOptions = getCourcesAsOptions();
         $(concentrationFormObj.elements["allCources"]).append(courceOptions);
@@ -1225,6 +1333,7 @@ function loadConcentrationLyt(cellObj) {
         var concentration = getConcentration(concentration.id);
         _this.setConcentrationFormDetails(concentrationFormConfObj, concentration);
         var concentrationFormObj = document.forms[concentrationFormConfObj.name];
+        concentrationFormObj.elements['name'].focus();
         $(concentrationFormObj.elements["reset"]).hide();
         $(concentrationFormObj.elements["save"]).click(function () {
             _this.onConcentrationFormBtnClick("save", concentrationFormConfObj);
@@ -1311,10 +1420,19 @@ function loadConcentrationLyt(cellObj) {
         var formName = confObj.name;
         if (id === "save") {
             var formObj = document.forms[formName];
-            var validateItems = {"name": {"validations": {"isNotEmpty": "Please enter Concentration Name", "isMaxLengthReached": "Please enter Concentration Name below 128 characters"}, "maxLength": 128},
+            var validateItems = {
+                "name": {
+                    "validations": {
+                        "isNotEmpty": "Please enter Concentration Name",
+                        "isMaxLengthReached": "Please enter Concentration Name below 128 characters"
+                    }, "maxLength": 128
+                },
                 "advisor": {"validations": {"isSelectValid": "Please select Advisor"}},
                 "cources": {"validations": {"isSelectValid": "Please select atleast one cource"}},
-                "notes": {"validations": {"isMaxLengthReached": "Please enter notes below 400 characters"}, "maxLength": 400}
+                "notes": {
+                    "validations": {"isMaxLengthReached": "Please enter notes below 400 characters"},
+                    "maxLength": 400
+                }
             };
             if (!validateForm(formName, validateItems)) {
                 return false;
@@ -1392,51 +1510,51 @@ function getConcentrationDetailsGridObj(toolbarObj, confObj) {
             "data-unique-id": "srNo"
         },
         columns: [{
-                title: "#",
-                field: "srNo",
-                align: "left",
-                formatter: function (value, row, index) {
-                    return (index + 1);
-                }
-            }, {
-                title: "Name",
-                field: "concentrationName",
-                align: "left"
-            }, {
-                title: "Cources",
-                field: "cources",
-                align: "left",
-                formatter: function (value, row, index) {
-                    var courceNames = [];
-                    if (value && value.length) {
-                        for (var i = 0; i < value.length; i++) {
-                            courceNames.push(value[i].courceName + " (" + value[i].courcePrefix + ", " + value[i].courceCode + ")");
-                        }
+            title: "#",
+            field: "srNo",
+            align: "left",
+            formatter: function (value, row, index) {
+                return (index + 1);
+            }
+        }, {
+            title: "Name",
+            field: "concentrationName",
+            align: "left"
+        }, {
+            title: "Cources",
+            field: "cources",
+            align: "left",
+            formatter: function (value, row, index) {
+                var courceNames = [];
+                if (value && value.length) {
+                    for (var i = 0; i < value.length; i++) {
+                        courceNames.push(value[i].courceName + " (" + value[i].courcePrefix + ", " + value[i].courceCode + ")");
                     }
-                    return courceNames.join(', ');
                 }
-            }, {
-                title: "Notes",
-                field: "notes",
-                align: "left"
-            }, {
-                title: "Status",
-                field: "concentrationStatus",
-                align: "left"
-            }, {
-                title: "Operate",
-                field: "operate",
-                align: 'center',
-                events: confObj.me.operateEvent(),
-                formatter: [
-                    '<button class="concentrationEdit" title="Edit">',
-                    '<i class="glyphicon glyphicon-pencil icon-pencil"></i>',
-                    '</button>  ',
-                    '<button class="concentrationRemove" title="Remove">',
-                    '<i class="glyphicon glyphicon-remove-sign icon-remove-sign"></i>',
-                    '</button>'
-                ].join('')
-            }]
+                return courceNames.join(', ');
+            }
+        }, {
+            title: "Notes",
+            field: "notes",
+            align: "left"
+        }, {
+            title: "Status",
+            field: "concentrationStatus",
+            align: "left"
+        }, {
+            title: "Operate",
+            field: "operate",
+            align: 'center',
+            events: confObj.me.operateEvent(),
+            formatter: [
+                '<button class="concentrationEdit" title="Edit">',
+                '<i class="glyphicon glyphicon-pencil icon-pencil"></i>',
+                '</button>  ',
+                '<button class="concentrationRemove" title="Remove">',
+                '<i class="glyphicon glyphicon-remove-sign icon-remove-sign"></i>',
+                '</button>'
+            ].join('')
+        }]
     };
     return concentrationDetailsConfobj;
 }
@@ -1556,6 +1674,7 @@ function loadCourceLyt(cellObj) {
         };
         _this.attachCourcesForm(cellObj, courceFormConfObj);
         var courceFormObj = document.forms[courceFormConfObj.name];
+        courceFormObj.elements['name'].focus();
         $(courceFormObj.elements["status"].parentElement.parentElement).hide();
         $(courceFormObj.elements["save"]).click(function () {
             _this.onCourceFormBtnClick("save", courceFormConfObj);
@@ -1583,6 +1702,7 @@ function loadCourceLyt(cellObj) {
         var cource = getCource(cource.id);
         _this.setCourceFormDetails(courceFormConfObj, cource);
         var courceFormObj = document.forms[courceFormConfObj.name];
+        courceFormObj.elements['name'].focus();
         $(courceFormObj.elements["save"]).click(function () {
             _this.onCourceFormBtnClick("save", courceFormConfObj);
         });
@@ -1640,10 +1760,29 @@ function loadCourceLyt(cellObj) {
         if (id === "save") {
             var formObj = document.forms[formName];
 
-            var validateItems = {"name": {"validations": {"isNotEmpty": "Please enter Cource Name", "isMaxLengthReached": "Please enter Cource Name below 64 characters"}, "maxLength": 64},
-                "prefix": {"validations": {"isNotEmpty": "Please enter Cource Prefix", "isMaxLengthReached": "Please enter Cource Prefix below 16 characters"}, "maxLength": 16},
-                "code": {"validations": {"isNotEmpty": "Please enter Cource Code", "isMaxLengthReached": "Please enter Cource Code below 16 characters"}, "maxLength": 16},
-                "notes": {"validations": {"isMaxLengthReached": "Please enter notes below 400 characters"}, "maxLength": 400}
+            var validateItems = {
+                "name": {
+                    "validations": {
+                        "isNotEmpty": "Please enter Cource Name",
+                        "isMaxLengthReached": "Please enter Cource Name below 64 characters"
+                    }, "maxLength": 64
+                },
+                "prefix": {
+                    "validations": {
+                        "isNotEmpty": "Please enter Cource Prefix",
+                        "isMaxLengthReached": "Please enter Cource Prefix below 16 characters"
+                    }, "maxLength": 16
+                },
+                "code": {
+                    "validations": {
+                        "isNotEmpty": "Please enter Cource Code",
+                        "isMaxLengthReached": "Please enter Cource Code below 16 characters"
+                    }, "maxLength": 16
+                },
+                "notes": {
+                    "validations": {"isMaxLengthReached": "Please enter notes below 400 characters"},
+                    "maxLength": 400
+                }
             };
             if (!validateForm(formName, validateItems)) {
                 return false;
@@ -1723,46 +1862,46 @@ function getCourceDetailsGridObj(toolbarObj, confObj) {
             "data-unique-id": "srNo"
         },
         columns: [{
-                title: "#",
-                field: "srNo",
-                align: "left",
-                formatter: function (value, row, index) {
-                    return (index + 1);
-                }
-            }, {
-                title: "Name",
-                field: "courceName",
-                align: "left"
-            }, {
-                title: "Prefix",
-                field: "courcePrefix",
-                align: "left"
-            }, {
-                title: "Code",
-                field: "courceCode",
-                align: "left"
-            }, {
-                title: "Notes",
-                field: "notes",
-                align: "left"
-            }, {
-                title: "Status",
-                field: "courceStatus",
-                align: "left"
-            }, {
-                title: "Operate",
-                field: "operate",
-                align: 'center',
-                events: confObj.me.operateEvent(),
-                formatter: [
-                    '<button class="courceEdit" title="Edit">',
-                    '<i class="glyphicon glyphicon-pencil icon-pencil"></i>',
-                    '</button>  ',
-                    '<button class="courceRemove" title="Remove">',
-                    '<i class="glyphicon glyphicon-remove-sign icon-remove-sign"></i>',
-                    '</button>'
-                ].join('')
-            }]
+            title: "#",
+            field: "srNo",
+            align: "left",
+            formatter: function (value, row, index) {
+                return (index + 1);
+            }
+        }, {
+            title: "Name",
+            field: "courceName",
+            align: "left"
+        }, {
+            title: "Prefix",
+            field: "courcePrefix",
+            align: "left"
+        }, {
+            title: "Code",
+            field: "courceCode",
+            align: "left"
+        }, {
+            title: "Notes",
+            field: "notes",
+            align: "left"
+        }, {
+            title: "Status",
+            field: "courceStatus",
+            align: "left"
+        }, {
+            title: "Operate",
+            field: "operate",
+            align: 'center',
+            events: confObj.me.operateEvent(),
+            formatter: [
+                '<button class="courceEdit" title="Edit">',
+                '<i class="glyphicon glyphicon-pencil icon-pencil"></i>',
+                '</button>  ',
+                '<button class="courceRemove" title="Remove">',
+                '<i class="glyphicon glyphicon-remove-sign icon-remove-sign"></i>',
+                '</button>'
+            ].join('')
+        }]
     };
     return courceDetailsConfobj;
 }
@@ -1905,6 +2044,22 @@ function loadAdvisorProfileLyt(cellObj) {
             if (formObj["password"].value !== formObj["rePassword"].value) {
                 return;
             }
+            var validateItems = {
+                "phone": {
+                    "validations": {
+                        "isNotEmpty": "Please enter Advisor phone #",
+                        "isValidPhoneNumber": "Please enter valid Advisor phone #"
+                    }
+                },
+                "notes": {
+                    "validations": {"isMaxLengthReached": "Please enter notes below 400 characters"},
+                    "maxLength": 400
+                }
+            };
+            if (!validateForm(formName, validateItems)) {
+                return false;
+            }
+
             var advisorProfile = {};
             advisorProfile["name"] = formObj["name"].value;
             advisorProfile["email"] = formObj["mail"].value;
@@ -2041,6 +2196,10 @@ function loadStudentQuestionnaireLyt(cellObj) {
         var formName = confObj.name;
         if (id === "submit") {
             var formObj = document.forms[formName];
+            var validateItems = getStudentQuestionnaireFormValidationObj();
+            if (!validateForm(formName, validateItems)) {
+                return false;
+            }
             var studentId = loginUser ? loginUser.id : "";
             if (!studentId) {
                 return;
@@ -2076,7 +2235,7 @@ function loadStudentQuestionnaireLyt(cellObj) {
 
 function getStudentQuestionnaireFormDetails(formName) {
     var formObj = document.forms[formName],
-            itemObj, questionnaireDetailsObj = {};
+        itemObj, questionnaireDetailsObj = {};
 
     for (var itemKey in questionnaireInputDetails) {
         itemObj = formObj[itemKey];
@@ -2179,4 +2338,19 @@ function setStudentQuestionnaireFormDetails(formConfObj, details) {
     }
 
     $(studentFormObj).find('input[name=codeOfConduct]').attr('checked', details.acceptedCodeOfConduct === 'yes' ? true : false);
+}
+
+function getStudentQuestionnaireFormValidationObj() {
+    var validationConfObj = {};
+    for (var itemKey in questionnaireInputDetails) {
+        if (questionnaireNotRequiredItems.indexOf(itemKey) <= -1) {
+            validationConfObj[itemKey] = {
+                "validations": {
+                    "isNotEmpty": "This field must not be empty"
+                }
+            }
+        }
+
+    }
+    return validationConfObj;
 }
