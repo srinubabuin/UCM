@@ -96,7 +96,7 @@
         <div class="form-group" style='display: none;'>
             <label class="col-sm-6 control-label">If so, how many hours a week do you plan to work?</label>
             <div class="col-sm-6">
-                <input type="text" name="planToWorkDesc" class="form-control" placeholder="Working Company">
+                <input type="text" name="planToWorkDesc" class="form-control" placeholder="Plan to Work?">
             </div>
         </div>
         <div class="form-group">
@@ -452,7 +452,7 @@
             <label class="col-sm-3 control-label required">Advisor</label>
             <div class="col-sm-8">
                 <select name="advisor" class="form-control">
-                    <option value="-1">Select Advisor</option>
+                    <option value="select">Select Advisor</option>
                 </select>
             </div>
         </div>

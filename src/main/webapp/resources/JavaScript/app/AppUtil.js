@@ -404,11 +404,11 @@ function showMessage(message, type, closeDelay) {
     }
     type = type || "info";
     var alert = $('<div class="alert alert-' + type + ' fade-in message-inner-position">')
-        .append(
-            $('<button type="button" class="close" data-dismiss="alert">')
-                .append("&times;")
-        )
-        .append(message);
+            .append(
+                    $('<button type="button" class="close" data-dismiss="alert">')
+                    .append("&times;")
+                    )
+            .append(message);
     $("#alerts-container").append(alert);
     $('.alert .close').on("click", function (e) {
         $(alert).remove();
@@ -663,6 +663,9 @@ var validateValue = {
     isSelectValid: function (str1, str2) {
         if (str2 === "" || str2 === undefined || str2 === null) {
             str2 = "select";
+        }
+        if (str1 === "" || str1 === undefined || str1 === null) {
+            str1 = "select";
         }
         return !(str1 === str2);
     },

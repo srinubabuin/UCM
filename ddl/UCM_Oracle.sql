@@ -110,8 +110,8 @@ BEGIN
                     NOTES VARCHAR2(400) NULL,
                     STATUS VARCHAR2(64) NOT NULL,
                     CREATED_DATE TIMESTAMP(6) NOT NULL,
-                    CONSTRAINT ADV_MAIL_Uk UNIQUE(MAIL),
-                    CONSTRAINT ADV_PHONE_Uk UNIQUE(PHONE),
+                    CONSTRAINT ADV_MAIL_UK UNIQUE(MAIL),
+                    CONSTRAINT ADV_PHONE_UK UNIQUE(PHONE),
                     CONSTRAINT ADVISOR_ID_PK PRIMARY KEY(ID))';
     END IF;
 END;

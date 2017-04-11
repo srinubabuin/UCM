@@ -142,9 +142,10 @@ public class StudentServiceImpl implements StudentService {
                 student.setPhoneNumber(rs.getString(DBUtil.COLUMN_STUDENTS_PHONE));
                 student.setAddress(rs.getString(DBUtil.COLUMN_STUDENTS_ADDRESS));
                 student.setScores(rs.getString(DBUtil.COLUMN_STUDENTS_SCORES));
-                student.setStatus(rs.getString(DBUtil.COLUMN_STUDENTS_STUDENTSTATUS));
+                student.setStudentStatus(rs.getString(DBUtil.COLUMN_STUDENTS_STUDENTSTATUS));
                 student.setStudentStatusDate(rs.getDate(DBUtil.COLUMN_STUDENTS_STUDENTSTATUS_DATE));
                 student.setStatus(rs.getString(DBUtil.COLUMN_STUDENTS_STATUS));
+                student.setAcceptedCodeOfConduct(rs.getString(DBUtil.COLUMN_STUDENTS_ACCEPTEDCODEOFCONDUCT));
                 student.setTestDetails(rs.getString(DBUtil.COLUMN_STUDENTS_TESTDETAILS));
                 student.setPreReq(rs.getString(DBUtil.COLUMN_STUDENTS_PREREQS));
                 student.setNotes(rs.getString(DBUtil.COLUMN_STUDENTS_NOTES));
@@ -236,7 +237,7 @@ public class StudentServiceImpl implements StudentService {
                 student.setPhoneNumber(rs.getString(DBUtil.COLUMN_STUDENTS_PHONE));
                 student.setAddress(rs.getString(DBUtil.COLUMN_STUDENTS_ADDRESS));
                 student.setScores(rs.getString(DBUtil.COLUMN_STUDENTS_SCORES));
-                student.setStatus(rs.getString(DBUtil.COLUMN_STUDENTS_STUDENTSTATUS));
+                student.setStudentStatus(rs.getString(DBUtil.COLUMN_STUDENTS_STUDENTSTATUS));
                 student.setStudentStatusDate(rs.getDate(DBUtil.COLUMN_STUDENTS_STUDENTSTATUS_DATE));
                 student.setStatus(rs.getString(DBUtil.COLUMN_STUDENTS_STATUS));
                 student.setTestDetails(rs.getString(DBUtil.COLUMN_STUDENTS_TESTDETAILS));

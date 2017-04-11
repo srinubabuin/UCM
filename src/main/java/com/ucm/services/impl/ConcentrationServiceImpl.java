@@ -110,7 +110,7 @@ public class ConcentrationServiceImpl implements ConcentrationService {
             int pos = 1;
             deleteConcentrationCources(concentation);
             con = AppConnectionPool.getConnection();
-            pstm = con.prepareStatement(AppQueryReader.getDBQuery("com.ucm.services.impl.concentratioservice.insertconcentrationcources"), new String[]{DBUtil.COLUMN_CONCENTATIONS_ID});
+            pstm = con.prepareStatement(AppQueryReader.getDBQuery("com.ucm.services.impl.concentratioservice.insertconcentrationcources"));
             for (Cource cource : concentation.getCources()) {
                 pstm.setInt(pos, concentation.getId());
                 pstm.setInt(++pos, cource.getId());

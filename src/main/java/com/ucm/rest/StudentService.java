@@ -46,6 +46,23 @@ public class StudentService {
         }
     }
 
+    @PUT
+    @Path("/{param}")
+    @Consumes({"application/json"})
+    @Produces({"application/json"})
+    public Response update(Student student) {
+
+        RequestStatus reqStatus = null;
+        try {
+            StudentServiceHelper helper = new StudentServiceHelper();
+            reqStatus = helper.modifyStudent(student);
+            return Response.ok().header("Access-Control-Allow-Origin", "*").entity(reqStatus).build();
+        } catch (Exception ex) {
+            LOGGER.info("Update student error");
+            return Response.status(405).header("Access-Control-Allow-Origin", "*").build();
+        }
+    }
+
     @DELETE
     @Path("/{param}")
     @Consumes({"application/json"})

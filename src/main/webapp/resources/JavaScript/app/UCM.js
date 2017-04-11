@@ -71,7 +71,7 @@ var studentInputDetails = {
     }, "address": {
         "type": "text"
     }, "scoreType": {
-        "type": "text",
+        "type": "select"
     }, "verbal": {
         "type": "text"
     }, "quantitative": {
@@ -93,7 +93,7 @@ var studentInputDetails = {
 
 var studentSkipInputs = ["lastName", "verbal", "quantitative", "analytical", "gpa"];
 
-var studentFinalInputs = ["firstName", "lastName", "phone", "scoreType", "address", "verbal", "quantitative", "analytical", "gpa"];
+var studentFinalInputs = ["firstName", "lastName", "phone", "scoreType", "address", "verbal", "quantitative", "analytical", "gpa", "notes"];
 
 /*Student Details Ends*/
 
@@ -183,7 +183,11 @@ function loadStudentSearchLyt(cellObj) {
             }
             var response = getStudentByLoginId(studentId);
             if (response) {
-                _this.showEditStudentSearchForm(_this.detailsCellObj, response);
+                if (response.testDetails) {
+                    _this.showEditStudentSearchForm(_this.detailsCellObj, response);
+                } else {
+                    $('span#errorMessage').html("Student with id \"" + studentId + "\" not yet completed Questionnaire");
+                }
             } else {
                 $('span#errorMessage').html("Student with id \"" + studentId + "\" doesn't exists");
             }
@@ -280,7 +284,7 @@ function loadStudentSearchLyt(cellObj) {
                 showMessage(response.message, "success");
                 _this.loadStudentSearchLyt();
             } else {
-                showMessage(formResponse.message, "danger");
+                showMessage(response.message, "danger");
             }
         } else if (id === "cancel") {
             _this.clearStudentFormCell(_this.detailsCellObj);
@@ -497,6 +501,7 @@ function loadStudentLyt(cellObj) {
         var concentrationOptions = getConcentrationAsOptions();
         $(studentFormObj.elements["concentration"]).append(concentrationOptions);
         $(studentFormObj.elements["status"].parentElement.parentElement).hide();
+        $(studentFormObj.elements["notes"].parentElement.parentElement).hide();
         $(studentFormObj.elements["studentStatus"].parentElement.parentElement).hide();
         $(studentFormObj.elements["studentPrerequisite"].parentElement.parentElement).hide();
         $(studentFormObj.elements["save"]).click(function () {
@@ -615,16 +620,21 @@ function loadStudentLyt(cellObj) {
             };
             scores["scoreType"] = formObj["scoreType"].value;
             student["scores"] = JSON.stringify(scores);
+            var response;
             if (confObj.formType === "add") {
                 response = addStudent(student);
             } else {
                 student["id"] = formObj["id"].value;
+                student["notes"] = formObj["notes"].value;
+                student["studentStatus"] = formObj["studentStatus"].value;
+                student["preReq"] = formObj["studentPrerequisite"].value;
                 response = editStudent(student);
             }
             if (response && response.success) {
+                showMessage(response.message, "success");
                 _this.initStudentsGrid();
             } else {
-                console.log(response);
+                showMessage(response.message, "danger");
             }
         } else if (id === "reset") {
             clearFormDataByName(formName);
@@ -637,6 +647,10 @@ function loadStudentLyt(cellObj) {
         var _this = this;
         var response = deleteStudent(student.id);
         if (response.success) {
+            showMessage(response.message, "success");
+            _this.initStudentsGrid();
+        } else {
+            showMessage(response.message, "delete");
             _this.initStudentsGrid();
         }
     };
@@ -658,50 +672,53 @@ function getStudentDetailsGridObj(toolbarObj, confObj) {
             "data-unique-id": "srNo"
         },
         columns: [{
-            title: "#",
-            field: "id",
-            align: "left"
-        }, {
-            title: "700#",
-            field: "loginId",
-            align: "left"
-        }, {
-            title: "Name",
-            field: "firstName",
-            align: "left"
+                title: "#",
+                field: "id",
+                align: "left",
+                formatter: function (value, row, index) {
+                    return (index + 1);
+                }
+            }, {
+                title: "700#",
+                field: "loginId",
+                align: "left"
+            }, {
+                title: "Name",
+                field: "firstName",
+                align: "left"
 
-        }, {
-            title: "Mail",
-            field: "email",
-            align: "left"
-        }, {
-            title: "Phone #",
-            field: "phoneNumber",
-            align: "left"
-        }, {
-            title: "Concentration",
-            field: "concentration.concentrationName",
-            align: "left"
+            }, {
+                title: "Mail",
+                field: "email",
+                align: "left"
+            }, {
+                title: "Phone #",
+                field: "phoneNumber",
+                align: "left"
+            }, {
+                title: "Concentration",
+                field: "concentration.concentrationName",
+                align: "left"
 
-        }, {
-            title: "Entry Date",
-            field: "createdDate",
-            align: "left"
+            }, {
+                title: "Entry Date",
+                field: "createdDate",
+                align: "left"
 
-        }, {
-            title: "Operate",
-            field: "operate",
-            align: 'center',
-            events: confObj.me.operateEvent(),
-            formatter: [
-                '<button class="studentEdit" title="Edit">',
-                '<i class="glyphicon glyphicon-pencil icon-pencil"></i>',
-                '</button>  ',
-                '<button class="studentRemove" title="Remove">',
-                '<i class="glyphicon glyphicon-remove-sign icon-remove-sign"></i>',
-                '</button>'
-            ].join('')
-        }]
+            }, {
+                title: "Operate",
+                field: "operate",
+                align: 'center',
+                events: confObj.me.operateEvent(),
+                formatter: [
+                    '<button class="studentEdit" title="Edit">',
+                    '<i class="glyphicon glyphicon-pencil icon-pencil"></i>',
+                    '</button>  ',
+                    '<button class="studentRemove" title="Remove">',
+                    '<i class="glyphicon glyphicon-remove-sign icon-remove-sign"></i>',
+                    '</button>'
+                ].join('')
+            }]
     };
     return studentDetailsConfobj;
 }
@@ -953,9 +970,10 @@ function loadAdvisorLyt(cellObj) {
                 response = editAdvisor(advisor);
             }
             if (response && response.success) {
+                showMessage(response.message, "success");
                 _this.initAdvisorsGrid();
             } else {
-                console.log(response);
+                showMessage(response.message, "danger");
             }
         } else if (id === "reset") {
             clearFormDataByName(formName);
@@ -968,7 +986,9 @@ function loadAdvisorLyt(cellObj) {
         var _this = this;
         var response = deleteAdvisor(advisor.id);
         if (response.success) {
-            _this.initAdvisorsGrid();
+            showMessage(response.message, "success");
+        } else {
+            showMessage(response.message, "danger");
         }
     };
 
@@ -990,43 +1010,52 @@ function getAdvisorDetailsGridObj(toolbarObj, confObj) {
             "data-unique-id": "srNo"
         },
         columns: [{
-            title: "#",
-            field: "srNo",
-            align: "left"
-        }, {
-            title: "700#",
-            field: "loginId",
-            align: "left"
-        }, {
-            title: "Name",
-            field: "name",
-            align: "left"
-        }, {
-            title: "Mail",
-            field: "email",
-            align: "left"
-        }, {
-            title: "Concentration",
-            field: "concentration",
-            align: "left"
-        }, {
-            title: "Status",
-            field: "status",
-            align: "left"
-        }, {
-            title: "Operate",
-            field: "operate",
-            align: 'center',
-            events: confObj.me.operateEvent(),
-            formatter: [
-                '<button class="advisorEdit" title="Edit">',
-                '<i class="glyphicon glyphicon-pencil icon-pencil"></i>',
-                '</button>  ',
-                '<button class="advisorRemove" title="Remove">',
-                '<i class="glyphicon glyphicon-remove-sign icon-remove-sign"></i>',
-                '</button>'
-            ].join('')
-        }]
+                title: "#",
+                field: "srNo",
+                align: "left",
+                formatter: function (value, row, index) {
+                    return (index + 1);
+                }
+            }, {
+                title: "700#",
+                field: "loginId",
+                align: "left"
+            }, {
+                title: "Name",
+                field: "name",
+                align: "left"
+            }, {
+                title: "Mail",
+                field: "email",
+                align: "left"
+            }, {
+                title: "Concentration",
+                field: "concentration",
+                align: "left",
+                formatter: function (value, row, index) {
+                    if (value && value.concentrationName) {
+                        return value.concentrationName;
+                    }
+                    return '';
+                }
+            }, {
+                title: "Status",
+                field: "status",
+                align: "left"
+            }, {
+                title: "Operate",
+                field: "operate",
+                align: 'center',
+                events: confObj.me.operateEvent(),
+                formatter: [
+                    '<button class="advisorEdit" title="Edit">',
+                    '<i class="glyphicon glyphicon-pencil icon-pencil"></i>',
+                    '</button>  ',
+                    '<button class="advisorRemove" title="Remove">',
+                    '<i class="glyphicon glyphicon-remove-sign icon-remove-sign"></i>',
+                    '</button>'
+                ].join('')
+            }]
     };
     return advisorDetailsConfobj;
 }
@@ -1045,7 +1074,7 @@ function getAdvisor(advisorId) {
 }
 
 function getAdvisorByLoginId(loginId) {
-    return appAjaxSync(appRestPath + "/student/loginId/" + loginId, "GET", "", "JSON");
+    return appAjaxSync(appRestPath + "/advisor/loginId/" + loginId, "GET", "", "JSON");
 }
 
 function addAdvisor(advisor) {
@@ -1282,6 +1311,15 @@ function loadConcentrationLyt(cellObj) {
         var formName = confObj.name;
         if (id === "save") {
             var formObj = document.forms[formName];
+            var validateItems = {"name": {"validations": {"isNotEmpty": "Please enter Concentration Name", "isMaxLengthReached": "Please enter Concentration Name below 128 characters"}, "maxLength": 128},
+                "advisor": {"validations": {"isSelectValid": "Please select Advisor"}},
+                "cources": {"validations": {"isSelectValid": "Please select atleast one cource"}},
+                "notes": {"validations": {"isMaxLengthReached": "Please enter notes below 400 characters"}, "maxLength": 400}
+            };
+            if (!validateForm(formName, validateItems)) {
+                return false;
+            }
+
             var concentration = {}, courceObj, selectedCources = [];
             concentration["concentrationName"] = formObj["name"].value;
             concentration["concentrationStatus"] = formObj["status"].value;
@@ -1305,9 +1343,10 @@ function loadConcentrationLyt(cellObj) {
                 response = editConcentration(concentration);
             }
             if (response && response.success) {
+                showMessage(response.message, "success");
                 _this.initConcentrationsGrid();
             } else {
-                console.log(response);
+                showMessage(response.message, "danger");
             }
 
         } else if (id === "reset") {
@@ -1330,7 +1369,9 @@ function loadConcentrationLyt(cellObj) {
         var _this = this;
         var response = deleteConcentration(concentration.id);
         if (response.success) {
-            _this.initConcentrationsGrid();
+            showMessage(response.message, "success");
+        } else {
+            showMessage(response.message, "danger");
         }
     };
 
@@ -1351,48 +1392,51 @@ function getConcentrationDetailsGridObj(toolbarObj, confObj) {
             "data-unique-id": "srNo"
         },
         columns: [{
-            title: "#",
-            field: "srNo",
-            align: "left"
-        }, {
-            title: "Name",
-            field: "concentrationName",
-            align: "left"
-        }, {
-            title: "Cources",
-            field: "cources",
-            align: "left",
-            formatter: function (value, row, index) {
-                var courceNames = [];
-                if (value && value.length) {
-                    for (var i = 0; i < value.length; i++) {
-                        courceNames.push(value[i].courceName + " (" + value[i].courcePrefix + " ," + value[i].courceCode + ")");
-                    }
+                title: "#",
+                field: "srNo",
+                align: "left",
+                formatter: function (value, row, index) {
+                    return (index + 1);
                 }
-                return courceNames.join(', ');
-            }
-        }, {
-            title: "Notes",
-            field: "notes",
-            align: "left"
-        }, {
-            title: "Status",
-            field: "concentrationStatus",
-            align: "left"
-        }, {
-            title: "Operate",
-            field: "operate",
-            align: 'center',
-            events: confObj.me.operateEvent(),
-            formatter: [
-                '<button class="concentrationEdit" title="Edit">',
-                '<i class="glyphicon glyphicon-pencil icon-pencil"></i>',
-                '</button>  ',
-                '<button class="concentrationRemove" title="Remove">',
-                '<i class="glyphicon glyphicon-remove-sign icon-remove-sign"></i>',
-                '</button>'
-            ].join('')
-        }]
+            }, {
+                title: "Name",
+                field: "concentrationName",
+                align: "left"
+            }, {
+                title: "Cources",
+                field: "cources",
+                align: "left",
+                formatter: function (value, row, index) {
+                    var courceNames = [];
+                    if (value && value.length) {
+                        for (var i = 0; i < value.length; i++) {
+                            courceNames.push(value[i].courceName + " (" + value[i].courcePrefix + ", " + value[i].courceCode + ")");
+                        }
+                    }
+                    return courceNames.join(', ');
+                }
+            }, {
+                title: "Notes",
+                field: "notes",
+                align: "left"
+            }, {
+                title: "Status",
+                field: "concentrationStatus",
+                align: "left"
+            }, {
+                title: "Operate",
+                field: "operate",
+                align: 'center',
+                events: confObj.me.operateEvent(),
+                formatter: [
+                    '<button class="concentrationEdit" title="Edit">',
+                    '<i class="glyphicon glyphicon-pencil icon-pencil"></i>',
+                    '</button>  ',
+                    '<button class="concentrationRemove" title="Remove">',
+                    '<i class="glyphicon glyphicon-remove-sign icon-remove-sign"></i>',
+                    '</button>'
+                ].join('')
+            }]
     };
     return concentrationDetailsConfobj;
 }
@@ -1595,6 +1639,15 @@ function loadCourceLyt(cellObj) {
         var formName = confObj.name;
         if (id === "save") {
             var formObj = document.forms[formName];
+
+            var validateItems = {"name": {"validations": {"isNotEmpty": "Please enter Cource Name", "isMaxLengthReached": "Please enter Cource Name below 64 characters"}, "maxLength": 64},
+                "prefix": {"validations": {"isNotEmpty": "Please enter Cource Prefix", "isMaxLengthReached": "Please enter Cource Prefix below 16 characters"}, "maxLength": 16},
+                "code": {"validations": {"isNotEmpty": "Please enter Cource Code", "isMaxLengthReached": "Please enter Cource Code below 16 characters"}, "maxLength": 16},
+                "notes": {"validations": {"isMaxLengthReached": "Please enter notes below 400 characters"}, "maxLength": 400}
+            };
+            if (!validateForm(formName, validateItems)) {
+                return false;
+            }
             var cource = {};
             cource["courceName"] = formObj["name"].value;
             cource["courcePrefix"] = formObj["prefix"].value;
@@ -1609,9 +1662,10 @@ function loadCourceLyt(cellObj) {
                 response = editCource(cource);
             }
             if (response.success) {
+                showMessage(response.message, "success");
                 _this.initCourcesGrid();
             } else {
-                console.log(response);
+                showMessage(response.message, "danger");
             }
 
         } else if (id === "reset") {
@@ -1626,7 +1680,10 @@ function loadCourceLyt(cellObj) {
         var _this = this;
         var response = deleteCource(cource.id);
         if (response.success) {
+            showMessage(response.message, "success");
             _this.initCourcesGrid();
+        } else {
+            showMessage(response.message, "danger");
         }
     };
     this.loadCourcesLyt();
@@ -1666,43 +1723,46 @@ function getCourceDetailsGridObj(toolbarObj, confObj) {
             "data-unique-id": "srNo"
         },
         columns: [{
-            title: "#",
-            field: "srNo",
-            align: "left"
-        }, {
-            title: "Name",
-            field: "courceName",
-            align: "left"
-        }, {
-            title: "Prefix",
-            field: "courcePrefix",
-            align: "left"
-        }, {
-            title: "Code",
-            field: "courceCode",
-            align: "left"
-        }, {
-            title: "Notes",
-            field: "notes",
-            align: "left"
-        }, {
-            title: "Status",
-            field: "courceStatus",
-            align: "left"
-        }, {
-            title: "Operate",
-            field: "operate",
-            align: 'center',
-            events: confObj.me.operateEvent(),
-            formatter: [
-                '<button class="courceEdit" title="Edit">',
-                '<i class="glyphicon glyphicon-pencil icon-pencil"></i>',
-                '</button>  ',
-                '<button class="courceRemove" title="Remove">',
-                '<i class="glyphicon glyphicon-remove-sign icon-remove-sign"></i>',
-                '</button>'
-            ].join('')
-        }]
+                title: "#",
+                field: "srNo",
+                align: "left",
+                formatter: function (value, row, index) {
+                    return (index + 1);
+                }
+            }, {
+                title: "Name",
+                field: "courceName",
+                align: "left"
+            }, {
+                title: "Prefix",
+                field: "courcePrefix",
+                align: "left"
+            }, {
+                title: "Code",
+                field: "courceCode",
+                align: "left"
+            }, {
+                title: "Notes",
+                field: "notes",
+                align: "left"
+            }, {
+                title: "Status",
+                field: "courceStatus",
+                align: "left"
+            }, {
+                title: "Operate",
+                field: "operate",
+                align: 'center',
+                events: confObj.me.operateEvent(),
+                formatter: [
+                    '<button class="courceEdit" title="Edit">',
+                    '<i class="glyphicon glyphicon-pencil icon-pencil"></i>',
+                    '</button>  ',
+                    '<button class="courceRemove" title="Remove">',
+                    '<i class="glyphicon glyphicon-remove-sign icon-remove-sign"></i>',
+                    '</button>'
+                ].join('')
+            }]
     };
     return courceDetailsConfobj;
 }
@@ -1760,7 +1820,10 @@ function onAdvisorMainNavItemClick(itemId) {
         $("#appNavBar").find('.active').removeClass('active');
     }
     $("#appNavBar").find('li[itemId="' + itemId + '"]').addClass('active');
-    if (itemId === "STUDENTS") {
+    if (itemId === "STUDENTSEARCH") {
+        appManagerLytObj.module = itemId;
+        studentSearchLytObj = new loadStudentSearchLyt(appManagerLytObj.domObj);
+    } else if (itemId === "STUDENTS") {
         appManagerLytObj.module = itemId;
         studentLytObj = new loadStudentLyt(appManagerLytObj.domObj);
     } else if (itemId === "PROFILE") {
@@ -1781,7 +1844,7 @@ function loadAdvisorProfileLyt(cellObj) {
     this.loadAdvisorProfilesLyt = function () {
         var _this = this;
         clearAllElementsInDiv(_this.detailsCellObj);
-        _this.showEditAdvisorProfileForm(_this.detailsCellObj);
+        _this.showEditAdvisorProfileForm(_this.detailsCellObj, loginUser);
     };
 
     this.attachAdvisorProfilesForm = function (cellObj, confObj) {
@@ -1800,8 +1863,8 @@ function loadAdvisorProfileLyt(cellObj) {
             "id": "editadvisorProfile"
         };
         _this.attachAdvisorProfilesForm(cellObj, advisorProfileFormConfObj);
-//        var advisorProfile = getAdvisor(advisorProfile.id);
-//        _this.setAdvisorProfileFormDetails(advisorProfileFormConfObj, advisorProfile);
+        var advisorProfile = getAdvisor(advisorProfile.id);
+        _this.setAdvisorProfileFormDetails(advisorProfileFormConfObj, advisorProfile);
         var advisorProfileFormObj = document.forms[advisorProfileFormConfObj.name];
         $(advisorProfileFormObj.elements["name"]).attr('readonly', 'true');
         $(advisorProfileFormObj.elements["mail"]).attr('readonly', 'true');
@@ -1854,15 +1917,15 @@ function loadAdvisorProfileLyt(cellObj) {
             };
             var response;
             if (confObj.formType === "add") {
-                response = addAdvisorProfile(advisorProfile);
+
             } else {
                 advisorProfile["id"] = formObj["id"].value;
-                response = editAdvisorProfile(advisorProfile);
+                response = editAdvisor(advisorProfile);
             }
             if (response && response.success) {
-                _this.initAdvisorProfilesGrid();
+                showMessage(response.message, "success");
             } else {
-                console.log(response);
+                showMessage(response.message, "success");
             }
         } else if (id === "reset") {
             clearFormDataByName(formName);
@@ -1991,9 +2054,10 @@ function loadStudentQuestionnaireLyt(cellObj) {
             }
             var response = updateStudentQuestionnaire(student);
             if (response && response.success) {
+                showMessage(response.message, "success");
                 _this.attachStudentQuestionnaireCompletedCell();
             } else {
-                console.log(response);
+                showMessage(response.message, "danger");
             }
         } else if (id === "reset") {
             hideAllQuestionnaireSubItems();
@@ -2012,7 +2076,7 @@ function loadStudentQuestionnaireLyt(cellObj) {
 
 function getStudentQuestionnaireFormDetails(formName) {
     var formObj = document.forms[formName],
-        itemObj, questionnaireDetailsObj = {};
+            itemObj, questionnaireDetailsObj = {};
 
     for (var itemKey in questionnaireInputDetails) {
         itemObj = formObj[itemKey];
@@ -2084,7 +2148,7 @@ function setStudentFormDetails(formConfObj, details) {
     $(studentFormObj.elements["analytical"]).val(score.analytical);
     $(studentFormObj.elements["gpa"]).val(score.gpa);
     $(studentFormObj.elements["gpa"]).val(score.gpa);
-    $(studentFormObj.elements["approvedForGraduation"]).val(details.studentStatus || "select");
+    $(studentFormObj.elements["studentStatus"]).val(details.studentStatus || "select");
     $(studentFormObj.elements["studentSearchPrerequisite"]).val(details.preReq || "notmet");
     $(studentFormObj.elements["searchNotes"]).val(details.notes || "");
     $(studentFormObj.elements["studentPrerequisite"]).val(details.preReq || "notmet");
@@ -2096,7 +2160,7 @@ function setStudentQuestionnaireFormDetails(formConfObj, details) {
     var testDetails = details.testDetails ? JSON.parse(details.testDetails) : {};
     for (var itemKey in questionnaireInputDetails) {
         if (questionnaireInputDetails[itemKey].type === 'radio') {
-            $('input[name=' + itemKey + '][value=' + testDetails[itemKey] + ']').attr('checked', true);
+            $(studentFormObj).find('input[name=' + itemKey + '][value=' + testDetails[itemKey] + ']').prop('checked', true);
             if (questionnaireSubItems[itemKey]) {
                 var subItems = questionnaireSubItems[itemKey];
                 if (testDetails[itemKey] === 'yes') {
@@ -2114,5 +2178,5 @@ function setStudentQuestionnaireFormDetails(formConfObj, details) {
         }
     }
 
-    $('input[name=codeOfConduct]').attr('checked', true);
+    $(studentFormObj).find('input[name=codeOfConduct]').attr('checked', details.acceptedCodeOfConduct === 'yes' ? true : false);
 }
