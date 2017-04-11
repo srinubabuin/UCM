@@ -237,7 +237,7 @@
         </div>
         <div class="form-group">
             <div class="col-sm-12 text-center">
-                <label class="checkbox-inline"><input type="checkbox" value="no" name="codeOfConduct">Accept Code of
+                <label class="checkbox-inline"><input type="checkbox" value="yes" name="codeOfConduct">Accept Code of
                     Counduct</label>
             </div>
         </div>
@@ -250,6 +250,12 @@
                     <option value="met">Met</option>
                     <option value="notmet" selected>Not Met</option>
                 </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">Notes</label>
+            <div class="col-sm-8">
+                <textarea name="searchNotes" rows="3" class="form-control textarea-no-resize"></textarea>
             </div>
         </div>
     </div>
@@ -341,6 +347,33 @@
                 <select name="status" class="form-control">
                     <option value="ACTIVE">Active</option>
                     <option value="INACTIVE">In Active</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label required">Prerequisite</label>
+            <div class="col-sm-8">
+                <select type="text" name="studentPrerequisite" class="form-control">
+                    <option value="met">Met</option>
+                    <option value="notmet" selected>Not Met</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">Notes</label>
+            <div class="col-sm-8">
+                <textarea name="notes" rows="3" class="form-control textarea-no-resize"></textarea>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label required">Student Status</label>
+            <div class="col-sm-8">
+                <select type="text" name="studentStatus" class="form-control">
+                    <option value="select" selected="selected">Please select</option>
+                    <option value="approvedForGraduation">Approved for graduation.</option>
+                    <option value="withdrawnFromProgramm">Withdrawn from program.</option>
+                    <option value="acceptedIntoProgram">Accepted into program.</option>
+                    <option value="acceptedIntoProgramWithConditions">Accepted into program with conditions.</option>
                 </select>
             </div>
         </div>
@@ -571,7 +604,7 @@
     appContextPath = "${pageContext.request.contextPath}";
     appRestPath = appContextPath + "/rest";
     accessToken = "${accessToken}";
-    userRole = "${userRole}";
+    userRole = "DIRECTOR";
     loginId = "${loginId}";
     var appManagerLytObj;
     var studentLytObj, advisorLytObj, courceLytObj, concentrationLytObj;

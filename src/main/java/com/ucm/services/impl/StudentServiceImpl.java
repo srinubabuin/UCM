@@ -20,12 +20,9 @@ import com.ucm.model.Concentration;
 import com.ucm.model.Student;
 import com.ucm.services.StudentService;
 import com.ucm.services.UserLoginService;
+import org.apache.log4j.Priority;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Timestamp;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -149,8 +146,9 @@ public class StudentServiceImpl implements StudentService {
                 student.setStudentStatusDate(rs.getDate(DBUtil.COLUMN_STUDENTS_STUDENTSTATUS_DATE));
                 student.setStatus(rs.getString(DBUtil.COLUMN_STUDENTS_STATUS));
                 student.setTestDetails(rs.getString(DBUtil.COLUMN_STUDENTS_TESTDETAILS));
-                student.setAcceptedCodeOfConduct(rs.getString(DBUtil.COLUMN_STUDENTS_ACCEPTEDCODEOFCONDUCT));
+                student.setPreReq(rs.getString(DBUtil.COLUMN_STUDENTS_PREREQS));
                 student.setNotes(rs.getString(DBUtil.COLUMN_STUDENTS_NOTES));
+                student.setNotesUpdated(rs.getTimestamp(DBUtil.COLUMN_STUDENTS_NOTES_UPDATED));
                 student.setCreatedDate(rs.getDate(DBUtil.COLUMN_STUDENTS_CREATED_DATE));
             }
         } catch (SQLException e) {
@@ -243,7 +241,9 @@ public class StudentServiceImpl implements StudentService {
                 student.setStatus(rs.getString(DBUtil.COLUMN_STUDENTS_STATUS));
                 student.setTestDetails(rs.getString(DBUtil.COLUMN_STUDENTS_TESTDETAILS));
                 student.setAcceptedCodeOfConduct(rs.getString(DBUtil.COLUMN_STUDENTS_ACCEPTEDCODEOFCONDUCT));
+                student.setPreReq(rs.getString(DBUtil.COLUMN_STUDENTS_PREREQS));
                 student.setNotes(rs.getString(DBUtil.COLUMN_STUDENTS_NOTES));
+                student.setNotesUpdated(rs.getTimestamp(DBUtil.COLUMN_STUDENTS_NOTES_UPDATED));
                 student.setCreatedDate(rs.getDate(DBUtil.COLUMN_STUDENTS_CREATED_DATE));
                 students.add(student);
             }
@@ -253,6 +253,41 @@ public class StudentServiceImpl implements StudentService {
             AppConnectionPool.release(rs, pstm, con);
         }
         return students;
+    }
+
+    @Override
+    public int modifyStudent(Student student) throws ConstraintVilationException, ObjectNotFoundException {
+
+        Connection con = null;
+        PreparedStatement pstm = null;
+        ResultSet rs = null;
+        int advisorUpdateCount = 0;
+        try {
+            int pos = 1;
+
+            con = AppConnectionPool.getConnection();
+            pstm = con.prepareStatement(AppQueryReader.getDBQuery("com.ucm.services.impl.studentservice.modifystudent"));
+            pstm.setInt(pos, student.getConcentration().getId());
+            pstm.setString(++pos, student.getEmail());
+            pstm.setString(++pos, student.getSecondaryEmail());
+            pstm.setString(++pos, student.getPreReq());
+            pstm.setString(++pos, student.getStudentStatus());
+            pstm.setTimestamp(++pos, new Timestamp(new Date().getTime()));
+            pstm.setInt(++pos, student.getId());
+            advisorUpdateCount = pstm.executeUpdate();
+            if (advisorUpdateCount <= 0) {
+                throw new ObjectNotFoundException();
+            }
+
+        } catch (SQLIntegrityConstraintViolationException e) {
+//            LOGGER.log(Priority.ERROR, "Exception while updating advisor method modifyAdvisor " + e.getMessage());
+            throw new ConstraintVilationException(e.getMessage());
+        } catch (SQLException se) {
+//            LOGGER.log(Priority.ERROR, "Exception while updating advisor method modifyAdvisor " + se.getMessage());
+        } finally {
+            AppConnectionPool.release(rs, pstm, con);
+        }
+        return advisorUpdateCount;
     }
 
     @Override
@@ -275,6 +310,59 @@ public class StudentServiceImpl implements StudentService {
             }
         } catch (SQLException e) {
             LOGGER.log(Level.SEVERE, "Exception occured in updateStudentQuestionnaires method {0}", e.getMessage());
+        } finally {
+            AppConnectionPool.release(rs, pstm, con);
+        }
+        return studentUpdateCount;
+    }
+
+    @Override
+    public int updatePrerequisite(Student student) throws ObjectNotFoundException {
+        Connection con = null;
+        PreparedStatement pstm = null;
+        ResultSet rs = null;
+        int studentUpdateCount = 0;
+        try {
+            int pos = 1;
+            con = AppConnectionPool.getConnection();
+            pstm = con.prepareStatement(AppQueryReader.getDBQuery("com.ucm.services.impl.studentservice.updateprerequisite"));
+            pstm.setString(pos, student.getPreReq());
+            pstm.setString(++pos, student.getNotes());
+            pstm.setTimestamp(++pos, new Timestamp(new Date().getTime()));
+            pstm.setString(++pos, student.getLoginId());
+            pstm.setInt(++pos, student.getId());
+            studentUpdateCount = pstm.executeUpdate();
+            if (studentUpdateCount <= 0) {
+                throw new ObjectNotFoundException();
+            }
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, "Exception occured in updatePrerequisite method {0}", e.getMessage());
+        } finally {
+            AppConnectionPool.release(rs, pstm, con);
+        }
+        return studentUpdateCount;
+    }
+
+    @Override
+    public int updateNotes(Student student) throws ObjectNotFoundException {
+        Connection con = null;
+        PreparedStatement pstm = null;
+        ResultSet rs = null;
+        int studentUpdateCount = 0;
+        try {
+            int pos = 1;
+            con = AppConnectionPool.getConnection();
+            pstm = con.prepareStatement(AppQueryReader.getDBQuery("com.ucm.services.impl.studentservice.updatenotes"));
+            pstm.setString(pos, student.getNotes());
+            pstm.setTimestamp(++pos, new Timestamp(new Date().getTime()));
+            pstm.setString(++pos, student.getLoginId());
+            pstm.setInt(++pos, student.getId());
+            studentUpdateCount = pstm.executeUpdate();
+            if (studentUpdateCount <= 0) {
+                throw new ObjectNotFoundException();
+            }
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, "Exception occured in updateNotes method {0}", e.getMessage());
         } finally {
             AppConnectionPool.release(rs, pstm, con);
         }

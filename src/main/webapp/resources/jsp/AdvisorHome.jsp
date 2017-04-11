@@ -285,7 +285,7 @@
     appContextPath = "${pageContext.request.contextPath}";
     appRestPath = appContextPath + "/rest";
     accessToken = "${accessToken}";
-    userRole = "${userRole}";
+    userRole = "ADVISOR";
     loginId = "${loginId}";
     var appManagerLytObj;
     var studentLytObj, advisorProfileLytObj;
@@ -295,6 +295,7 @@
     }
     function doOnLoad() {
         console.log(accessToken);
+        loginUser = getAdvisorByLoginId(loginId);
         appManagerLytObj = getMainLayoutObj();
         onAdvisorMainNavItemClick("STUDENTS");
     }

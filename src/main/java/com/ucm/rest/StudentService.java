@@ -125,4 +125,38 @@ public class StudentService {
             return Response.status(405).header("Access-Control-Allow-Origin", "*").build();
         }
     }
+
+    @PUT
+    @Path("/updatePrerequisite")
+    @Consumes({"application/json"})
+    @Produces({"application/json"})
+    public Response updatePrerequisite(Student student) {
+
+        RequestStatus reqStatus = null;
+        try {
+            StudentServiceHelper helper = new StudentServiceHelper();
+            reqStatus = helper.updatePrerequisite(student);
+            return Response.ok().header("Access-Control-Allow-Origin", "*").entity(reqStatus).build();
+        } catch (Exception ex) {
+            LOGGER.info("Insert student error");
+            return Response.status(405).header("Access-Control-Allow-Origin", "*").build();
+        }
+    }
+
+    @PUT
+    @Path("/updateNotes")
+    @Consumes({"application/json"})
+    @Produces({"application/json"})
+    public Response updateNotes(Student student) {
+
+        RequestStatus reqStatus = null;
+        try {
+            StudentServiceHelper helper = new StudentServiceHelper();
+            reqStatus = helper.updateNotes(student);
+            return Response.ok().header("Access-Control-Allow-Origin", "*").entity(reqStatus).build();
+        } catch (Exception ex) {
+            LOGGER.info("Insert student error");
+            return Response.status(405).header("Access-Control-Allow-Origin", "*").build();
+        }
+    }
 }

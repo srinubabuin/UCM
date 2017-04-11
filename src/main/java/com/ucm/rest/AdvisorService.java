@@ -82,7 +82,22 @@ public class AdvisorService {
     public Response getAdvisorById(@PathParam("param") int advId) {
 
         try {
-            Advisor advisor = new AdvisorServiceHelper().getAdvisorWitId(advId);
+            Advisor advisor = new AdvisorServiceHelper().getAdvisorWithId(advId);
+            return Response.ok().header("Access-Control-Allow-Origin", "*").entity(advisor).build();
+        } catch (Exception ex) {
+            LOGGER.info("Error while fetching the advisor");
+            return Response.status(405).header("Access-Control-Allow-Origin", "*").build();
+        }
+    }
+
+    @GET
+    @Path("/loginId/{param}")
+    @Consumes({"application/json"})
+    @Produces({"application/json"})
+    public Response getAdvisorByLoginId(@PathParam("param") String loginId) {
+
+        try {
+            Advisor advisor = new AdvisorServiceHelper().getAdvisorWithLoginId(loginId);
             return Response.ok().header("Access-Control-Allow-Origin", "*").entity(advisor).build();
         } catch (Exception ex) {
             LOGGER.info("Error while fetching the advisor");

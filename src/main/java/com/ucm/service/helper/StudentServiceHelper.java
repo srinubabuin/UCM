@@ -38,6 +38,31 @@ public class StudentServiceHelper {
         return response;
     }
 
+    public RequestStatus modifyStudent(Student student) {
+
+        RequestStatus response = new RequestStatus();
+        try {
+            StudentService advService = new StudentServiceImpl();
+            int advId = advService.modifyStudent(student);
+            if (advId > 0) {
+                response.setSuccess(true);
+                response.setMessage("Student updated successfully.");
+                response.setId(advId);
+            } else {
+                response.setMessage("Student not updated.");
+                response.setId(advId);
+            }
+
+        } catch (ObjectNotFoundException oe) {
+            response.setMessage(DBUtil.getCustomDBMessage("STU_NOT_FOUND"));
+            response.setId(0);
+        } catch (ConstraintVilationException cve) {
+            response.setMessage(DBUtil.getCustomDBMessage(cve.getMessage()));
+            response.setId(0);
+        }
+        return response;
+    }
+
     public RequestStatus deleteStudent(int studentId) {
 
         RequestStatus response = new RequestStatus();
@@ -80,6 +105,48 @@ public class StudentServiceHelper {
                 response.setId(studentId);
             } else {
                 response.setMessage("Student Questionnaires not updated.");
+                response.setId(studentId);
+            }
+        } catch (ObjectNotFoundException cve) {
+            response.setMessage(DBUtil.getCustomDBMessage("STU_NOT_FOUND"));
+            response.setId(0);
+        }
+        return response;
+    }
+
+    public RequestStatus updatePrerequisite(Student student) {
+
+        RequestStatus response = new RequestStatus();
+        try {
+            StudentService studentService = new StudentServiceImpl();
+            int studentId = studentService.updatePrerequisite(student);
+            if (studentId > 0) {
+                response.setSuccess(true);
+                response.setMessage("Student Prerequisite updated successfully.");
+                response.setId(studentId);
+            } else {
+                response.setMessage("Student Prerequisite not updated.");
+                response.setId(studentId);
+            }
+        } catch (ObjectNotFoundException cve) {
+            response.setMessage(DBUtil.getCustomDBMessage("STU_NOT_FOUND"));
+            response.setId(0);
+        }
+        return response;
+    }
+
+    public RequestStatus updateNotes(Student student) {
+
+        RequestStatus response = new RequestStatus();
+        try {
+            StudentService studentService = new StudentServiceImpl();
+            int studentId = studentService.updateNotes(student);
+            if (studentId > 0) {
+                response.setSuccess(true);
+                response.setMessage("Student Notes updated successfully.");
+                response.setId(studentId);
+            } else {
+                response.setMessage("Student Notes not updated.");
                 response.setId(studentId);
             }
         } catch (ObjectNotFoundException cve) {

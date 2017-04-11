@@ -80,12 +80,16 @@ public class AdvisorServiceHelper {
         return response;
     }
 
-    public Advisor getAdvisorWitId(int advisorId) {
-        return new AdvisorServiceImpl().getAdvisorWitId(advisorId);
+    public Advisor getAdvisorWithId(int advisorId) {
+        return new AdvisorServiceImpl().getAdvisorWithId(advisorId);
+    }
+
+    public Advisor getAdvisorWithLoginId(String loginId) {
+        return new AdvisorServiceImpl().getAdvisorWithLoginId(loginId);
     }
 
     public Advisor getAdvisorWitName(String advisorName) {
-        return new AdvisorServiceImpl().getAdvisorWitName(advisorName);
+        return new AdvisorServiceImpl().getAdvisorWithName(advisorName);
     }
 
     public List<Advisor> getAllAdvisors() {

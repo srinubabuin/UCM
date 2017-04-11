@@ -82,10 +82,18 @@ var studentInputDetails = {
         "type": "text"
     }, "status": {
         "type": "select"
+    }, "studentPrerequisite": {
+        "type": "select"
+    }, "studentStatus": {
+        "type": "select"
+    }, "notes": {
+        "type": "select"
     }
 };
 
 var studentSkipInputs = ["lastName", "verbal", "quantitative", "analytical", "gpa"];
+
+var studentFinalInputs = ["firstName", "lastName", "phone", "scoreType", "address", "verbal", "quantitative", "analytical", "gpa"];
 
 /*Student Details Ends*/
 
@@ -142,6 +150,7 @@ function loadStudentSearchLyt(cellObj) {
 
     this.showStudentSearchForm = function (cellObj) {
         var _this = this;
+        _this.clearStudentFormCell(_this.detailsCellObj);
         var studentSearchFormConfObj = {
             "parent": cellObj,
             "hdrText": "Search Student",
@@ -211,18 +220,20 @@ function loadStudentSearchLyt(cellObj) {
         _this.attachStudentForm(detailsObj, studentFormConfObj);
         // var studentSearch = getStudentSearch(studentSearch.id);
         // _this.setStudentSearchFormDetails(studentFormConfObj, studentSearch);
+
         var studentSearchFormObj = document.forms[studentFormConfObj.name];
+        $(studentSearchFormObj.elements["notes"].parentElement.parentElement).hide();
         $(studentSearchFormObj.elements["save"]).click(function () {
-            _this.onStudentSearchFormDetailsBtnClick("save", studentFormConfObj);
+            _this.onStudentSearchFormDetailsBtnClick("save", studentFormConfObj, studentSearch);
         });
         $(studentSearchFormObj.elements["next"]).click(function () {
-            _this.onStudentSearchFormDetailsBtnClick("next", studentFormConfObj);
+            _this.onStudentSearchFormDetailsBtnClick("next", studentFormConfObj, studentSearch);
         });
         $(studentSearchFormObj.elements["previous"]).click(function () {
-            _this.onStudentSearchFormDetailsBtnClick("previous", studentFormConfObj);
+            _this.onStudentSearchFormDetailsBtnClick("previous", studentFormConfObj, studentSearch);
         });
         $(studentSearchFormObj.elements["cancel"]).click(function () {
-            _this.onStudentSearchFormDetailsBtnClick("cancel", studentFormConfObj);
+            _this.onStudentSearchFormDetailsBtnClick("cancel", studentFormConfObj, studentSearch);
         });
         _this.onStudentSearchFormDetailsBtnClick("next", studentFormConfObj);
         setStudentFormDetails(studentFormConfObj, studentSearch);
@@ -251,11 +262,26 @@ function loadStudentSearchLyt(cellObj) {
         }
     };
 
-    this.onStudentSearchFormDetailsBtnClick = function (id, formConfObj) {
+    this.onStudentSearchFormDetailsBtnClick = function (id, formConfObj, studentDetails) {
         var _this = this;
         var formName = formConfObj.name;
         if (id === "save") {
-
+            var formObj = document.forms[formName];
+            var prerequisiteDetails = formObj.elements['studentSearchPrerequisite'].value || 'notmet';
+            var notes = formObj.elements['searchNotes'].value || '';
+            var student = {
+                'id': studentDetails.id,
+                'loginId': studentDetails.loginId,
+                'preReq': prerequisiteDetails,
+                'notes': notes
+            }
+            var response = updateStudentPrerequisite(student);
+            if (response && response.success) {
+                showMessage(response.message, "success");
+                _this.loadStudentSearchLyt();
+            } else {
+                showMessage(formResponse.message, "danger");
+            }
         } else if (id === "cancel") {
             _this.clearStudentFormCell(_this.detailsCellObj);
         } else if (id === "next") {
@@ -471,6 +497,8 @@ function loadStudentLyt(cellObj) {
         var concentrationOptions = getConcentrationAsOptions();
         $(studentFormObj.elements["concentration"]).append(concentrationOptions);
         $(studentFormObj.elements["status"].parentElement.parentElement).hide();
+        $(studentFormObj.elements["studentStatus"].parentElement.parentElement).hide();
+        $(studentFormObj.elements["studentPrerequisite"].parentElement.parentElement).hide();
         $(studentFormObj.elements["save"]).click(function () {
             _this.onStudentFormBtnClick("save", studentFormConfObj);
         });
@@ -495,7 +523,7 @@ function loadStudentLyt(cellObj) {
         };
         _this.attachStudentsForm(cellObj, studentFormConfObj);
         var student = getStudent(student.id);
-        _this.setStudentFormDetails(studentFormConfObj, student);
+        setStudentFormDetails(studentFormConfObj, student);
         var studentFormObj = document.forms[studentFormConfObj.name];
         $(studentFormObj.elements["reset"]).hide();
         $(studentFormObj.elements["save"]).click(function () {
@@ -507,7 +535,20 @@ function loadStudentLyt(cellObj) {
         $(studentFormObj.elements["cancel"]).click(function () {
             _this.onStudentFormBtnClick("cancel", studentFormConfObj);
         });
-        // _this.onStudentFormBtnClick("clearBtn", studentFormConfObj);
+        _this.disableStudentEditForm(studentFormConfObj);
+    };
+
+    this.disableStudentEditForm = function (formConfObj) {
+        var formObj = document.forms[formConfObj.name];
+        for (var itemKey in studentInputDetails) {
+            if (studentFinalInputs.indexOf(itemKey) > -1) {
+                if (studentInputDetails[itemKey].type === "text") {
+                    $(formObj.elements[itemKey]).attr('readonly', 'true');
+                } else if (studentInputDetails[itemKey].type === "select") {
+                    $(formObj.elements[itemKey]).attr('disabled', 'true');
+                }
+            }
+        }
     };
 
     this.showViewStudentForm = function (cellObj, student) {
@@ -521,7 +562,7 @@ function loadStudentLyt(cellObj) {
         };
         _this.attachStudentsForm(cellObj, studentFormConfObj);
         var student = getStudent(student.id);
-        _this.setStudentFormDetails(studentFormConfObj, student);
+        setStudentFormDetails(studentFormConfObj, student);
         var studentFormObj = document.forms[studentFormConfObj.name];
         $(studentFormObj.elements["save"]).hide();
         $(studentFormObj.elements["reset"]).hide();
@@ -529,7 +570,19 @@ function loadStudentLyt(cellObj) {
         $(studentFormObj.elements["cancel"]).click(function () {
             _this.onStudentFormBtnClick("cancel", studentFormConfObj);
         });
-        // _this.onStudentFormBtnClick("clearBtn", studentFormConfObj);
+        _this.disableStudentViewForm(studentFormConfObj);
+    };
+
+    this.disableStudentViewForm = function (formConfObj) {
+        var formObj = document.forms[formConfObj.name];
+        for (var itemKey in studentInputDetails) {
+            if (studentInputDetails[itemKey].type === "text") {
+                $(formObj.elements[itemKey]).attr('readonly', 'true');
+            } else if (studentInputDetails[itemKey].type === "select") {
+                $(formObj.elements[itemKey]).attr('disabled', 'true');
+            }
+        }
+        $(formObj.elements['studentPrerequisite']).attr('disabled', 'true');
     };
 
     this.setStudentFormDetails = function (formConfObj, details) {
@@ -555,6 +608,7 @@ function loadStudentLyt(cellObj) {
             scores["quantitative"] = formObj["quantitative"].value;
             scores["analytical"] = formObj["analytical"].value;
             scores["gpa"] = formObj["gpa"].value;
+            scores["notes"] = formObj["notes"].value;
             student["concentration"] = {
                 id: formObj["concentration"].value,
                 concentrationName: $(formObj["concentration"]).find(":selected").text()
@@ -604,50 +658,50 @@ function getStudentDetailsGridObj(toolbarObj, confObj) {
             "data-unique-id": "srNo"
         },
         columns: [{
-                title: "#",
-                field: "id",
-                align: "left"
-            }, {
-                title: "700#",
-                field: "loginId",
-                align: "left"
-            }, {
-                title: "Name",
-                field: "firstName",
-                align: "left"
+            title: "#",
+            field: "id",
+            align: "left"
+        }, {
+            title: "700#",
+            field: "loginId",
+            align: "left"
+        }, {
+            title: "Name",
+            field: "firstName",
+            align: "left"
 
-            }, {
-                title: "Mail",
-                field: "email",
-                align: "left"
-            }, {
-                title: "Phone #",
-                field: "phoneNumber",
-                align: "left"
-            }, {
-                title: "Concentration",
-                field: "concentration.concentrationName",
-                align: "left"
+        }, {
+            title: "Mail",
+            field: "email",
+            align: "left"
+        }, {
+            title: "Phone #",
+            field: "phoneNumber",
+            align: "left"
+        }, {
+            title: "Concentration",
+            field: "concentration.concentrationName",
+            align: "left"
 
-            }, {
-                title: "Entry Date",
-                field: "createdDate",
-                align: "left"
+        }, {
+            title: "Entry Date",
+            field: "createdDate",
+            align: "left"
 
-            }, {
-                title: "Operate",
-                field: "operate",
-                align: 'center',
-                events: confObj.me.operateEvent(),
-                formatter: [
-                    '<button class="studentEdit" title="Edit">',
-                    '<i class="glyphicon glyphicon-pencil icon-pencil"></i>',
-                    '</button>  ',
-                    '<button class="studentRemove" title="Remove">',
-                    '<i class="glyphicon glyphicon-remove-sign icon-remove-sign"></i>',
-                    '</button>'
-                ].join('')
-            }]
+        }, {
+            title: "Operate",
+            field: "operate",
+            align: 'center',
+            events: confObj.me.operateEvent(),
+            formatter: [
+                '<button class="studentEdit" title="Edit">',
+                '<i class="glyphicon glyphicon-pencil icon-pencil"></i>',
+                '</button>  ',
+                '<button class="studentRemove" title="Remove">',
+                '<i class="glyphicon glyphicon-remove-sign icon-remove-sign"></i>',
+                '</button>'
+            ].join('')
+        }]
     };
     return studentDetailsConfobj;
 }
@@ -666,6 +720,10 @@ function getStudentByLoginId(loginId) {
 
 function updateStudentQuestionnaire(student) {
     return appAjaxSync(appRestPath + "/student/updateQuestionnaire", "PUT", JSON.stringify(student), "JSON");
+}
+
+function updateStudentPrerequisite(student) {
+    return appAjaxSync(appRestPath + "/student/updatePrerequisite", "PUT", JSON.stringify(student), "JSON");
 }
 
 function addStudent(student) {
@@ -932,43 +990,43 @@ function getAdvisorDetailsGridObj(toolbarObj, confObj) {
             "data-unique-id": "srNo"
         },
         columns: [{
-                title: "#",
-                field: "srNo",
-                align: "left"
-            }, {
-                title: "700#",
-                field: "loginId",
-                align: "left"
-            }, {
-                title: "Name",
-                field: "name",
-                align: "left"
-            }, {
-                title: "Mail",
-                field: "email",
-                align: "left"
-            }, {
-                title: "Concentration",
-                field: "concentration",
-                align: "left"
-            }, {
-                title: "Status",
-                field: "status",
-                align: "left"
-            }, {
-                title: "Operate",
-                field: "operate",
-                align: 'center',
-                events: confObj.me.operateEvent(),
-                formatter: [
-                    '<button class="advisorEdit" title="Edit">',
-                    '<i class="glyphicon glyphicon-pencil icon-pencil"></i>',
-                    '</button>  ',
-                    '<button class="advisorRemove" title="Remove">',
-                    '<i class="glyphicon glyphicon-remove-sign icon-remove-sign"></i>',
-                    '</button>'
-                ].join('')
-            }]
+            title: "#",
+            field: "srNo",
+            align: "left"
+        }, {
+            title: "700#",
+            field: "loginId",
+            align: "left"
+        }, {
+            title: "Name",
+            field: "name",
+            align: "left"
+        }, {
+            title: "Mail",
+            field: "email",
+            align: "left"
+        }, {
+            title: "Concentration",
+            field: "concentration",
+            align: "left"
+        }, {
+            title: "Status",
+            field: "status",
+            align: "left"
+        }, {
+            title: "Operate",
+            field: "operate",
+            align: 'center',
+            events: confObj.me.operateEvent(),
+            formatter: [
+                '<button class="advisorEdit" title="Edit">',
+                '<i class="glyphicon glyphicon-pencil icon-pencil"></i>',
+                '</button>  ',
+                '<button class="advisorRemove" title="Remove">',
+                '<i class="glyphicon glyphicon-remove-sign icon-remove-sign"></i>',
+                '</button>'
+            ].join('')
+        }]
     };
     return advisorDetailsConfobj;
 }
@@ -984,6 +1042,10 @@ function getAllAdvisors() {
 
 function getAdvisor(advisorId) {
     return appAjaxSync(appRestPath + "/advisor/" + advisorId, "GET", "", "JSON");
+}
+
+function getAdvisorByLoginId(loginId) {
+    return appAjaxSync(appRestPath + "/student/loginId/" + loginId, "GET", "", "JSON");
 }
 
 function addAdvisor(advisor) {
@@ -1289,48 +1351,48 @@ function getConcentrationDetailsGridObj(toolbarObj, confObj) {
             "data-unique-id": "srNo"
         },
         columns: [{
-                title: "#",
-                field: "srNo",
-                align: "left"
-            }, {
-                title: "Name",
-                field: "concentrationName",
-                align: "left"
-            }, {
-                title: "Cources",
-                field: "cources",
-                align: "left",
-                formatter: function (value, row, index) {
-                    var courceNames = [];
-                    if (value && value.length) {
-                        for (var i = 0; i < value.length; i++) {
-                            courceNames.push(value[i].courceName + " (" + value[i].courcePrefix + " ," + value[i].courceCode + ")");
-                        }
+            title: "#",
+            field: "srNo",
+            align: "left"
+        }, {
+            title: "Name",
+            field: "concentrationName",
+            align: "left"
+        }, {
+            title: "Cources",
+            field: "cources",
+            align: "left",
+            formatter: function (value, row, index) {
+                var courceNames = [];
+                if (value && value.length) {
+                    for (var i = 0; i < value.length; i++) {
+                        courceNames.push(value[i].courceName + " (" + value[i].courcePrefix + " ," + value[i].courceCode + ")");
                     }
-                    return courceNames.join(', ');
                 }
-            }, {
-                title: "Notes",
-                field: "notes",
-                align: "left"
-            }, {
-                title: "Status",
-                field: "concentrationStatus",
-                align: "left"
-            }, {
-                title: "Operate",
-                field: "operate",
-                align: 'center',
-                events: confObj.me.operateEvent(),
-                formatter: [
-                    '<button class="concentrationEdit" title="Edit">',
-                    '<i class="glyphicon glyphicon-pencil icon-pencil"></i>',
-                    '</button>  ',
-                    '<button class="concentrationRemove" title="Remove">',
-                    '<i class="glyphicon glyphicon-remove-sign icon-remove-sign"></i>',
-                    '</button>'
-                ].join('')
-            }]
+                return courceNames.join(', ');
+            }
+        }, {
+            title: "Notes",
+            field: "notes",
+            align: "left"
+        }, {
+            title: "Status",
+            field: "concentrationStatus",
+            align: "left"
+        }, {
+            title: "Operate",
+            field: "operate",
+            align: 'center',
+            events: confObj.me.operateEvent(),
+            formatter: [
+                '<button class="concentrationEdit" title="Edit">',
+                '<i class="glyphicon glyphicon-pencil icon-pencil"></i>',
+                '</button>  ',
+                '<button class="concentrationRemove" title="Remove">',
+                '<i class="glyphicon glyphicon-remove-sign icon-remove-sign"></i>',
+                '</button>'
+            ].join('')
+        }]
     };
     return concentrationDetailsConfobj;
 }
@@ -1604,43 +1666,43 @@ function getCourceDetailsGridObj(toolbarObj, confObj) {
             "data-unique-id": "srNo"
         },
         columns: [{
-                title: "#",
-                field: "srNo",
-                align: "left"
-            }, {
-                title: "Name",
-                field: "courceName",
-                align: "left"
-            }, {
-                title: "Prefix",
-                field: "courcePrefix",
-                align: "left"
-            }, {
-                title: "Code",
-                field: "courceCode",
-                align: "left"
-            }, {
-                title: "Notes",
-                field: "notes",
-                align: "left"
-            }, {
-                title: "Status",
-                field: "courceStatus",
-                align: "left"
-            }, {
-                title: "Operate",
-                field: "operate",
-                align: 'center',
-                events: confObj.me.operateEvent(),
-                formatter: [
-                    '<button class="courceEdit" title="Edit">',
-                    '<i class="glyphicon glyphicon-pencil icon-pencil"></i>',
-                    '</button>  ',
-                    '<button class="courceRemove" title="Remove">',
-                    '<i class="glyphicon glyphicon-remove-sign icon-remove-sign"></i>',
-                    '</button>'
-                ].join('')
-            }]
+            title: "#",
+            field: "srNo",
+            align: "left"
+        }, {
+            title: "Name",
+            field: "courceName",
+            align: "left"
+        }, {
+            title: "Prefix",
+            field: "courcePrefix",
+            align: "left"
+        }, {
+            title: "Code",
+            field: "courceCode",
+            align: "left"
+        }, {
+            title: "Notes",
+            field: "notes",
+            align: "left"
+        }, {
+            title: "Status",
+            field: "courceStatus",
+            align: "left"
+        }, {
+            title: "Operate",
+            field: "operate",
+            align: 'center',
+            events: confObj.me.operateEvent(),
+            formatter: [
+                '<button class="courceEdit" title="Edit">',
+                '<i class="glyphicon glyphicon-pencil icon-pencil"></i>',
+                '</button>  ',
+                '<button class="courceRemove" title="Remove">',
+                '<i class="glyphicon glyphicon-remove-sign icon-remove-sign"></i>',
+                '</button>'
+            ].join('')
+        }]
     };
     return courceDetailsConfobj;
 }
@@ -1950,7 +2012,7 @@ function loadStudentQuestionnaireLyt(cellObj) {
 
 function getStudentQuestionnaireFormDetails(formName) {
     var formObj = document.forms[formName],
-            itemObj, questionnaireDetailsObj = {};
+        itemObj, questionnaireDetailsObj = {};
 
     for (var itemKey in questionnaireInputDetails) {
         itemObj = formObj[itemKey];
@@ -2021,28 +2083,12 @@ function setStudentFormDetails(formConfObj, details) {
     $(studentFormObj.elements["quantitative"]).val(score.quantitative);
     $(studentFormObj.elements["analytical"]).val(score.analytical);
     $(studentFormObj.elements["gpa"]).val(score.gpa);
-}
-
-function setStudentFormDetails(formConfObj, details) {
-    var studentFormObj = document.forms[formConfObj.name];
-    var score = details.scores ? JSON.parse(details.scores) : {};
-    var concentrationOptions = getConcentrationAsOptions();
-    $(studentFormObj.elements["concentration"]).append(concentrationOptions);
-    $(studentFormObj.elements["id"]).val(details.id);
-    $(studentFormObj.elements["loginId"]).val(details.loginId);
-    $(studentFormObj.elements["firstName"]).val(details.firstName);
-    $(studentFormObj.elements["lastName"]).val(details.lastName);
-    $(studentFormObj.elements["concentration"]).val(details.concentration.id);
-    $(studentFormObj.elements["mail"]).val(details.email);
-    $(studentFormObj.elements["personalMail"]).val(details.secondaryEmail);
-    $(studentFormObj.elements["phone"]).val(details.phoneNumber);
-    $(studentFormObj.elements["address"]).val(details.address);
-    $(studentFormObj.elements["status"]).val(details.status);
-    $(studentFormObj.elements["scoreType"]).val(score.scoreType);
-    $(studentFormObj.elements["verbal"]).val(score.verbal);
-    $(studentFormObj.elements["quantitative"]).val(score.quantitative);
-    $(studentFormObj.elements["analytical"]).val(score.analytical);
     $(studentFormObj.elements["gpa"]).val(score.gpa);
+    $(studentFormObj.elements["approvedForGraduation"]).val(details.studentStatus || "select");
+    $(studentFormObj.elements["studentSearchPrerequisite"]).val(details.preReq || "notmet");
+    $(studentFormObj.elements["searchNotes"]).val(details.notes || "");
+    $(studentFormObj.elements["studentPrerequisite"]).val(details.preReq || "notmet");
+    $(studentFormObj.elements["notes"]).val(details.notes || "");
 }
 
 function setStudentQuestionnaireFormDetails(formConfObj, details) {
@@ -2051,8 +2097,22 @@ function setStudentQuestionnaireFormDetails(formConfObj, details) {
     for (var itemKey in questionnaireInputDetails) {
         if (questionnaireInputDetails[itemKey].type === 'radio') {
             $('input[name=' + itemKey + '][value=' + testDetails[itemKey] + ']').attr('checked', true);
+            if (questionnaireSubItems[itemKey]) {
+                var subItems = questionnaireSubItems[itemKey];
+                if (testDetails[itemKey] === 'yes') {
+                    for (var itemInd = 0; itemInd < subItems.length; itemInd++) {
+                        $(studentFormObj.elements[subItems[itemInd]].parentElement.parentElement).show();
+                    }
+                } else {
+                    for (var itemInd = 0; itemInd < subItems.length; itemInd++) {
+                        $(studentFormObj.elements[subItems[itemInd]].parentElement.parentElement).hide();
+                    }
+                }
+            }
         } else {
             $(studentFormObj.elements[itemKey]).val(testDetails[itemKey]);
         }
     }
+
+    $('input[name=codeOfConduct]').attr('checked', true);
 }

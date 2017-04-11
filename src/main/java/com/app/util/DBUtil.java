@@ -63,7 +63,9 @@ public class DBUtil {
     public final static String COLUMN_STUDENTS_STATUS = "STATUS";
     public final static String COLUMN_STUDENTS_TESTDETAILS = "TESTDETAILS";
     public final static String COLUMN_STUDENTS_ACCEPTEDCODEOFCONDUCT = "ACCEPTEDCODEOFCONDUCT";
+    public final static String COLUMN_STUDENTS_PREREQS = "PREREQS";
     public final static String COLUMN_STUDENTS_NOTES = "NOTES";
+    public final static String COLUMN_STUDENTS_NOTES_UPDATED = "NOTES_UPDATED";
     public final static String COLUMN_STUDENTS_CREATED_DATE = "CREATED_DATE";
     //student concentation alias
     public final static String COLUMN_STUDENTS_CON_NAME = "CON_NAME";
@@ -90,7 +92,7 @@ public class DBUtil {
                 message = "Advisor not found.";
             } else if (message.contains("STU_MAIL_UK")) {
                 message = "Student Primary mail  already exists.";
-            } else if (message.contains("STU_PHONE_Uk")) {
+            } else if (message.contains("STU_PHONE_UK")) {
                 message = "Student phone number already exists.";
             } else if (message.contains("STU_NOT_FOUND")) {
                 message = "Student not found.";

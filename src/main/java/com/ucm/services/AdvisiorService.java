@@ -19,9 +19,11 @@ public interface AdvisiorService {
 
     public int deleteAdvisor(int advisorId);
 
-    public Advisor getAdvisorWitId(int advisorId);
+    public Advisor getAdvisorWithId(int advisorId);
 
-    public Advisor getAdvisorWitName(String advisorName);
+    public Advisor getAdvisorWithLoginId(String advisorId);
+
+    public Advisor getAdvisorWithName(String advisorName);
 
     public List<Advisor> getAllAdvisors();
 

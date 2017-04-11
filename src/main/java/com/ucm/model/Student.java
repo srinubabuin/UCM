@@ -25,7 +25,9 @@ public class Student implements Serializable {
     private String status = "ACTIVE";
     private String testDetails;
     private String acceptedCodeOfConduct;
+    private String preReq = "notmet";
     private String notes;
+    private Date notesUpdated;
     private Date createdDate;
     private AppUser appUser;
 
@@ -149,12 +151,28 @@ public class Student implements Serializable {
         this.acceptedCodeOfConduct = acceptedCodeOfConduct;
     }
 
+    public String getPreReq() {
+        return preReq;
+    }
+
+    public void setPreReq(String preReq) {
+        this.preReq = preReq;
+    }
+
     public String getNotes() {
         return notes;
     }
 
     public void setNotes(String notes) {
         this.notes = notes;
+    }
+
+    public Date getNotesUpdated() {
+        return notesUpdated;
+    }
+
+    public void setNotesUpdated(Date notesUpdated) {
+        this.notesUpdated = notesUpdated;
     }
 
     public Date getCreatedDate() {

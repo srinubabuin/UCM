@@ -266,7 +266,7 @@
     appContextPath = "${pageContext.request.contextPath}";
     appRestPath = appContextPath + "/rest";
     accessToken = "${accessToken}";
-    userRole = "${userRole}";
+    userRole = "STUDENT";
     loginId = "${loginId}";
     var appManagerLytObj;
     var studentQuestionnaireLytObj;

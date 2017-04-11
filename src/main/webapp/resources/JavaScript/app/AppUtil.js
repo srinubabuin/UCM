@@ -590,6 +590,45 @@ function clearFormData(formObj) {
     }
 }
 /*Validation starts*/
+
+function validateForm(formName, validateItems) {
+    var formObj = document.forms[formName];
+    var items = Object.keys(validateItems);
+    for (var element in formObj.elements) {
+        if (items.indexOf(element) >= 0) {
+            var formElement = formObj.elements[element];
+            var validationEle = validateItems[element].validations;
+            var maxLength = validateItems[element].maxLength;
+            var validateTypes = Object.keys(validateItems[element].validations);
+            for (var i = 0; i < validateTypes.length; i++) {
+                var res;
+                if (validateTypes[i] === "isMaxLengthReached") {
+                    res = validateValue[validateTypes[i]](formElement.value, maxLength);
+                } else {
+                    res = validateValue[validateTypes[i]](formElement.value);
+                }
+
+
+                if (!res) {
+                    BootstrapDialog.show({
+                        type: BootstrapDialog.TYPE_WARNING,
+                        title: 'Warning',
+                        message: validationEle[validateTypes[i]],
+                        draggable: true,
+                        nl2br: false,
+                        onhidden: function (e) {
+                            formElement.focus();
+                        }
+                    });
+                    return false;
+                }
+            }
+        }
+
+    }
+    return true;
+}
+
 function validateSelectItem(value, defaultValue) {
     if (defaultValue === undefined || defaultValue === null) {
         defaultValue = "select";

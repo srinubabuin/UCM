@@ -124,7 +124,7 @@ public class AdvisorServiceImpl implements AdvisiorService {
         ResultSet rs = null;
         int delecnt = 0;
         try {
-            Advisor advisor = getAdvisorWitId(advisorId);
+            Advisor advisor = getAdvisorWithId(advisorId);
             int advisorCnt = (new UserLoginServiceImpl()).deleteUser(advisor.getLoginId());
             if (advisorCnt > 0) {
                 con = AppConnectionPool.getConnection();
@@ -141,7 +141,7 @@ public class AdvisorServiceImpl implements AdvisiorService {
     }
 
     @Override
-    public Advisor getAdvisorWitId(int advisorId) {
+    public Advisor getAdvisorWithId(int advisorId) {
         Connection con = null;
         PreparedStatement pstm = null;
         ResultSet rs = null;
@@ -188,7 +188,54 @@ public class AdvisorServiceImpl implements AdvisiorService {
     }
 
     @Override
-    public Advisor getAdvisorWitName(String advisorName) {
+    public Advisor getAdvisorWithLoginId(String loginId) {
+        Connection con = null;
+        PreparedStatement pstm = null;
+        ResultSet rs = null;
+        Advisor advisor = null;
+        AppUser appUser = null;
+        Concentration concentration = null;
+        try {
+            int pos = 1;
+            con = AppConnectionPool.getConnection();
+            pstm = con.prepareStatement(AppQueryReader.getDBQuery("com.ucm.services.impl.advisorservice.getadvisorwithloginid"));
+            pstm.setString(pos, loginId);
+            rs = pstm.executeQuery();
+            if (rs.next()) {
+                appUser = new AppUser();
+                appUser.setId(rs.getInt(DBUtil.COLUMN_ADVISORS_USER_ID));
+                appUser.setLoginId(rs.getString(DBUtil.COLUMN_ADVISORS_LOGIN_ID));
+                appUser.setPassword(rs.getString(DBUtil.COLUMN_ADVISORS_USER_PASSWORD));
+                appUser.setRole(Role.valueOf(rs.getString(DBUtil.COLUMN_ADVISORS_USER_ROLE)));
+                advisor = new Advisor();
+                concentration = new Concentration();
+                concentration.setId(rs.getInt(DBUtil.COLUMN_ADVISORS_CONCENTATION_ID));
+                concentration.setConcentrationName(rs.getString(DBUtil.COLUMN_ADVISORS_CONCENTATION_NAME));
+                concentration.setConcentrationStatus(rs.getString(DBUtil.COLUMN_ADVISORS_CONCENTATION_STATUS));
+                concentration.setConcentrationCreatedDate(rs.getDate(DBUtil.COLUMN_ADVISORS_CONCENTATION_CREATED_DATE));
+                concentration.setNotes(rs.getString(DBUtil.COLUMN_ADVISORS_CONCENTATION_NOTES));
+                concentration.setConcentrationCreatedDate(rs.getDate(DBUtil.COLUMN_ADVISORS_CONCENTATION_CREATED_DATE));
+                advisor.setConcentration(concentration);
+                advisor.setId(rs.getInt(DBUtil.COLUMN_ADVISORS_ID));
+                advisor.setLoginId(rs.getString(DBUtil.COLUMN_ADVISORS_LOGIN_ID));
+                advisor.setEmail(rs.getString(DBUtil.COLUMN_ADVISORS_MAIL));
+                advisor.setStatus(rs.getString(DBUtil.COLUMN_ADVISORS_STATUS));
+                advisor.setPhone(rs.getString(DBUtil.COLUMN_ADVISORS_PHONE));
+                advisor.setNotes(rs.getString(DBUtil.COLUMN_ADVISORS_NOTES));
+                advisor.setCreatedDate(rs.getDate(DBUtil.COLUMN_ADVISORS_DATE));
+                advisor.setName(rs.getString(DBUtil.COLUMN_ADVISORS_NAME));
+                advisor.setAppUser(appUser);
+            }
+        } catch (SQLException e) {
+            LOGGER.log(Priority.ERROR, "Exception in getConcentationWithId method with advisorLoginId:" + loginId + " " + e.getMessage());
+        } finally {
+            AppConnectionPool.release(rs, pstm, con);
+        }
+        return advisor;
+    }
+
+    @Override
+    public Advisor getAdvisorWithName(String advisorName) {
         Connection con = null;
         PreparedStatement pstm = null;
         ResultSet rs = null;
