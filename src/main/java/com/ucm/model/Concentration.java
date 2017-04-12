@@ -16,7 +16,7 @@ public class Concentration implements Serializable {
     private String concentrationStatus;
     private String notes;
     private Date concentrationCreatedDate;
-    private List<Cource> cources;
+    private List<Course> courses;
     private Advisor advisor;
 
     public int getId() {
@@ -59,12 +59,12 @@ public class Concentration implements Serializable {
         this.concentrationCreatedDate = concentrationCreatedDate;
     }
 
-    public List<Cource> getCources() {
-        return cources;
+    public List<Course> getCourses() {
+        return courses;
     }
 
-    public void setCources(List<Cource> cources) {
-        this.cources = cources;
+    public void setCourses(List<Course> courses) {
+        this.courses = courses;
     }
 
     public Advisor getAdvisor() {

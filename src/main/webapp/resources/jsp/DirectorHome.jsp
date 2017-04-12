@@ -290,15 +290,15 @@
             </div>
         </div>
         <div class="form-group">
-            <label class="col-sm-3 control-label required">UCMO Email</label>
-            <div class="col-sm-8">
-                <input type="text" name="mail" class="form-control" placeholder="example@ucmo.com">
-            </div>
-        </div>
-        <div class="form-group">
             <label class="col-sm-3 control-label required">Personal Email</label>
             <div class="col-sm-8">
                 <input type="text" name="personalMail" class="form-control" placeholder="example@example.com">
+            </div>
+        </div>        
+        <div class="form-group">
+            <label class="col-sm-3 control-label required">UCMO Email</label>
+            <div class="col-sm-8">
+                <input type="text" name="mail" class="form-control" placeholder="example@ucmo.com">
             </div>
         </div>
         <div class="form-group">
@@ -457,23 +457,23 @@
             </div>
         </div>
         <div class="form-group">
-            <label class="col-sm-3 control-label required">Cources</label>
+            <label class="col-sm-3 control-label required">Courses</label>
             <div class="col-sm-8">
                 <div class="row">
                     <div class="col-md-5">
-                        <select name="allCources" multiple class="form-control">
+                        <select name="allCourses" multiple class="form-control">
                         </select>
                     </div>
                     <div class="col-md-2  text-center">
-                        <button name="courceMoveLeft" class="btn btn-success" type="button"
+                        <button name="courseMoveLeft" class="btn btn-success" type="button"
                                 style="padding: 3px 6px; width: 70px;">&gt;&gt;</button>
                         </br>
                         </br>
-                        <button name="courceMoveRight" class="btn btn-danger" type="button"
+                        <button name="courseMoveRight" class="btn btn-danger" type="button"
                                 style="padding: 3px 6px; width: 70px;">&lt;&lt;</button>
                     </div>
                     <div class="col-md-5">
-                        <select name="cources" multiple class="form-control">
+                        <select name="courses" multiple class="form-control">
                         </select>
                     </div>
                 </div>
@@ -501,11 +501,11 @@
             <button name="cancel" class="btn btn-primary" type="button">Cancel</button>
         </div>
     </div>
-    <div id="courceFormTpl">
+    <div id="courseFormTpl">
         <div class="form-group">
-            <label class="col-sm-3 control-label required">Cource Name</label>
+            <label class="col-sm-3 control-label required">Course Name</label>
             <div class="col-sm-8">
-                <input type="text" name="name" class="form-control" placeholder="Cource Name">
+                <input type="text" name="name" class="form-control" placeholder="Course Name">
             </div>
         </div>
         <div class="form-group">
@@ -536,7 +536,7 @@
                 </select>
             </div>
         </div>
-        <input type="hidden" name="courceId" value="-1">
+        <input type="hidden" name="courseId" value="-1">
         <div class="col-sm-12 text-center">
             <button name="save" class="btn btn-success" type="button">Save</button>
             <button name="reset" class="btn btn-warning" type="reset">Reset</button>
@@ -556,7 +556,7 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="javascript:void(0);">UCM</a>
+            <a class="navbar-brand" href="javascript:void(0);">MBA Student Profile System</a>
         </div>
         <nav id="appNavBar" class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
@@ -580,9 +580,9 @@
                         Concentrations
                     </a>
                 </li>
-                <li itemId="COURCES">
-                    <a href="javascript:void(0);" onclick="onMainNavItemClick('COURCES')" title="Cources">
-                        Cources
+                <li itemId="COURSES">
+                    <a href="javascript:void(0);" onclick="onMainNavItemClick('COURSES')" title="Courses">
+                        Courses
                     </a>
                 </li>
             </ul>

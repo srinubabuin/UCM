@@ -289,17 +289,17 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="col-sm-3 control-label required">UCMO Email</label>
-                    <div class="col-sm-8">
-                        <input type="text" name="mail" class="form-control" placeholder="example@ucmo.com">
-                    </div>
-                </div>
-                <div class="form-group">
                     <label class="col-sm-3 control-label required">Personal Email</label>
                     <div class="col-sm-8">
                         <input type="text" name="personalMail" class="form-control" placeholder="example@example.com">
                     </div>
                 </div>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label required">UCMO Email</label>
+                    <div class="col-sm-8">
+                        <input type="text" name="mail" class="form-control" placeholder="example@ucmo.com">
+                    </div>
+                </div>                
                 <div class="form-group">
                     <label class="col-sm-3 control-label required">Phone #</label>
                     <div class="col-sm-8">
@@ -435,8 +435,8 @@
                 <input type="hidden" name="id" value="-1">
                 <input type="hidden" name="loginId" value="-1">
                 <div class="col-sm-12 text-center">
+                    <button name="edit" class="btn btn-warning" type="button">Edit</button>
                     <button name="save" class="btn btn-success" type="button">Save</button>
-                    <button name="reset" class="btn btn-warning" type="reset">Reset</button>
                     <button name="cancel" class="btn btn-primary" type="button">Cancel</button>
                 </div>
             </div>
@@ -453,13 +453,18 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <a class="navbar-brand" href="javascript:void(0);">UCM</a>
+                    <a class="navbar-brand" href="javascript:void(0);">MBA Student Profile System</a>
                 </div>
                 <nav id="appNavBar" class="navbar-collapse collapse">
                     <ul class="nav navbar-nav">
                         <li class="active" itemId="STUDENTSEARCH">
                             <a href="javascript:void(0);" onclick="onAdvisorMainNavItemClick('STUDENTSEARCH')" title="Student Search">
                                 Student Search
+                            </a>
+                        </li>
+                        <li itemId="STUDENTS">
+                            <a href="javascript:void(0);" onclick="onAdvisorMainNavItemClick('STUDENTS')" title="Students">
+                                Students
                             </a>
                         </li>
                     </ul>
@@ -488,6 +493,7 @@
         accessToken = "${accessToken}";
         userRole = "ADVISOR";
         loginId = "${loginId}";
+        var concentrationId;
         var appManagerLytObj;
         var studentLytObj, advisorProfileLytObj;
 
@@ -496,6 +502,12 @@
         }
         function doOnLoad() {
             loginUser = getAdvisorByLoginId(loginId);
+            if (loginUser && loginUser.concentration && loginUser.concentration.id) {
+                concentrationId = loginUser.concentration.id
+            }
+            if (!concentrationId) {
+                concentrationId = "-1";
+            }
             appManagerLytObj = getMainLayoutObj();
             onAdvisorMainNavItemClick("STUDENTSEARCH");
         }

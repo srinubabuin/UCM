@@ -14,7 +14,7 @@ public class CourceConcentration implements Serializable {
     private String status;
     private Date conCourceCreatedDate;
     private Concentration concentration;
-    private Cource cource;
+    private Course cource;
 
     public double getId() {
         return id;
@@ -48,11 +48,11 @@ public class CourceConcentration implements Serializable {
         this.concentration = concentration;
     }
 
-    public Cource getCource() {
+    public Course getCource() {
         return cource;
     }
 
-    public void setCource(Cource cource) {
+    public void setCource(Course cource) {
         this.cource = cource;
     }
 

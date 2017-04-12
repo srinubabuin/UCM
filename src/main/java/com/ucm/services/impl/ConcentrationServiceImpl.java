@@ -12,7 +12,7 @@ import com.ucm.exception.ConstraintVilationException;
 import com.ucm.exception.ObjectNotFoundException;
 import com.ucm.model.Advisor;
 import com.ucm.model.Concentration;
-import com.ucm.model.Cource;
+import com.ucm.model.Course;
 import com.ucm.services.ConcentrationService;
 import com.ucm.services.CourceService;
 
@@ -111,7 +111,7 @@ public class ConcentrationServiceImpl implements ConcentrationService {
             deleteConcentrationCources(concentation);
             con = AppConnectionPool.getConnection();
             pstm = con.prepareStatement(AppQueryReader.getDBQuery("com.ucm.services.impl.concentratioservice.insertconcentrationcources"));
-            for (Cource cource : concentation.getCources()) {
+            for (Course cource : concentation.getCourses()) {
                 pstm.setInt(pos, concentation.getId());
                 pstm.setInt(++pos, cource.getId());
                 pstm.setString(++pos, concentation.getConcentrationStatus());
@@ -185,7 +185,7 @@ public class ConcentrationServiceImpl implements ConcentrationService {
                 concentration.setConcentrationStatus(rs.getString(DBUtil.COLUMN_CONCENTATIONS_STATUS));
                 concentration.setNotes(rs.getString(DBUtil.COLUMN_CONCENTATIONS_NOTES));
                 concentration.setConcentrationCreatedDate(rs.getDate(DBUtil.COLUMN_CONCENTATIONS_DATE));
-                concentration.setCources(cs.getAllCourcesByConcentrationId(rs.getInt(DBUtil.COLUMN_CONCENTATIONS_ID)));
+                concentration.setCourses(cs.getAllCourcesByConcentrationId(rs.getInt(DBUtil.COLUMN_CONCENTATIONS_ID)));
                 concentration.setAdvisor(advisor);
             }
         } catch (SQLException e) {
@@ -226,7 +226,7 @@ public class ConcentrationServiceImpl implements ConcentrationService {
                 concentration.setConcentrationStatus(rs.getString(DBUtil.COLUMN_CONCENTATIONS_STATUS));
                 concentration.setNotes(rs.getString(DBUtil.COLUMN_CONCENTATIONS_NOTES));
                 concentration.setConcentrationCreatedDate(rs.getDate(DBUtil.COLUMN_CONCENTATIONS_DATE));
-                concentration.setCources(cs.getAllCourcesByConcentrationId(rs.getInt(DBUtil.COLUMN_CONCENTATIONS_ID)));
+                concentration.setCourses(cs.getAllCourcesByConcentrationId(rs.getInt(DBUtil.COLUMN_CONCENTATIONS_ID)));
                 concentration.setAdvisor(advisor);
             }
         } catch (SQLException e) {
@@ -267,7 +267,7 @@ public class ConcentrationServiceImpl implements ConcentrationService {
                 concentration.setConcentrationStatus(rs.getString(DBUtil.COLUMN_CONCENTATIONS_STATUS));
                 concentration.setNotes(rs.getString(DBUtil.COLUMN_CONCENTATIONS_NOTES));
                 concentration.setConcentrationCreatedDate(rs.getDate(DBUtil.COLUMN_CONCENTATIONS_DATE));
-                concentration.setCources(cs.getAllCourcesByConcentrationId(rs.getInt(DBUtil.COLUMN_CONCENTATIONS_ID)));
+                concentration.setCourses(cs.getAllCourcesByConcentrationId(rs.getInt(DBUtil.COLUMN_CONCENTATIONS_ID)));
                 concentration.setAdvisor(advisor);
                 concentations.add(concentration);
             }

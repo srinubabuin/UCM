@@ -9,7 +9,7 @@ import com.app.util.DBUtil;
 import com.app.util.RequestStatus;
 import com.ucm.exception.ConstraintVilationException;
 import com.ucm.exception.ObjectNotFoundException;
-import com.ucm.model.Cource;
+import com.ucm.model.Course;
 import com.ucm.services.CourceService;
 import com.ucm.services.impl.CourceServiceImpl;
 
@@ -20,7 +20,7 @@ import java.util.logging.Logger;
 
 public class CourceServiceHelper {
 
-    public RequestStatus addCource(Cource cource) {
+    public RequestStatus addCource(Course cource) {
 
         RequestStatus response = new RequestStatus();
         try {
@@ -41,7 +41,7 @@ public class CourceServiceHelper {
         return response;
     }
 
-    public RequestStatus modifyCource(Cource cource) {
+    public RequestStatus modifyCource(Course cource) {
 
         RequestStatus response = new RequestStatus();
         CourceService courceService;
@@ -66,13 +66,13 @@ public class CourceServiceHelper {
         return response;
     }
 
-    public List<Cource> getAllCources() {
+    public List<Course> getAllCources() {
 
         return new CourceServiceImpl().getAllCources();
     }
 
-    public Cource getCourceById(int courceId) {
-        Cource cource = null;
+    public Course getCourceById(int courceId) {
+        Course cource = null;
         try {
             cource = new CourceServiceImpl().getCourceById(courceId);
         } catch (ObjectNotFoundException ce) {

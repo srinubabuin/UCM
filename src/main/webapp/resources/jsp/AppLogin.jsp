@@ -27,6 +27,7 @@
         <!--<form action="/EDIPaged/ediAuth/doLogin" method="post" name="ediLoginForm" class="form-signin">-->
         <form action="" method="post" name="loginForm" onsubmit="return false;" id="loginForm"
               class="form-signin">
+            <h3 class="form-signin-heading">MBA Student Profile System</h3>
             <h3 class="form-signin-heading">Login</h3>
 
             <input type="text" class="form-control" name="username" placeholder="UCM Login Id" autofocus=""/>

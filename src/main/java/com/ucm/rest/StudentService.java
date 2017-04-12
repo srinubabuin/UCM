@@ -142,6 +142,70 @@ public class StudentService {
         }
     }
 
+    @GET
+    @Path("/studentNotes")
+    @Consumes({"application/json"})
+    @Produces({"application/json"})
+    public Response studentNotes() {
+
+        try {
+            StudentServiceHelper helper = new StudentServiceHelper();
+            List<Student> students = helper.getAllStudentNotes();
+            return Response.ok().header("Access-Control-Allow-Origin", "*").entity(students).build();
+        } catch (Exception e) {
+            LOGGER.info("Get student wit id error");
+            return Response.status(405).header("Access-Control-Allow-Origin", "*").build();
+        }
+    }
+
+    @GET
+    @Path("/concentration/{param}")
+    @Consumes({"application/json"})
+    @Produces({"application/json"})
+    public Response getAllStudentsByConcentration(@PathParam("param") int concentrationId) {
+
+        try {
+            StudentServiceHelper helper = new StudentServiceHelper();
+            List<Student> students = helper.getAllStudentsByConcentration(concentrationId);
+            return Response.ok().header("Access-Control-Allow-Origin", "*").entity(students).build();
+        } catch (Exception e) {
+            LOGGER.info("Get student wit id error");
+            return Response.status(405).header("Access-Control-Allow-Origin", "*").build();
+        }
+    }
+
+    @GET
+    @Path("/concentration/codeOfConductNotCompleted/{param}")
+    @Consumes({"application/json"})
+    @Produces({"application/json"})
+    public Response codeOfConductNotAcceptedStudentsByConcentration(@PathParam("param") int concentrationId) {
+
+        try {
+            StudentServiceHelper helper = new StudentServiceHelper();
+            List<Student> students = helper.codeOfConductNotAcceptedStudentsByConcentration(concentrationId);
+            return Response.ok().header("Access-Control-Allow-Origin", "*").entity(students).build();
+        } catch (Exception e) {
+            LOGGER.info("Get student wit id error");
+            return Response.status(405).header("Access-Control-Allow-Origin", "*").build();
+        }
+    }
+
+    @GET
+    @Path("/concentration/studentNotes/{param}")
+    @Consumes({"application/json"})
+    @Produces({"application/json"})
+    public Response studentNotesByConcentration(@PathParam("param") int concentrationId) {
+
+        try {
+            StudentServiceHelper helper = new StudentServiceHelper();
+            List<Student> students = helper.getAllStudentNotesByConcentration(concentrationId);
+            return Response.ok().header("Access-Control-Allow-Origin", "*").entity(students).build();
+        } catch (Exception e) {
+            LOGGER.info("Get student wit id error");
+            return Response.status(405).header("Access-Control-Allow-Origin", "*").build();
+        }
+    }
+
     @PUT
     @Path("/updateQuestionnaire")
     @Consumes({"application/json"})

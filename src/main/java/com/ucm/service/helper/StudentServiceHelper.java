@@ -80,12 +80,31 @@ public class StudentServiceHelper {
 
     public List<Student> getAllStudents() {
 
-        return new StudentServiceImpl().getAllStudents();
+        return new StudentServiceImpl().getAllStudents("");
     }
 
     public List<Student> codeOfConductNotAcceptedStudents() {
 
-        return new StudentServiceImpl().codeOfConductNotAcceptedStudents();
+        return new StudentServiceImpl().getAllStudents("WHERE STU.ACCEPTEDCODEOFCONDUCT IS NULL");
+    }
+
+    public List<Student> getAllStudentNotes() {
+
+        return new StudentServiceImpl().getAllStudents("WHERE STU.NOTES_UPDATED IS NOT NULL ORDER BY STU.NOTES_UPDATED ASC");
+    }
+
+    public List<Student> getAllStudentsByConcentration(int concentrationId) {
+        return new StudentServiceImpl().getAllStudents("WHERE STU.CONCENTRATION_ID = " + concentrationId);
+    }
+
+    public List<Student> codeOfConductNotAcceptedStudentsByConcentration(int concentrationId) {
+
+        return new StudentServiceImpl().getAllStudents("WHERE STU.CONCENTRATION_ID = " + concentrationId + " AND STU.ACCEPTEDCODEOFCONDUCT IS NULL");
+    }
+
+    public List<Student> getAllStudentNotesByConcentration(int concentrationId) {
+
+        return new StudentServiceImpl().getAllStudents("WHERE STU.CONCENTRATION_ID = " + concentrationId + " AND STU.NOTES_UPDATED IS NOT NULL ORDER BY STU.NOTES_UPDATED ASC");
     }
 
     public Student getStudentById(int studentId) {

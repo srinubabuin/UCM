@@ -1,7 +1,7 @@
 package com.ucm.rest;
 
 import com.app.util.RequestStatus;
-import com.ucm.model.Cource;
+import com.ucm.model.Course;
 import com.ucm.service.helper.CourceServiceHelper;
 import org.apache.log4j.Logger;
 
@@ -10,7 +10,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 
-@Path("/cource")
+@Path("/course")
 public class CourceService {
 
     private static Logger logger = Logger.getLogger(CourceService.class);
@@ -21,7 +21,7 @@ public class CourceService {
     @PUT
     @Consumes({"application/json"})
     @Produces({"application/json"})
-    public Response insert(Cource cource) {
+    public Response insert(Course cource) {
         RequestStatus courceResponseObj;
         CourceServiceHelper courceServiceHelper;
         try {
@@ -38,7 +38,7 @@ public class CourceService {
     @Path("/{param}")
     @Consumes({"application/json"})
     @Produces({"application/json"})
-    public Response update(@PathParam("param") int courceId, Cource cource) {
+    public Response update(@PathParam("param") int courceId, Course cource) {
         RequestStatus courceResponseObj;
         CourceServiceHelper courceServiceHelper;
         try {
@@ -74,7 +74,7 @@ public class CourceService {
     @Produces({"application/json"})
     public Response courceById(@PathParam("param") int courceId) {
         CourceServiceHelper courceServiceHelper;
-        Cource cource;
+        Course cource;
         try {
             courceServiceHelper = new CourceServiceHelper();
             cource = courceServiceHelper.getCourceById(courceId);

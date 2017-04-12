@@ -10,7 +10,7 @@ import com.app.util.DBUtil;
 import com.conn.pool.app.AppConnectionPool;
 import com.ucm.exception.ConstraintVilationException;
 import com.ucm.exception.ObjectNotFoundException;
-import com.ucm.model.Cource;
+import com.ucm.model.Course;
 import com.ucm.services.CourceService;
 
 import java.sql.Connection;
@@ -30,7 +30,7 @@ public class CourceServiceImpl implements CourceService {
     private static final Logger LOGGER = Logger.getLogger(CourceServiceImpl.class.getName());
 
     @Override
-    public int addCource(Cource cource) throws ConstraintVilationException {
+    public int addCource(Course cource) throws ConstraintVilationException {
         Connection con = null;
         PreparedStatement pstm = null;
         ResultSet rs = null;
@@ -39,10 +39,10 @@ public class CourceServiceImpl implements CourceService {
             int pos = 1;
             con = AppConnectionPool.getConnection();
             pstm = con.prepareStatement(AppQueryReader.getDBQuery("com.ucm.services.impl.courceservice.addcource"), new String[]{DBUtil.COLUMN_COURCES_ID});
-            pstm.setString(pos, cource.getCourceName());
-            pstm.setString(++pos, cource.getCourcePrefix());
-            pstm.setString(++pos, cource.getCourceCode());
-            pstm.setString(++pos, cource.getCourceStatus());
+            pstm.setString(pos, cource.getCourseName());
+            pstm.setString(++pos, cource.getCoursePrefix());
+            pstm.setString(++pos, cource.getCourseCode());
+            pstm.setString(++pos, cource.getCourseStatus());
             pstm.setString(++pos, cource.getNotes());
             pstm.setTimestamp(++pos, new Timestamp(new Date().getTime()));
             if (pstm.executeUpdate() > 0) {
@@ -62,7 +62,7 @@ public class CourceServiceImpl implements CourceService {
     }
 
     @Override
-    public int modifyCource(Cource cource) throws ObjectNotFoundException, ConstraintVilationException {
+    public int modifyCource(Course cource) throws ObjectNotFoundException, ConstraintVilationException {
         Connection con = null;
         PreparedStatement pstm = null;
         ResultSet rs = null;
@@ -71,10 +71,10 @@ public class CourceServiceImpl implements CourceService {
             int pos = 1;
             con = AppConnectionPool.getConnection();
             pstm = con.prepareStatement(AppQueryReader.getDBQuery("com.ucm.services.impl.courceservice.modifycource"));
-            pstm.setString(pos, cource.getCourceName());
-            pstm.setString(++pos, cource.getCourcePrefix());
-            pstm.setString(++pos, cource.getCourceCode());
-            pstm.setString(++pos, cource.getCourceStatus());
+            pstm.setString(pos, cource.getCourseName());
+            pstm.setString(++pos, cource.getCoursePrefix());
+            pstm.setString(++pos, cource.getCourseCode());
+            pstm.setString(++pos, cource.getCourseStatus());
             pstm.setString(++pos, cource.getNotes());
             pstm.setInt(++pos, cource.getId());
             updatedCount = pstm.executeUpdate();
@@ -112,25 +112,25 @@ public class CourceServiceImpl implements CourceService {
     }
 
     @Override
-    public List<Cource> getAllCources() {
+    public List<Course> getAllCources() {
         Connection con = null;
         PreparedStatement pstm = null;
         ResultSet rs = null;
-        List<Cource> cources = new ArrayList<>();
+        List<Course> cources = new ArrayList<>();
         try {
-            Cource cource;
+            Course cource;
             con = AppConnectionPool.getConnection();
             pstm = con.prepareStatement(AppQueryReader.getDBQuery("com.ucm.services.impl.courceservice.getallcources"));
             rs = pstm.executeQuery();
             while (rs.next()) {
-                cource = new Cource();
+                cource = new Course();
                 cource.setId(rs.getInt(DBUtil.COLUMN_COURCES_ID));
-                cource.setCourceName(rs.getString(DBUtil.COLUMN_COURCES_NAME));
-                cource.setCourcePrefix(rs.getString(DBUtil.COLUMN_COURCES_PREFIX));
-                cource.setCourceStatus(rs.getString(DBUtil.COLUMN_COURCES_STATUS));
+                cource.setCourseName(rs.getString(DBUtil.COLUMN_COURCES_NAME));
+                cource.setCoursePrefix(rs.getString(DBUtil.COLUMN_COURCES_PREFIX));
+                cource.setCourseStatus(rs.getString(DBUtil.COLUMN_COURCES_STATUS));
                 cource.setNotes(rs.getString(DBUtil.COLUMN_COURCES_NOTES));
-                cource.setCourceCode(rs.getString(DBUtil.COLUMN_COURCES_CODE));
-                cource.setCourceCreatedDate(rs.getDate(DBUtil.COLUMN_COURCES_CREATED_DATE));
+                cource.setCourseCode(rs.getString(DBUtil.COLUMN_COURCES_CODE));
+                cource.setCourseCreatedDate(rs.getDate(DBUtil.COLUMN_COURCES_CREATED_DATE));
                 cources.add(cource);
             }
         } catch (SQLException ex) {
@@ -142,25 +142,25 @@ public class CourceServiceImpl implements CourceService {
     }
 
     @Override
-    public Cource getCourceById(int courceId) throws ObjectNotFoundException {
+    public Course getCourceById(int courceId) throws ObjectNotFoundException {
         Connection con = null;
         PreparedStatement pstm = null;
         ResultSet rs = null;
-        Cource cource = null;
+        Course cource = null;
         try {
             con = AppConnectionPool.getConnection();
             pstm = con.prepareStatement(AppQueryReader.getDBQuery("com.ucm.services.impl.courceservice.getcourcebyid"));
             pstm.setInt(1, courceId);
             rs = pstm.executeQuery();
             if (rs.next()) {
-                cource = new Cource();
+                cource = new Course();
                 cource.setId(rs.getInt(DBUtil.COLUMN_COURCES_ID));
-                cource.setCourceName(rs.getString(DBUtil.COLUMN_COURCES_NAME));
-                cource.setCourcePrefix(rs.getString(DBUtil.COLUMN_COURCES_PREFIX));
-                cource.setCourceStatus(rs.getString(DBUtil.COLUMN_COURCES_STATUS));
+                cource.setCourseName(rs.getString(DBUtil.COLUMN_COURCES_NAME));
+                cource.setCoursePrefix(rs.getString(DBUtil.COLUMN_COURCES_PREFIX));
+                cource.setCourseStatus(rs.getString(DBUtil.COLUMN_COURCES_STATUS));
                 cource.setNotes(rs.getString(DBUtil.COLUMN_COURCES_NOTES));
-                cource.setCourceCode(rs.getString(DBUtil.COLUMN_COURCES_CODE));
-                cource.setCourceCreatedDate(rs.getDate(DBUtil.COLUMN_COURCES_CREATED_DATE));
+                cource.setCourseCode(rs.getString(DBUtil.COLUMN_COURCES_CODE));
+                cource.setCourseCreatedDate(rs.getDate(DBUtil.COLUMN_COURCES_CREATED_DATE));
             }
             if (cource == null) {
                 throw new ObjectNotFoundException();
@@ -175,33 +175,33 @@ public class CourceServiceImpl implements CourceService {
     }
 
     @Override
-    public Cource getCourceByName(String corceName) throws ObjectNotFoundException {
+    public Course getCourceByName(String corceName) throws ObjectNotFoundException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public List<Cource> getAllCourcesByConcentrationId(int concentrationId) {
+    public List<Course> getAllCourcesByConcentrationId(int concentrationId) {
 
         Connection con = null;
         PreparedStatement pstm = null;
         ResultSet rs = null;
-        List<Cource> cources = new ArrayList<>();
+        List<Course> cources = new ArrayList<>();
         try {
-            Cource cource;
+            Course cource;
             int pos = 1;
             con = AppConnectionPool.getConnection();
             pstm = con.prepareStatement(AppQueryReader.getDBQuery("com.ucm.services.impl.courceservice.getcourcebyconcentrationid"));
             pstm.setInt(pos, concentrationId);
             rs = pstm.executeQuery();
             while (rs.next()) {
-                cource = new Cource();
+                cource = new Course();
                 cource.setId(rs.getInt(DBUtil.COLUMN_COURCES_ID));
-                cource.setCourceName(rs.getString(DBUtil.COLUMN_COURCES_NAME));
-                cource.setCourcePrefix(rs.getString(DBUtil.COLUMN_COURCES_PREFIX));
-                cource.setCourceStatus(rs.getString(DBUtil.COLUMN_COURCES_STATUS));
+                cource.setCourseName(rs.getString(DBUtil.COLUMN_COURCES_NAME));
+                cource.setCoursePrefix(rs.getString(DBUtil.COLUMN_COURCES_PREFIX));
+                cource.setCourseStatus(rs.getString(DBUtil.COLUMN_COURCES_STATUS));
                 cource.setNotes(rs.getString(DBUtil.COLUMN_COURCES_NOTES));
-                cource.setCourceCode(rs.getString(DBUtil.COLUMN_COURCES_CODE));
-                cource.setCourceCreatedDate(rs.getDate(DBUtil.COLUMN_COURCES_CREATED_DATE));
+                cource.setCourseCode(rs.getString(DBUtil.COLUMN_COURCES_CODE));
+                cource.setCourseCreatedDate(rs.getDate(DBUtil.COLUMN_COURCES_CREATED_DATE));
                 cources.add(cource);
             }
         } catch (SQLException ex) {

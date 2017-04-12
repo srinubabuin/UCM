@@ -3,12 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package com.ucm.services;
 
 import com.ucm.exception.ConstraintVilationException;
 import com.ucm.exception.ObjectNotFoundException;
 import com.ucm.model.Student;
+import java.util.ArrayList;
 
 import java.util.List;
 
@@ -24,7 +24,11 @@ public interface StudentService {
 
     public Student getStudentByName(String studentName);
 
-    public List<Student> getAllStudents();
+    default List<Student> getAllStudents() {
+        return new ArrayList();
+    }
+
+    public List<Student> getAllStudents(String whereCondition);
 
     public int updateStudentQuestionnaires(Student student) throws ObjectNotFoundException;
 

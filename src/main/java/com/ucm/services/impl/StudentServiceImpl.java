@@ -207,17 +207,22 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public List<Student> getAllStudents() {
+    public List<Student> getAllStudents(String whereCondition) {
         Connection con = null;
         PreparedStatement pstm = null;
         ResultSet rs = null;
         List<Student> students = null;
+        String querySring;
         try {
             int pos = 1;
             Student student;
             students = new ArrayList<>();
+            querySring = AppQueryReader.getDBQuery("com.ucm.services.impl.studentservice.getallstudents");
+            if (whereCondition != null) {
+                querySring = querySring + " " + whereCondition;
+            }
             con = AppConnectionPool.getConnection();
-            pstm = con.prepareStatement(AppQueryReader.getDBQuery("com.ucm.services.impl.studentservice.getallstudents"));
+            pstm = con.prepareStatement(querySring);
             rs = pstm.executeQuery();
             while (rs.next()) {
                 student = new Student();

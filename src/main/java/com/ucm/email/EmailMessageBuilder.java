@@ -34,10 +34,10 @@ public class EmailMessageBuilder {
                 .replaceAll("@CONCENTRATION@", student.getConcentration().getConcentrationName())
                 .replaceAll("@ID@", appUser.getLoginId())
                 .replaceAll("@PASSWORD@", decryptor.decrypt(appUser.getPassword()))
-                .replaceAll("@URL@", ApplicationUtil.appUrl);
+                .replaceAll("@URL@", emailProps.getProperty("appurl"));
         appMail.setMessage(message);
         appMail.setSubject(emailProps.getProperty("com.app.user.mail.subject"));
-        appMail.setToEmail(student.getEmail());
+        appMail.setToEmail(student.getSecondaryEmail());
         }catch(AppException | EncryptedTokenNotValidExcepton ae){
             LOGGER.log(Priority.ERROR, "Error while building the email message in getStudentLoginDetails method"+ae.getMessage(), ae);
         }

@@ -7,22 +7,22 @@ package com.ucm.services;
 
 import com.ucm.exception.ConstraintVilationException;
 import com.ucm.exception.ObjectNotFoundException;
-import com.ucm.model.Cource;
+import com.ucm.model.Course;
 import java.util.List;
 
 public interface CourceService {
 
-    public int addCource(Cource cource) throws ConstraintVilationException;
+    public int addCource(Course cource) throws ConstraintVilationException;
 
-    public int modifyCource(Cource cource) throws ObjectNotFoundException, ConstraintVilationException;
+    public int modifyCource(Course cource) throws ObjectNotFoundException, ConstraintVilationException;
 
     public int deleteCource(int courceId) throws ObjectNotFoundException;
 
-    public List<Cource> getAllCources();
+    public List<Course> getAllCources();
 
-    public Cource getCourceById(int courceId) throws ObjectNotFoundException;
+    public Course getCourceById(int courceId) throws ObjectNotFoundException;
 
-    public Cource getCourceByName(String corceName) throws ObjectNotFoundException;
+    public Course getCourceByName(String corceName) throws ObjectNotFoundException;
     
-    public List<Cource> getAllCourcesByConcentrationId(int concentrationId);
+    public List<Course> getAllCourcesByConcentrationId(int concentrationId);
 }
