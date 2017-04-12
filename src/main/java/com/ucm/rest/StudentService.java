@@ -126,6 +126,22 @@ public class StudentService {
         }
     }
 
+    @GET
+    @Path("/codeOfConductNotCompleted")
+    @Consumes({"application/json"})
+    @Produces({"application/json"})
+    public Response codeOfConductNotAcceptedStudents() {
+
+        try {
+            StudentServiceHelper helper = new StudentServiceHelper();
+            List<Student> students = helper.codeOfConductNotAcceptedStudents();
+            return Response.ok().header("Access-Control-Allow-Origin", "*").entity(students).build();
+        } catch (Exception e) {
+            LOGGER.info("Get student wit id error");
+            return Response.status(405).header("Access-Control-Allow-Origin", "*").build();
+        }
+    }
+
     @PUT
     @Path("/updateQuestionnaire")
     @Consumes({"application/json"})

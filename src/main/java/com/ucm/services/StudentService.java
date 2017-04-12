@@ -31,4 +31,6 @@ public interface StudentService {
     public int updatePrerequisite(Student student) throws ObjectNotFoundException;
 
     public int updateNotes(Student student) throws ObjectNotFoundException;
+
+    public List<Student> codeOfConductNotAcceptedStudents();
 }

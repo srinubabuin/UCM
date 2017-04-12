@@ -83,6 +83,11 @@ public class StudentServiceHelper {
         return new StudentServiceImpl().getAllStudents();
     }
 
+    public List<Student> codeOfConductNotAcceptedStudents() {
+
+        return new StudentServiceImpl().codeOfConductNotAcceptedStudents();
+    }
+
     public Student getStudentById(int studentId) {
 
         return new StudentServiceImpl().getStudent(String.valueOf(studentId), "id");

@@ -369,4 +369,54 @@ public class StudentServiceImpl implements StudentService {
         }
         return studentUpdateCount;
     }
+
+    @Override
+    public List<Student> codeOfConductNotAcceptedStudents() {
+        Connection con = null;
+        PreparedStatement pstm = null;
+        ResultSet rs = null;
+        List<Student> students = null;
+        try {
+            int pos = 1;
+            Student student;
+            students = new ArrayList<>();
+            con = AppConnectionPool.getConnection();
+            pstm = con.prepareStatement(AppQueryReader.getDBQuery("com.ucm.services.impl.studentservice.codeofconductnotacceptedstudents"));
+            rs = pstm.executeQuery();
+            while (rs.next()) {
+                student = new Student();
+                Concentration concentration = new Concentration();
+                concentration.setId(rs.getInt(DBUtil.COLUMN_STUDENTS_CONCENTRATION_ID));
+                concentration.setConcentrationName(rs.getString(DBUtil.COLUMN_STUDENTS_CON_NAME));
+                concentration.setConcentrationStatus(rs.getString(DBUtil.COLUMN_STUDENTS_CON_STATUS));
+                concentration.setConcentrationCreatedDate(rs.getDate(DBUtil.COLUMN_STUDENTS_CON_CREATED_DATE));
+                concentration.setNotes(rs.getString(DBUtil.COLUMN_STUDENTS_CON_NOTES));
+                student.setConcentration(concentration);
+                student.setId(rs.getInt(DBUtil.COLUMN_STUDENTS_ID));
+                student.setLoginId(rs.getString(DBUtil.COLUMN_STUDENTS_LOGIN_ID));
+                student.setFirstName(rs.getString(DBUtil.COLUMN_STUDENTS_FIRST_NAME));
+                student.setLastName(rs.getString(DBUtil.COLUMN_STUDENTS_LAST_NAME));
+                student.setEmail(rs.getString(DBUtil.COLUMN_STUDENTS_MAIL));
+                student.setSecondaryEmail(rs.getString(DBUtil.COLUMN_STUDENTS_SECONDARYEMAIL));
+                student.setPhoneNumber(rs.getString(DBUtil.COLUMN_STUDENTS_PHONE));
+                student.setAddress(rs.getString(DBUtil.COLUMN_STUDENTS_ADDRESS));
+                student.setScores(rs.getString(DBUtil.COLUMN_STUDENTS_SCORES));
+                student.setStudentStatus(rs.getString(DBUtil.COLUMN_STUDENTS_STUDENTSTATUS));
+                student.setStudentStatusDate(rs.getDate(DBUtil.COLUMN_STUDENTS_STUDENTSTATUS_DATE));
+                student.setStatus(rs.getString(DBUtil.COLUMN_STUDENTS_STATUS));
+                student.setTestDetails(rs.getString(DBUtil.COLUMN_STUDENTS_TESTDETAILS));
+                student.setAcceptedCodeOfConduct(rs.getString(DBUtil.COLUMN_STUDENTS_ACCEPTEDCODEOFCONDUCT));
+                student.setPreReq(rs.getString(DBUtil.COLUMN_STUDENTS_PREREQS));
+                student.setNotes(rs.getString(DBUtil.COLUMN_STUDENTS_NOTES));
+                student.setNotesUpdated(rs.getTimestamp(DBUtil.COLUMN_STUDENTS_NOTES_UPDATED));
+                student.setCreatedDate(rs.getDate(DBUtil.COLUMN_STUDENTS_CREATED_DATE));
+                students.add(student);
+            }
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, "Exception in getStudentByName method with {1}", new Object[]{e.getMessage()});
+        } finally {
+            AppConnectionPool.release(rs, pstm, con);
+        }
+        return students;
+    }
 }

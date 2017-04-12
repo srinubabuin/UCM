@@ -472,6 +472,18 @@ function loadStudentLyt(cellObj) {
         $(_this.detailsCellObj).find("button[name=addStudent]").click(function () {
             _this.showAddStudentForm(_this.detailsCellObj);
         });
+        $(_this.detailsCellObj).find("button[name=allStudents]").click(function () {
+            $(_this.detailsCellObj).find("button[name=allStudents]").hide();
+            $(_this.detailsCellObj).find("button[name=codeOfConduct]").show();
+            _this.loadStudentsGridData(studentsGrid);
+        });
+
+        $(_this.detailsCellObj).find("button[name=codeOfConduct]").click(function () {
+            $(_this.detailsCellObj).find("button[name=codeOfConduct]").hide();
+            $(_this.detailsCellObj).find("button[name=allStudents]").show();
+            _this.loadCodeOfConductNotCompletedStudents(studentsGrid);
+        });
+        $(_this.detailsCellObj).find("button[name=allStudents]").hide();
         _this.loadStudentsGridData(studentsGrid);
     };
 
@@ -493,6 +505,13 @@ function loadStudentLyt(cellObj) {
         gridObj.bootstrapTable("hideLoading");
     };
 
+    this.loadCodeOfConductNotCompletedStudents = function (gridObj) {
+        gridObj.bootstrapTable("showLoading");
+        var gridData = codeOfConductNotCompletedStudents() || [];
+        gridObj.bootstrapTable("load", gridData);
+        gridObj.bootstrapTable("hideLoading");
+    };
+
     this.getStudentDetailsToolbar = function () {
         var toolbarObj = document.createElement("div");
         toolbarObj.role = "toolbar";
@@ -502,8 +521,27 @@ function loadStudentLyt(cellObj) {
         addStudentButtonObj.type = "button";
         addStudentButtonObj.className = "btn btn-default";
         addStudentButtonObj.style.padding = "3px 6px";
+        addStudentButtonObj.style['margin-left'] = "5px";
         addStudentButtonObj.innerHTML = '<i class="glyphicon glyphicon-plus-sign icon-plus-sign"></i>';
+        var codeOfConductButtonObj = document.createElement("button");
+        codeOfConductButtonObj.name = "codeOfConduct";
+        codeOfConductButtonObj.title = "Code of Conduct not completed";
+        codeOfConductButtonObj.type = "button";
+        codeOfConductButtonObj.className = "btn btn-default";
+        codeOfConductButtonObj.style.padding = "3px 6px";
+        codeOfConductButtonObj.style['margin-left'] = "5px";
+        codeOfConductButtonObj.innerHTML = 'Code of Conduct not completed';
+        var allStudentsButtonObj = document.createElement("button");
+        allStudentsButtonObj.name = "allStudents";
+        allStudentsButtonObj.title = "All Students";
+        allStudentsButtonObj.type = "button";
+        allStudentsButtonObj.className = "btn btn-default";
+        allStudentsButtonObj.style.padding = "3px 6px";
+        allStudentsButtonObj.style['margin-left'] = "5px";
+        allStudentsButtonObj.innerHTML = 'All Students';
         toolbarObj.appendChild(addStudentButtonObj);
+        toolbarObj.appendChild(allStudentsButtonObj);
+        toolbarObj.appendChild(codeOfConductButtonObj);
         return toolbarObj;
     };
 
@@ -757,10 +795,13 @@ function getStudentDetailsGridObj(toolbarObj, confObj) {
         }, {
             title: "Name",
             field: "firstName",
-            align: "left"
+            align: "left",
+            formatter: function (value, row, index) {
+                return row.firstName + ' ' + row.lastName;
+            }
 
         }, {
-            title: "Mail",
+            title: "UCMO Email",
             field: "email",
             align: "left"
         }, {
@@ -801,6 +842,10 @@ function getStudentDetailsGridObj(toolbarObj, confObj) {
 
 function getAllStudents() {
     return appAjaxSync(appRestPath + "/student", "GET", "", "JSON");
+}
+
+function codeOfConductNotCompletedStudents() {
+    return appAjaxSync(appRestPath + "/student/codeOfConductNotCompleted", "GET", "", "JSON");
 }
 
 function getStudent(studentId) {

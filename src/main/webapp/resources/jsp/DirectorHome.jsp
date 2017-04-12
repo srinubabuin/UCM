@@ -290,13 +290,13 @@
             </div>
         </div>
         <div class="form-group">
-            <label class="col-sm-3 control-label required">Mail</label>
+            <label class="col-sm-3 control-label required">UCMO Email</label>
             <div class="col-sm-8">
                 <input type="text" name="mail" class="form-control" placeholder="example@ucmo.com">
             </div>
         </div>
         <div class="form-group">
-            <label class="col-sm-3 control-label required">Personal Mail</label>
+            <label class="col-sm-3 control-label required">Personal Email</label>
             <div class="col-sm-8">
                 <input type="text" name="personalMail" class="form-control" placeholder="example@example.com">
             </div>
