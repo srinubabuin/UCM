@@ -27,6 +27,7 @@ public class Student implements Serializable {
     private String acceptedCodeOfConduct;
     private String preReq = "notmet";
     private String notes;
+    private String programEntryTerm;
     private Date notesUpdated;
     private Date createdDate;
     private AppUser appUser;
@@ -165,6 +166,14 @@ public class Student implements Serializable {
 
     public void setNotes(String notes) {
         this.notes = notes;
+    }
+
+    public String getProgramEntryTerm() {
+        return programEntryTerm;
+    }
+
+    public void setProgramEntryTerm(String programEntryTerm) {
+        this.programEntryTerm = programEntryTerm;
     }
 
     public Date getNotesUpdated() {

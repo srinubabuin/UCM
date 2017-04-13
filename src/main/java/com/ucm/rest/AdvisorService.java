@@ -7,6 +7,7 @@ package com.ucm.rest;
 
 import com.app.util.RequestStatus;
 import com.ucm.model.Advisor;
+import com.ucm.model.AppUser;
 import com.ucm.service.helper.AdvisorServiceHelper;
 
 import java.util.List;
@@ -21,6 +22,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 
+import com.ucm.service.helper.UserServiceHelper;
 import org.apache.log4j.Logger;
 
 @Path("/advisor")
@@ -43,6 +45,23 @@ public class AdvisorService {
             return Response.status(405).header("Access-Control-Allow-Origin", "*").build();
         }
     }
+
+    @PUT
+    @Path("/director/{param}")
+    @Consumes({"application/json"})
+    @Produces({"application/json"})
+    public Response updateDirector(@PathParam("param") String direcorId, AppUser appUser) {
+        RequestStatus advisorResponseObj;
+        UserServiceHelper advisorServiceHelper;
+        try {
+            advisorServiceHelper = new UserServiceHelper();
+            advisorResponseObj = advisorServiceHelper.modifyUser(appUser);
+            return Response.ok().header("Access-Control-Allow-Origin", "*").entity(advisorResponseObj).build();
+        } catch (Exception nre) {
+            return Response.status(405).header("Access-Control-Allow-Origin", "*").build();
+        }
+    }
+
 
     @PUT
     @Path("/{param}")

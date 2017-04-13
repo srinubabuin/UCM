@@ -64,6 +64,8 @@ var studentInputDetails = {
         "type": "text"
     }, "concentration": {
         "type": "select"
+    }, "programEntryTerm": {
+        "type": "select"
     }, "mail": {
         "type": "text"
     }, "personalMail": {
@@ -212,6 +214,7 @@ function loadStudentSearchLyt(cellObj) {
                 if (response.testDetails) {
                     _this.showEditStudentSearchForm(_this.detailsCellObj, response);
                 } else {
+                    _this.showEditStudentSearchForm(_this.detailsCellObj, response);
                     $('span#errorMessage').html("Student with id \"" + studentId + "\" not yet completed Questionnaire");
                 }
             } else {
@@ -226,6 +229,7 @@ function loadStudentSearchLyt(cellObj) {
         if (!cellObj) {
             return;
         }
+        $('span#errorMessage').html("");
         var cellParent = cellObj.parentElement;
         for (var childCount = 1; childCount < cellParent.childElementCount; childCount++) {
             $(cellParent.childNodes[childCount]).remove();
@@ -269,6 +273,11 @@ function loadStudentSearchLyt(cellObj) {
         setStudentFormDetails(studentFormConfObj, studentSearch);
         setStudentQuestionnaireFormDetails(studentFormConfObj, studentSearch);
         _this.disableStudentSearchForm(studentFormConfObj);
+        if (!studentSearch.testDetails) {
+            $(studentSearchFormObj.elements["save"]).hide();
+            $(studentSearchFormObj.elements["next"]).hide();
+            $(studentSearchFormObj.elements["previous"]).hide();
+        }
     };
 
     this.disableStudentSearchForm = function (formConfObj) {
@@ -636,13 +645,13 @@ function loadStudentLyt(cellObj) {
     this.disableStudentEditForm = function (formConfObj) {
         var formObj = document.forms[formConfObj.name];
         for (var itemKey in studentInputDetails) {
-            if (studentFinalInputs.indexOf(itemKey) > -1) {
-                if (studentInputDetails[itemKey].type === "text") {
-                    $(formObj.elements[itemKey]).attr('readonly', 'true');
-                } else if (studentInputDetails[itemKey].type === "select") {
-                    $(formObj.elements[itemKey]).attr('disabled', 'true');
-                }
+            // if (studentFinalInputs.indexOf(itemKey) > -1) {
+            if (studentInputDetails[itemKey].type === "text") {
+                $(formObj.elements[itemKey]).attr('readonly', 'true');
+            } else if (studentInputDetails[itemKey].type === "select") {
+                $(formObj.elements[itemKey]).attr('disabled', 'true');
             }
+            // }
         }
     };
 
@@ -748,6 +757,7 @@ function loadStudentLyt(cellObj) {
             scores["analytical"] = formObj["analytical"].value;
             scores["gpa"] = formObj["gpa"].value;
             scores["notes"] = formObj["notes"].value;
+            student["programEntryTerm"] = formObj["programEntryTerm"].value;
             student["concentration"] = {
                 id: formObj["concentration"].value,
                 concentrationName: $(formObj["concentration"]).find(":selected").text()
@@ -806,47 +816,47 @@ function getStudentDetailsGridObj(toolbarObj, confObj) {
             "data-unique-id": "srNo"
         },
         columns: [{
-                title: "#",
-                field: "id",
-                align: "left",
-                formatter: function (value, row, index) {
-                    return (index + 1);
-                }
-            }, {
-                title: "700#",
-                field: "loginId",
-                align: "left"
-            }, {
-                title: "Name",
-                field: "firstName",
-                align: "left",
-                formatter: function (value, row, index) {
-                    return row.firstName + ' ' + row.lastName;
-                }
-
-            }, {
-                title: "UCMO Email",
-                field: "email",
-                align: "left"
-            }, {
-                title: "Phone #",
-                field: "phoneNumber",
-                align: "left"
-            }, {
-                title: "Notes",
-                field: "notes",
-                align: "left"
-            }, {
-                title: "Concentration",
-                field: "concentration.concentrationName",
-                align: "left"
-
-            }, {
-                title: "Entry Date",
-                field: "createdDate",
-                align: "left"
-
+            title: "#",
+            field: "id",
+            align: "left",
+            formatter: function (value, row, index) {
+                return (index + 1);
             }
+        }, {
+            title: "700#",
+            field: "loginId",
+            align: "left"
+        }, {
+            title: "Name",
+            field: "firstName",
+            align: "left",
+            formatter: function (value, row, index) {
+                return row.firstName + ' ' + row.lastName;
+            }
+
+        }, {
+            title: "UCMO Email",
+            field: "email",
+            align: "left"
+        }, {
+            title: "Phone #",
+            field: "phoneNumber",
+            align: "left"
+        }, {
+            title: "Notes",
+            field: "notes",
+            align: "left"
+        }, {
+            title: "Concentration",
+            field: "concentration.concentrationName",
+            align: "left"
+
+        }, {
+            title: "Entry Date",
+            field: "createdDate",
+            align: "left"
+
+        }
         ]
     };
     if (userRole !== "ADVISOR") {
@@ -1205,52 +1215,52 @@ function getAdvisorDetailsGridObj(toolbarObj, confObj) {
             "data-unique-id": "srNo"
         },
         columns: [{
-                title: "#",
-                field: "srNo",
-                align: "left",
-                formatter: function (value, row, index) {
-                    return (index + 1);
+            title: "#",
+            field: "srNo",
+            align: "left",
+            formatter: function (value, row, index) {
+                return (index + 1);
+            }
+        }, {
+            title: "700#",
+            field: "loginId",
+            align: "left"
+        }, {
+            title: "Name",
+            field: "name",
+            align: "left"
+        }, {
+            title: "Mail",
+            field: "email",
+            align: "left"
+        }, {
+            title: "Concentration",
+            field: "concentration",
+            align: "left",
+            formatter: function (value, row, index) {
+                if (value && value.concentrationName) {
+                    return value.concentrationName;
                 }
-            }, {
-                title: "700#",
-                field: "loginId",
-                align: "left"
-            }, {
-                title: "Name",
-                field: "name",
-                align: "left"
-            }, {
-                title: "Mail",
-                field: "email",
-                align: "left"
-            }, {
-                title: "Concentration",
-                field: "concentration",
-                align: "left",
-                formatter: function (value, row, index) {
-                    if (value && value.concentrationName) {
-                        return value.concentrationName;
-                    }
-                    return '';
-                }
-            }, {
-                title: "Status",
-                field: "status",
-                align: "left"
-            }, {
-                title: "Operate",
-                field: "operate",
-                align: 'center',
-                events: confObj.me.operateEvent(),
-                formatter: [
-                    '<button class="advisorEdit" title="Edit">',
-                    '<i class="glyphicon glyphicon-pencil icon-pencil"></i>',
-                    '</button>  ',
-                    '<button class="advisorRemove" title="Remove">',
-                    '<i class="glyphicon glyphicon-remove-sign icon-remove-sign"></i>',
-                    '</button>'
-                ].join('')
-            }]
+                return '';
+            }
+        }, {
+            title: "Status",
+            field: "status",
+            align: "left"
+        }, {
+            title: "Operate",
+            field: "operate",
+            align: 'center',
+            events: confObj.me.operateEvent(),
+            formatter: [
+                '<button class="advisorEdit" title="Edit">',
+                '<i class="glyphicon glyphicon-pencil icon-pencil"></i>',
+                '</button>  ',
+                '<button class="advisorRemove" title="Remove">',
+                '<i class="glyphicon glyphicon-remove-sign icon-remove-sign"></i>',
+                '</button>'
+            ].join('')
+        }]
     };
     return advisorDetailsConfobj;
 }
@@ -1599,51 +1609,51 @@ function getConcentrationDetailsGridObj(toolbarObj, confObj) {
             "data-unique-id": "srNo"
         },
         columns: [{
-                title: "#",
-                field: "srNo",
-                align: "left",
-                formatter: function (value, row, index) {
-                    return (index + 1);
-                }
-            }, {
-                title: "Name",
-                field: "concentrationName",
-                align: "left"
-            }, {
-                title: "Courses",
-                field: "courses",
-                align: "left",
-                formatter: function (value, row, index) {
-                    var courseNames = [];
-                    if (value && value.length) {
-                        for (var i = 0; i < value.length; i++) {
-                            courseNames.push(value[i].courseName + " (" + value[i].coursePrefix + ", " + value[i].courseCode + ")");
-                        }
+            title: "#",
+            field: "srNo",
+            align: "left",
+            formatter: function (value, row, index) {
+                return (index + 1);
+            }
+        }, {
+            title: "Name",
+            field: "concentrationName",
+            align: "left"
+        }, {
+            title: "Courses",
+            field: "courses",
+            align: "left",
+            formatter: function (value, row, index) {
+                var courseNames = [];
+                if (value && value.length) {
+                    for (var i = 0; i < value.length; i++) {
+                        courseNames.push(value[i].courseName + " (" + value[i].coursePrefix + ", " + value[i].courseCode + ")");
                     }
-                    return courseNames.join(', ');
                 }
-            }, {
-                title: "Notes",
-                field: "notes",
-                align: "left"
-            }, {
-                title: "Status",
-                field: "concentrationStatus",
-                align: "left"
-            }, {
-                title: "Operate",
-                field: "operate",
-                align: 'center',
-                events: confObj.me.operateEvent(),
-                formatter: [
-                    '<button class="concentrationEdit" title="Edit">',
-                    '<i class="glyphicon glyphicon-pencil icon-pencil"></i>',
-                    '</button>  ',
-                    '<button class="concentrationRemove" title="Remove">',
-                    '<i class="glyphicon glyphicon-remove-sign icon-remove-sign"></i>',
-                    '</button>'
-                ].join('')
-            }]
+                return courseNames.join(', ');
+            }
+        }, {
+            title: "Notes",
+            field: "notes",
+            align: "left"
+        }, {
+            title: "Status",
+            field: "concentrationStatus",
+            align: "left"
+        }, {
+            title: "Operate",
+            field: "operate",
+            align: 'center',
+            events: confObj.me.operateEvent(),
+            formatter: [
+                '<button class="concentrationEdit" title="Edit">',
+                '<i class="glyphicon glyphicon-pencil icon-pencil"></i>',
+                '</button>  ',
+                '<button class="concentrationRemove" title="Remove">',
+                '<i class="glyphicon glyphicon-remove-sign icon-remove-sign"></i>',
+                '</button>'
+            ].join('')
+        }]
     };
     return concentrationDetailsConfobj;
 }
@@ -1951,46 +1961,46 @@ function getCourseDetailsGridObj(toolbarObj, confObj) {
             "data-unique-id": "srNo"
         },
         columns: [{
-                title: "#",
-                field: "srNo",
-                align: "left",
-                formatter: function (value, row, index) {
-                    return (index + 1);
-                }
-            }, {
-                title: "Name",
-                field: "courseName",
-                align: "left"
-            }, {
-                title: "Prefix",
-                field: "coursePrefix",
-                align: "left"
-            }, {
-                title: "Code",
-                field: "courseCode",
-                align: "left"
-            }, {
-                title: "Notes",
-                field: "notes",
-                align: "left"
-            }, {
-                title: "Status",
-                field: "courseStatus",
-                align: "left"
-            }, {
-                title: "Operate",
-                field: "operate",
-                align: 'center',
-                events: confObj.me.operateEvent(),
-                formatter: [
-                    '<button class="courseEdit" title="Edit">',
-                    '<i class="glyphicon glyphicon-pencil icon-pencil"></i>',
-                    '</button>  ',
-                    '<button class="courseRemove" title="Remove">',
-                    '<i class="glyphicon glyphicon-remove-sign icon-remove-sign"></i>',
-                    '</button>'
-                ].join('')
-            }]
+            title: "#",
+            field: "srNo",
+            align: "left",
+            formatter: function (value, row, index) {
+                return (index + 1);
+            }
+        }, {
+            title: "Name",
+            field: "courseName",
+            align: "left"
+        }, {
+            title: "Prefix",
+            field: "coursePrefix",
+            align: "left"
+        }, {
+            title: "Code",
+            field: "courseCode",
+            align: "left"
+        }, {
+            title: "Notes",
+            field: "notes",
+            align: "left"
+        }, {
+            title: "Status",
+            field: "courseStatus",
+            align: "left"
+        }, {
+            title: "Operate",
+            field: "operate",
+            align: 'center',
+            events: confObj.me.operateEvent(),
+            formatter: [
+                '<button class="courseEdit" title="Edit">',
+                '<i class="glyphicon glyphicon-pencil icon-pencil"></i>',
+                '</button>  ',
+                '<button class="courseRemove" title="Remove">',
+                '<i class="glyphicon glyphicon-remove-sign icon-remove-sign"></i>',
+                '</button>'
+            ].join('')
+        }]
     };
     return courseDetailsConfobj;
 }
@@ -2361,7 +2371,7 @@ function loadStudentQuestionnaireLyt(cellObj) {
 
 function getStudentQuestionnaireFormDetails(formName) {
     var formObj = document.forms[formName],
-            itemObj, questionnaireDetailsObj = {};
+        itemObj, questionnaireDetailsObj = {};
 
     for (var itemKey in questionnaireInputDetails) {
         itemObj = formObj[itemKey];
@@ -2438,6 +2448,7 @@ function setStudentFormDetails(formConfObj, details) {
     $(studentFormObj.elements["searchNotes"]).val(details.notes || "");
     $(studentFormObj.elements["studentPrerequisite"]).val(details.preReq || "notmet");
     $(studentFormObj.elements["notes"]).val(details.notes || "");
+    $(studentFormObj.elements["programEntryTerm"]).val(details.programEntryTerm || "");
 }
 
 function setStudentQuestionnaireFormDetails(formConfObj, details) {
@@ -2483,19 +2494,19 @@ function getStudentQuestionnaireFormValidationObj() {
 
 function onViewCodeOfConductClick() {
     var codeOfConductMsg = '<b>The students, faculty and staff of the Adrian and Margaret Harmon College of Business Administration, working together to create a supportive and ethical educational environment, adopt the following guiding principles.' +
-            '</br>' +
-            '</br>' +
-            'We recognize and support the Central Community Creed.' +
-            '</br>' +
-            '</br>' +
-            'In addition, we believe that:' +
-            '<li>We are responsible for acting in a way that preserves academic honesty, freedom and integrity; </li>' +
-            '<li> We endeavor to foster a sense of personal responsibility for our actions and continuing education; </li>' +
-            '<li> We behave in a manner which encourages ethical behavior; </li>' +
-            '<li> We are personally responsible for acquiring and maintaining professional competence; </li>' +
-            '<li> We appreciate the impacts and benefits of diversity in race, religion gender, ethnicity, opinion, and ideas at UCM and in the workplace; </li>' +
-            '<li> We serve our community both by reaching our educational goals and by being proactive members of the community. </li>' +
-            '</b>';
+        '</br>' +
+        '</br>' +
+        'We recognize and support the Central Community Creed.' +
+        '</br>' +
+        '</br>' +
+        'In addition, we believe that:' +
+        '<li>We are responsible for acting in a way that preserves academic honesty, freedom and integrity; </li>' +
+        '<li> We endeavor to foster a sense of personal responsibility for our actions and continuing education; </li>' +
+        '<li> We behave in a manner which encourages ethical behavior; </li>' +
+        '<li> We are personally responsible for acquiring and maintaining professional competence; </li>' +
+        '<li> We appreciate the impacts and benefits of diversity in race, religion gender, ethnicity, opinion, and ideas at UCM and in the workplace; </li>' +
+        '<li> We serve our community both by reaching our educational goals and by being proactive members of the community. </li>' +
+        '</b>';
     BootstrapDialog.show({
         type: BootstrapDialog.TYPE_INFO,
         title: 'Code of Conduct',

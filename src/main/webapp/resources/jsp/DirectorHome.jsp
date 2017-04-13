@@ -53,10 +53,10 @@
         <div class="form-group">
             <label class="col-sm-6 control-label required">Have you taken a course like this?</label>
             <div class="col-sm-6">
-                <label class="radio-inline"><input type="radio" value="yes" name="takenCource"
-                                                   onchange="onStudentQuestionnaireFormChange('takenCource')">Yes</label>
-                <label class="radio-inline"><input type="radio" value="no" name="takenCource"
-                                                   onchange="onStudentQuestionnaireFormChange('takenCource')"
+                <label class="radio-inline"><input type="radio" value="yes" name="takenCourse"
+                                                   onchange="onStudentQuestionnaireFormChange('takenCourse')">Yes</label>
+                <label class="radio-inline"><input type="radio" value="no" name="takenCourse"
+                                                   onchange="onStudentQuestionnaireFormChange('takenCourse')"
                                                    checked='checked'>No</label>
             </div>
         </div>
@@ -64,7 +64,7 @@
             <label class="col-sm-6 control-label">If so, at what school? What was the course prefix, number and
                 title?</label>
             <div class="col-sm-6">
-                <textarea name="takenCourceDesc" rows="3" class="form-control textarea-no-resize"></textarea>
+                <textarea name="takenCourseDesc" rows="3" class="form-control textarea-no-resize"></textarea>
             </div>
         </div>
         <div class="form-group">
@@ -286,6 +286,16 @@
             <div class="col-sm-8">
                 <select name="concentration" class="form-control">
                     <option value="-1">Select Concentration</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label required">Program Entry Term</label>
+            <div class="col-sm-8">
+                <select name="programEntryTerm" class="form-control">
+                    <option value="spring">Spring</option>
+                    <option value="summer">Summer</option>
+                    <option value="fall">Fall</option>
                 </select>
             </div>
         </div>

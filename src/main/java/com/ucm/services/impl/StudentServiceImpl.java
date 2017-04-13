@@ -41,37 +41,36 @@ public class StudentServiceImpl implements StudentService {
         int studentId = 0;
         try {
             int pos = 1;
-            UserLoginService userService = new UserLoginServiceImpl();
             AppUser appUser = ApplicationUtil.getUserLoginDetails();
-            int loginId = userService.insertUser(appUser);
-            if (loginId > 0) {
-                con = AppConnectionPool.getConnection();
-                pstm = con.prepareStatement(AppQueryReader.getDBQuery("com.ucm.services.impl.studentservice.addstudent"), new String[]{DBUtil.COLUMN_STUDENTS_ID});
-                pstm.setString(pos, appUser.getLoginId());
-                pstm.setString(++pos, student.getFirstName());
-                pstm.setString(++pos, student.getLastName());
-                pstm.setString(++pos, student.getEmail());
-                pstm.setString(++pos, student.getSecondaryEmail());
-                pstm.setString(++pos, student.getPhoneNumber());
-                pstm.setString(++pos, student.getAddress());
-                pstm.setString(++pos, student.getScores());
-                pstm.setInt(++pos, student.getConcentration().getId());
-                pstm.setString(++pos, student.getStudentStatus());
-                pstm.setTimestamp(++pos, new Timestamp(new Date().getTime()));
-                pstm.setString(++pos, student.getStatus());
-                pstm.setString(++pos, student.getTestDetails());
-                pstm.setString(++pos, student.getAcceptedCodeOfConduct());
-                pstm.setString(++pos, student.getNotes());
-                pstm.setTimestamp(++pos, new Timestamp(new Date().getTime()));
-                if (pstm.executeUpdate() > 0) {
-                    rs = pstm.getGeneratedKeys();
-                    rs.next();
-                    studentId = rs.getInt(1);
-                    AppEmail appMail = EmailMessageBuilder.getStudentLoginDetails(student, appUser);
-                    Runnable studentEmail = new EmailSenderThread(appMail);
-                    Thread emailthread = new Thread(studentEmail);
-                    emailthread.start();
-                }
+            con = AppConnectionPool.getConnection();
+            pstm = con.prepareStatement(AppQueryReader.getDBQuery("com.ucm.services.impl.studentservice.addstudent"), new String[]{DBUtil.COLUMN_STUDENTS_ID});
+            pstm.setString(pos, appUser.getLoginId());
+            pstm.setString(++pos, student.getFirstName());
+            pstm.setString(++pos, student.getLastName());
+            pstm.setString(++pos, student.getEmail());
+            pstm.setString(++pos, student.getSecondaryEmail());
+            pstm.setString(++pos, student.getPhoneNumber());
+            pstm.setString(++pos, student.getAddress());
+            pstm.setString(++pos, student.getScores());
+            pstm.setInt(++pos, student.getConcentration().getId());
+            pstm.setString(++pos, student.getStudentStatus());
+            pstm.setTimestamp(++pos, new Timestamp(new Date().getTime()));
+            pstm.setString(++pos, student.getStatus());
+            pstm.setString(++pos, student.getTestDetails());
+            pstm.setString(++pos, student.getAcceptedCodeOfConduct());
+            pstm.setString(++pos, student.getNotes());
+            pstm.setTimestamp(++pos, new Timestamp(new Date().getTime()));
+            pstm.setString(++pos, student.getProgramEntryTerm());
+            if (pstm.executeUpdate() > 0) {
+                rs = pstm.getGeneratedKeys();
+                rs.next();
+                studentId = rs.getInt(1);
+                UserLoginService userService = new UserLoginServiceImpl();
+                int loginId = userService.insertUser(appUser);
+                AppEmail appMail = EmailMessageBuilder.getStudentLoginDetails(student, appUser);
+                Runnable studentEmail = new EmailSenderThread(appMail);
+                Thread emailthread = new Thread(studentEmail);
+                emailthread.start();
             }
         } catch (SQLException e) {
             LOGGER.log(Level.SEVERE, "Exception occured in addStudent method {0}", e.getMessage());
@@ -151,6 +150,7 @@ public class StudentServiceImpl implements StudentService {
                 student.setNotes(rs.getString(DBUtil.COLUMN_STUDENTS_NOTES));
                 student.setNotesUpdated(rs.getTimestamp(DBUtil.COLUMN_STUDENTS_NOTES_UPDATED));
                 student.setCreatedDate(rs.getDate(DBUtil.COLUMN_STUDENTS_CREATED_DATE));
+                student.setProgramEntryTerm(rs.getString(DBUtil.COLUMN_STUDENTS_PROGRAM_ENTRY_TERM));
             }
         } catch (SQLException e) {
             LOGGER.log(Level.SEVERE, "Exception in getStudentById method with studentId:{0} {1}", new Object[]{value, e.getMessage()});
@@ -197,6 +197,7 @@ public class StudentServiceImpl implements StudentService {
                 student.setAcceptedCodeOfConduct(rs.getString(DBUtil.COLUMN_STUDENTS_ACCEPTEDCODEOFCONDUCT));
                 student.setNotes(rs.getString(DBUtil.COLUMN_STUDENTS_NOTES));
                 student.setCreatedDate(rs.getDate(DBUtil.COLUMN_STUDENTS_CREATED_DATE));
+                student.setProgramEntryTerm(rs.getString(DBUtil.COLUMN_STUDENTS_PROGRAM_ENTRY_TERM));
             }
         } catch (SQLException e) {
             LOGGER.log(Level.SEVERE, "Exception in getStudentByName method with studentName:{0} {1}", new Object[]{studentName, e.getMessage()});
@@ -251,6 +252,7 @@ public class StudentServiceImpl implements StudentService {
                 student.setNotes(rs.getString(DBUtil.COLUMN_STUDENTS_NOTES));
                 student.setNotesUpdated(rs.getTimestamp(DBUtil.COLUMN_STUDENTS_NOTES_UPDATED));
                 student.setCreatedDate(rs.getDate(DBUtil.COLUMN_STUDENTS_CREATED_DATE));
+                student.setProgramEntryTerm(rs.getString(DBUtil.COLUMN_STUDENTS_PROGRAM_ENTRY_TERM));
                 students.add(student);
             }
         } catch (SQLException e) {
@@ -279,6 +281,7 @@ public class StudentServiceImpl implements StudentService {
             pstm.setString(++pos, student.getPreReq());
             pstm.setString(++pos, student.getStudentStatus());
             pstm.setTimestamp(++pos, new Timestamp(new Date().getTime()));
+            pstm.setString(++pos, student.getProgramEntryTerm());
             pstm.setInt(++pos, student.getId());
             advisorUpdateCount = pstm.executeUpdate();
             if (advisorUpdateCount <= 0) {

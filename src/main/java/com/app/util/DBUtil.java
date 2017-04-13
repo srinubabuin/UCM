@@ -67,6 +67,7 @@ public class DBUtil {
     public final static String COLUMN_STUDENTS_NOTES = "NOTES";
     public final static String COLUMN_STUDENTS_NOTES_UPDATED = "NOTES_UPDATED";
     public final static String COLUMN_STUDENTS_CREATED_DATE = "CREATED_DATE";
+    public final static String COLUMN_STUDENTS_PROGRAM_ENTRY_TERM = "PROGRAM_ENTRY_TERM";
     //student concentation alias
     public final static String COLUMN_STUDENTS_CON_NAME = "CON_NAME";
     public final static String COLUMN_STUDENTS_CON_STATUS = "CON_STATUS";

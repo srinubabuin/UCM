@@ -6,8 +6,13 @@
 package com.ucm.service.helper;
 
 import com.app.util.AppSessionUtil;
+import com.app.util.DBUtil;
+import com.app.util.RequestStatus;
+import com.ucm.exception.ConstraintVilationException;
 import com.ucm.exception.NoUserException;
 import com.ucm.model.AppUser;
+import com.ucm.services.UserLoginService;
+import com.ucm.services.impl.UserLoginServiceImpl;
 import com.user.service.UserService;
 import com.user.service.impl.UserServiceImpl;
 import org.apache.log4j.Logger;
@@ -67,5 +72,27 @@ public class UserServiceHelper {
         }
         String accessToken = authorization.substring("Bearer".length()).trim();
         AppSessionUtil.removeAuthoriztionUser(accessToken);
+    }
+
+    public RequestStatus modifyUser(AppUser appUser) {
+
+        RequestStatus response = new RequestStatus();
+        try {
+            UserLoginService userLoginService = new UserLoginServiceImpl();
+            int advId = userLoginService.modifyUser(appUser);
+            if (advId > 0) {
+                response.setSuccess(true);
+                response.setMessage("Advisor updated successfully.");
+                response.setId(advId);
+            } else {
+                response.setMessage("Advisor not updated.");
+                response.setId(advId);
+            }
+
+        } catch (Exception cve) {
+            response.setMessage(DBUtil.getCustomDBMessage(cve.getMessage()));
+            response.setId(0);
+        }
+        return response;
     }
 }
