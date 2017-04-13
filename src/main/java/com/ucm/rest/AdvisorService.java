@@ -62,6 +62,22 @@ public class AdvisorService {
         }
     }
 
+    @GET
+    @Path("/director/{param}")
+    @Consumes({"application/json"})
+    @Produces({"application/json"})
+    public Response getDirectorById(@PathParam("param") String loginId) {
+        UserServiceHelper advisorServiceHelper;
+        try {
+            advisorServiceHelper = new UserServiceHelper();
+            AppUser authUser = advisorServiceHelper.getUserByLoginId(loginId);
+
+            return Response.ok().header("Access-Control-Allow-Origin", "*").entity(authUser).build();
+        } catch (Exception ex) {
+            LOGGER.info("Error while fetching the advisor");
+            return Response.status(405).header("Access-Control-Allow-Origin", "*").build();
+        }
+    }
 
     @PUT
     @Path("/{param}")

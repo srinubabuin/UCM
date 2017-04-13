@@ -16,6 +16,8 @@ public interface UserService {
 
     public AppUser authUser(AppUser user) throws NoUserException;
 
+    public AppUser getUserByLoginId(String loginId) throws NoUserException;
+
     public AppUser getUserByAuthorization(String authorization) throws NoUserException;
 
     public boolean deleteAccessTokens(String authorization) throws NoUserException;

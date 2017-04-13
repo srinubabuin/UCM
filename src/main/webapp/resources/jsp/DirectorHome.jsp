@@ -451,6 +451,32 @@
             <button name="cancel" class="btn btn-primary" type="button">Cancel</button>
         </div>
     </div>
+    <div id="directorFormTpl">
+        <div class="form-group">
+            <label class="col-sm-3 control-label required">Login Id</label>
+            <div class="col-sm-8">
+                <input type="text" name="loginId" class="form-control" placeholder="Login Id">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label required">Password</label>
+            <div class="col-sm-8">
+                <input type="password" name="password" class="form-control" placeholder="Password">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label required">Reenter Password</label>
+            <div class="col-sm-8">
+                <input type="password" name="rePassword" class="form-control" placeholder="Reenter Password">
+            </div>
+        </div>
+        <input type="hidden" name="id" value="-1">
+        <div class="col-sm-12 text-center">
+            <button name="edit" class="btn btn-warning" type="button">Edit</button>
+            <button name="save" class="btn btn-success" type="button">Save</button>
+            <button name="cancel" class="btn btn-primary" type="button">Cancel</button>
+        </div>
+    </div>
     <div id="concentrationFormTpl">
         <div class="form-group">
             <label class="col-sm-3 control-label required">Concentration Name</label>
@@ -597,6 +623,11 @@
                 </li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
+                                <li itemId="COURSES">
+                    <a href="javascript:void(0);" onclick="onMainNavItemClick('PROFILE')" title="Profile">
+                        Profile
+                    </a>
+                </li>
                 <li>
                     <a href="javascript:void(0);" onclick="onMainNavItemClick('LOGOUT')" title="Logout">
                         <!--Logout-->
@@ -623,6 +654,7 @@
         window.location.href = "<%=request.getContextPath()%>/resources/jsp/AppLogin.jsp";
     }
     function doOnLoad() {
+        loginUser = getDirector(loginId);
         console.log(accessToken);
         console.log(userRole);
         appManagerLytObj = getMainLayoutObj();

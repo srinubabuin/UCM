@@ -114,4 +114,30 @@ public class UserServiceImpl implements UserService {
         return !(AppSessionUtil.removeAuthoriztionUser(authorization) == null);
     }
 
+    @Override
+    public AppUser getUserByLoginId(String loginId) throws NoUserException {
+        Connection con = null;
+        PreparedStatement pstm = null;
+        ResultSet rs = null;
+        AppUser appUser = null;
+        try {
+            con = AppConnectionPool.getConnection();
+            pstm = con.prepareStatement("SELECT * FROM USERS WHERE LOGIN_ID = ?");
+            pstm.setString(1, loginId);
+            rs = pstm.executeQuery();
+            if (rs.next()) {
+                appUser = new AppUser();
+                appUser.setId(rs.getInt(DBUtil.COLUMN_USERS_ID));
+                appUser.setLoginId(rs.getString(DBUtil.COLUMN_USERS_LOGIN_ID));
+                appUser.setPassword(rs.getString(DBUtil.COLUMN_USERS_PASSWORD));
+                appUser.setRole(Role.valueOf(rs.getString(DBUtil.COLUMN_USERS_ROLE)));
+            }
+        } catch (SQLException ex) {
+            System.out.println("Exception in isUserExists " + ex.getMessage());
+        } finally {
+            AppConnectionPool.release(rs, pstm, con);
+        }
+        return appUser;
+    }
+
 }

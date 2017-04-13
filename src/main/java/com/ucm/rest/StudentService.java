@@ -191,6 +191,22 @@ public class StudentService {
     }
 
     @GET
+    @Path("/concentration/codeOfConductCompleted/{param}")
+    @Consumes({"application/json"})
+    @Produces({"application/json"})
+    public Response codeOfConductCompletedByConcentration(@PathParam("param") int concentrationId) {
+
+        try {
+            StudentServiceHelper helper = new StudentServiceHelper();
+            List<Student> students = helper.codeOfConductCompletedStudentsByConcentration(concentrationId);
+            return Response.ok().header("Access-Control-Allow-Origin", "*").entity(students).build();
+        } catch (Exception e) {
+            LOGGER.info("Get student wit id error");
+            return Response.status(405).header("Access-Control-Allow-Origin", "*").build();
+        }
+    }
+
+    @GET
     @Path("/concentration/studentNotes/{param}")
     @Consumes({"application/json"})
     @Produces({"application/json"})

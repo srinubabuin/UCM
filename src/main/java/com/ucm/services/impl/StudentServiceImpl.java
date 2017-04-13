@@ -275,13 +275,21 @@ public class StudentServiceImpl implements StudentService {
 
             con = AppConnectionPool.getConnection();
             pstm = con.prepareStatement(AppQueryReader.getDBQuery("com.ucm.services.impl.studentservice.modifystudent"));
-            pstm.setInt(pos, student.getConcentration().getId());
+            pstm.setString(pos, student.getFirstName());
+            pstm.setString(++pos, student.getLastName());
+            pstm.setInt(++pos, student.getConcentration().getId());
             pstm.setString(++pos, student.getEmail());
             pstm.setString(++pos, student.getSecondaryEmail());
+            pstm.setString(++pos, student.getPhoneNumber());
+            pstm.setString(++pos, student.getAddress());
+            pstm.setString(++pos, student.getScores());
             pstm.setString(++pos, student.getPreReq());
             pstm.setString(++pos, student.getStudentStatus());
             pstm.setTimestamp(++pos, new Timestamp(new Date().getTime()));
+            pstm.setString(++pos, student.getStatus());
             pstm.setString(++pos, student.getProgramEntryTerm());
+            pstm.setString(++pos, student.getNotes());
+            pstm.setTimestamp(++pos, new Timestamp(new Date().getTime()));
             pstm.setInt(++pos, student.getId());
             advisorUpdateCount = pstm.executeUpdate();
             if (advisorUpdateCount <= 0) {
@@ -291,8 +299,8 @@ public class StudentServiceImpl implements StudentService {
         } catch (SQLIntegrityConstraintViolationException e) {
 //            LOGGER.log(Priority.ERROR, "Exception while updating advisor method modifyAdvisor " + e.getMessage());
             throw new ConstraintVilationException(e.getMessage());
-        } catch (SQLException se) {
-//            LOGGER.log(Priority.ERROR, "Exception while updating advisor method modifyAdvisor " + se.getMessage());
+        } catch (Exception se) {
+            se.printStackTrace();
         } finally {
             AppConnectionPool.release(rs, pstm, con);
         }

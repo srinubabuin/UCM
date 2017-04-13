@@ -101,6 +101,10 @@ public class StudentServiceHelper {
 
         return new StudentServiceImpl().getAllStudents("WHERE STU.CONCENTRATION_ID = " + concentrationId + " AND STU.ACCEPTEDCODEOFCONDUCT IS NULL");
     }
+    
+    public List<Student> codeOfConductCompletedStudentsByConcentration(int concentrationId) {
+        return new StudentServiceImpl().getAllStudents("WHERE STU.CONCENTRATION_ID = " + concentrationId + " AND STU.ACCEPTEDCODEOFCONDUCT IS NOT NULL");
+    }
 
     public List<Student> getAllStudentNotesByConcentration(int concentrationId) {
 

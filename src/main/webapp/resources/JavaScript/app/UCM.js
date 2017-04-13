@@ -127,6 +127,9 @@ function onMainNavItemClick(itemId) {
     } else if (itemId === "COURSES") {
         appManagerLytObj.module = itemId;
         courseLytObj = new loadCourseLyt(appManagerLytObj.domObj);
+    } else if (itemId === "PROFILE") {
+        appManagerLytObj.module = itemId;
+        advisorProfileLytObj = new loadDirectorProfileLyt(appManagerLytObj.domObj);
     } else if (itemId === "LOGOUT") {
         doLogout();
     }
@@ -522,7 +525,7 @@ function loadStudentLyt(cellObj) {
 
     this.loadCodeOfConductNotCompletedStudents = function (gridObj) {
         gridObj.bootstrapTable("showLoading");
-        var students = userRole === "ADVISOR" ? codeOfConductNotCompletedStudentsByConcentration(concentrationId) : codeOfConductNotCompletedStudents();
+        var students = userRole === "ADVISOR" ? codeOfConductCompletedStudentsByConcentration(concentrationId) : codeOfConductNotCompletedStudents();
         var gridData = students || [];
         gridObj.bootstrapTable("load", gridData);
         gridObj.bootstrapTable("hideLoading");
@@ -554,7 +557,7 @@ function loadStudentLyt(cellObj) {
         codeOfConductButtonObj.className = "btn btn-default";
         codeOfConductButtonObj.style.padding = "3px 6px";
         codeOfConductButtonObj.style['margin-left'] = "5px";
-        codeOfConductButtonObj.innerHTML = 'Code of Conduct not completed';
+        codeOfConductButtonObj.innerHTML = userRole === "ADVISOR" ? 'Code of Conduct completed' : 'Code of Conduct not completed';
         var allStudentsButtonObj = document.createElement("button");
         allStudentsButtonObj.name = "allStudents";
         allStudentsButtonObj.title = "All Students";
@@ -639,7 +642,7 @@ function loadStudentLyt(cellObj) {
         $(studentFormObj.elements["cancel"]).click(function () {
             _this.onStudentFormBtnClick("cancel", studentFormConfObj);
         });
-        _this.disableStudentEditForm(studentFormConfObj);
+//        _this.disableStudentEditForm(studentFormConfObj);
     };
 
     this.disableStudentEditForm = function (formConfObj) {
@@ -816,47 +819,47 @@ function getStudentDetailsGridObj(toolbarObj, confObj) {
             "data-unique-id": "srNo"
         },
         columns: [{
-            title: "#",
-            field: "id",
-            align: "left",
-            formatter: function (value, row, index) {
-                return (index + 1);
+                title: "#",
+                field: "id",
+                align: "left",
+                formatter: function (value, row, index) {
+                    return (index + 1);
+                }
+            }, {
+                title: "700#",
+                field: "loginId",
+                align: "left"
+            }, {
+                title: "Name",
+                field: "firstName",
+                align: "left",
+                formatter: function (value, row, index) {
+                    return row.firstName + ' ' + row.lastName;
+                }
+
+            }, {
+                title: "UCMO Email",
+                field: "email",
+                align: "left"
+            }, {
+                title: "Phone #",
+                field: "phoneNumber",
+                align: "left"
+            }, {
+                title: "Notes",
+                field: "notes",
+                align: "left"
+            }, {
+                title: "Concentration",
+                field: "concentration.concentrationName",
+                align: "left"
+
+            }, {
+                title: "Entry Date",
+                field: "createdDate",
+                align: "left"
+
             }
-        }, {
-            title: "700#",
-            field: "loginId",
-            align: "left"
-        }, {
-            title: "Name",
-            field: "firstName",
-            align: "left",
-            formatter: function (value, row, index) {
-                return row.firstName + ' ' + row.lastName;
-            }
-
-        }, {
-            title: "UCMO Email",
-            field: "email",
-            align: "left"
-        }, {
-            title: "Phone #",
-            field: "phoneNumber",
-            align: "left"
-        }, {
-            title: "Notes",
-            field: "notes",
-            align: "left"
-        }, {
-            title: "Concentration",
-            field: "concentration.concentrationName",
-            align: "left"
-
-        }, {
-            title: "Entry Date",
-            field: "createdDate",
-            align: "left"
-
-        }
         ]
     };
     if (userRole !== "ADVISOR") {
@@ -905,6 +908,11 @@ function getStudentByConcentration(concentrationId) {
 function codeOfConductNotCompletedStudentsByConcentration(concentrationId) {
     return appAjaxSync(appRestPath + "/student/concentration/codeOfConductNotCompleted/" + concentrationId, "GET", "", "JSON");
 }
+
+function codeOfConductCompletedStudentsByConcentration(concentrationId) {
+    return appAjaxSync(appRestPath + "/student/concentration/codeOfConductCompleted/" + concentrationId, "GET", "", "JSON");
+}
+
 function getAllStudentNotesByConcentration(concentrationId) {
     return appAjaxSync(appRestPath + "/student/concentration/studentNotes/" + concentrationId, "GET", "", "JSON");
 }
@@ -944,6 +952,134 @@ function getStudentAndQuestionarieForm() {
 }
 
 /*Student Layout Ends*/
+
+/*director profile Layout Ends*/
+function loadDirectorProfileLyt(cellObj) {
+    this.lytConfObj = {
+        "pattern": "1C",
+        "parent": cellObj
+    };
+    this.lytObj = new appLayout(this.lytConfObj);
+    this.detailsCellObj = this.lytObj.cells.a.obj;
+    this.loadDirectorProfilesLyt = function () {
+        var _this = this;
+        clearAllElementsInDiv(_this.detailsCellObj);
+        _this.showEditDirectorProfileForm(_this.detailsCellObj, loginUser);
+    };
+
+    this.attachDirectorProfilesForm = function (cellObj, confObj) {
+        var directorProfileFormWrapObj = new attachForm(confObj);
+        directorProfileFormWrapObj.cell.form.innerHTML = getDirectorProfileForm();
+    };
+
+    this.showEditDirectorProfileForm = function (cellObj, directorProfile) {
+        var _this = this;
+
+        var directorProfileFormConfObj = {
+            "parent": cellObj,
+            "hdrText": "Profile",
+            "formType": "edit",
+            "name": "editdirectorProfile",
+            "id": "editdirectorProfile"
+        };
+        _this.attachDirectorProfilesForm(cellObj, directorProfileFormConfObj);
+        _this.setDirectorProfileFormDetails(directorProfileFormConfObj, loginUser);
+        var directorProfileFormObj = document.forms[directorProfileFormConfObj.name];
+        $(directorProfileFormObj.elements["save"]).hide();
+        $(directorProfileFormObj.elements["cancel"]).hide();
+        $(directorProfileFormObj.elements["save"]).click(function () {
+            _this.onDirectorProfileFormBtnClick("save", directorProfileFormConfObj);
+        });
+        $(directorProfileFormObj.elements["edit"]).click(function () {
+            _this.onDirectorProfileFormBtnClick("edit", directorProfileFormConfObj);
+        });
+        $(directorProfileFormObj.elements["cancel"]).click(function () {
+            _this.onDirectorProfileFormBtnClick("cancel", directorProfileFormConfObj);
+        });
+        // $(directorProfileFormObj.elements["reset"]).click(function () {
+        //     _this.onDirectorProfileFormBtnClick("reset", directorProfileFormConfObj);
+        // });
+//        $(directorProfileFormObj.elements["cancel"]).click(function () {
+//            _this.onDirectorProfileFormBtnClick("cancel", directorProfileFormConfObj);
+//        });
+        // _this.onDirectorProfileFormBtnClick("clearBtn", directorProfileFormConfObj);
+        _this.setDirectorFormnotEditable(directorProfileFormConfObj, true);
+    };
+
+    this.setDirectorProfileFormDetails = function (formConfObj, details) {
+        var directorProfileFormObj = document.forms[formConfObj.name];
+        $(directorProfileFormObj.elements["id"]).val(details.id);
+        $(directorProfileFormObj.elements["loginId"]).val(details.loginId);
+        $(directorProfileFormObj.elements["password"]).val(details.password);
+        $(directorProfileFormObj.elements["rePassword"]).val(details.password);
+    };
+
+    this.onDirectorProfileFormBtnClick = function (id, confObj) {
+
+        var _this = this;
+        var formName = confObj.name;
+        if (id === "save") {
+            var formObj = document.forms[formName];
+            if (formObj["password"].value !== formObj["rePassword"].value) {
+                return;
+            }
+            var directorProfile = {};
+            directorProfile["loginId"] = formObj["loginId"].value;
+            directorProfile["password"] = formObj["password"].value;
+            var response;
+            if (confObj.formType === "add") {
+
+            } else {
+                directorProfile["id"] = formObj["id"].value;
+                response = editDirector(directorProfile);
+            }
+            if (response && response.success) {
+                showMessage(response.message, "success");
+            } else {
+                showMessage(response.message, "success");
+            }
+        } else if (id === "edit") {
+            var formObj = document.forms[formName];
+            $(formObj.elements["edit"]).hide();
+            $(formObj.elements["save"]).show();
+            $(formObj.elements["cancel"]).show();
+            _this.setDirectorFormnotEditable(confObj, false);
+        } else if (id === "cancel") {
+            var formObj = document.forms[formName];
+            $(formObj.elements["edit"]).show();
+            $(formObj.elements["save"]).hide();
+            $(formObj.elements["cancel"]).hide();
+            _this.setDirectorFormnotEditable(confObj, true);
+//            _this.initDirectorProfilesGrid();
+        }
+    };
+
+    this.setDirectorFormnotEditable = function (formConfObj, readonly) {
+        var formObj = document.forms[formConfObj.name];
+        $(formObj.elements["loginId"]).attr('readonly', true);
+
+        $(formObj.elements["password"]).attr('readonly', readonly);
+        $(formObj.elements["rePassword"]).attr('readonly', readonly);
+
+    };
+
+
+    this.loadDirectorProfilesLyt();
+}
+
+function getDirectorProfileForm() {
+    var form = document.getElementById("directorFormTpl").innerHTML;
+    return form;
+}
+
+function getDirector(directorId) {
+    return appAjaxSync(appRestPath + "/advisor/director/" + directorId, "GET", "", "JSON");
+}
+
+function editDirector(director) {
+    return appAjaxSync(appRestPath + "/advisor/director/" + director.loginId, "PUT", JSON.stringify(director), "JSON");
+}
+/*director profile Layout Ends*/
 
 /*Advisor Layout Starts*/
 function loadAdvisorLyt(cellObj) {
@@ -1215,52 +1351,52 @@ function getAdvisorDetailsGridObj(toolbarObj, confObj) {
             "data-unique-id": "srNo"
         },
         columns: [{
-            title: "#",
-            field: "srNo",
-            align: "left",
-            formatter: function (value, row, index) {
-                return (index + 1);
-            }
-        }, {
-            title: "700#",
-            field: "loginId",
-            align: "left"
-        }, {
-            title: "Name",
-            field: "name",
-            align: "left"
-        }, {
-            title: "Mail",
-            field: "email",
-            align: "left"
-        }, {
-            title: "Concentration",
-            field: "concentration",
-            align: "left",
-            formatter: function (value, row, index) {
-                if (value && value.concentrationName) {
-                    return value.concentrationName;
+                title: "#",
+                field: "srNo",
+                align: "left",
+                formatter: function (value, row, index) {
+                    return (index + 1);
                 }
-                return '';
-            }
-        }, {
-            title: "Status",
-            field: "status",
-            align: "left"
-        }, {
-            title: "Operate",
-            field: "operate",
-            align: 'center',
-            events: confObj.me.operateEvent(),
-            formatter: [
-                '<button class="advisorEdit" title="Edit">',
-                '<i class="glyphicon glyphicon-pencil icon-pencil"></i>',
-                '</button>  ',
-                '<button class="advisorRemove" title="Remove">',
-                '<i class="glyphicon glyphicon-remove-sign icon-remove-sign"></i>',
-                '</button>'
-            ].join('')
-        }]
+            }, {
+                title: "700#",
+                field: "loginId",
+                align: "left"
+            }, {
+                title: "Name",
+                field: "name",
+                align: "left"
+            }, {
+                title: "Mail",
+                field: "email",
+                align: "left"
+            }, {
+                title: "Concentration",
+                field: "concentration",
+                align: "left",
+                formatter: function (value, row, index) {
+                    if (value && value.concentrationName) {
+                        return value.concentrationName;
+                    }
+                    return '';
+                }
+            }, {
+                title: "Status",
+                field: "status",
+                align: "left"
+            }, {
+                title: "Operate",
+                field: "operate",
+                align: 'center',
+                events: confObj.me.operateEvent(),
+                formatter: [
+                    '<button class="advisorEdit" title="Edit">',
+                    '<i class="glyphicon glyphicon-pencil icon-pencil"></i>',
+                    '</button>  ',
+                    '<button class="advisorRemove" title="Remove">',
+                    '<i class="glyphicon glyphicon-remove-sign icon-remove-sign"></i>',
+                    '</button>'
+                ].join('')
+            }]
     };
     return advisorDetailsConfobj;
 }
@@ -1609,51 +1745,51 @@ function getConcentrationDetailsGridObj(toolbarObj, confObj) {
             "data-unique-id": "srNo"
         },
         columns: [{
-            title: "#",
-            field: "srNo",
-            align: "left",
-            formatter: function (value, row, index) {
-                return (index + 1);
-            }
-        }, {
-            title: "Name",
-            field: "concentrationName",
-            align: "left"
-        }, {
-            title: "Courses",
-            field: "courses",
-            align: "left",
-            formatter: function (value, row, index) {
-                var courseNames = [];
-                if (value && value.length) {
-                    for (var i = 0; i < value.length; i++) {
-                        courseNames.push(value[i].courseName + " (" + value[i].coursePrefix + ", " + value[i].courseCode + ")");
-                    }
+                title: "#",
+                field: "srNo",
+                align: "left",
+                formatter: function (value, row, index) {
+                    return (index + 1);
                 }
-                return courseNames.join(', ');
-            }
-        }, {
-            title: "Notes",
-            field: "notes",
-            align: "left"
-        }, {
-            title: "Status",
-            field: "concentrationStatus",
-            align: "left"
-        }, {
-            title: "Operate",
-            field: "operate",
-            align: 'center',
-            events: confObj.me.operateEvent(),
-            formatter: [
-                '<button class="concentrationEdit" title="Edit">',
-                '<i class="glyphicon glyphicon-pencil icon-pencil"></i>',
-                '</button>  ',
-                '<button class="concentrationRemove" title="Remove">',
-                '<i class="glyphicon glyphicon-remove-sign icon-remove-sign"></i>',
-                '</button>'
-            ].join('')
-        }]
+            }, {
+                title: "Name",
+                field: "concentrationName",
+                align: "left"
+            }, {
+                title: "Courses",
+                field: "courses",
+                align: "left",
+                formatter: function (value, row, index) {
+                    var courseNames = [];
+                    if (value && value.length) {
+                        for (var i = 0; i < value.length; i++) {
+                            courseNames.push(value[i].courseName + " (" + value[i].coursePrefix + ", " + value[i].courseCode + ")");
+                        }
+                    }
+                    return courseNames.join(', ');
+                }
+            }, {
+                title: "Notes",
+                field: "notes",
+                align: "left"
+            }, {
+                title: "Status",
+                field: "concentrationStatus",
+                align: "left"
+            }, {
+                title: "Operate",
+                field: "operate",
+                align: 'center',
+                events: confObj.me.operateEvent(),
+                formatter: [
+                    '<button class="concentrationEdit" title="Edit">',
+                    '<i class="glyphicon glyphicon-pencil icon-pencil"></i>',
+                    '</button>  ',
+                    '<button class="concentrationRemove" title="Remove">',
+                    '<i class="glyphicon glyphicon-remove-sign icon-remove-sign"></i>',
+                    '</button>'
+                ].join('')
+            }]
     };
     return concentrationDetailsConfobj;
 }
@@ -1961,46 +2097,46 @@ function getCourseDetailsGridObj(toolbarObj, confObj) {
             "data-unique-id": "srNo"
         },
         columns: [{
-            title: "#",
-            field: "srNo",
-            align: "left",
-            formatter: function (value, row, index) {
-                return (index + 1);
-            }
-        }, {
-            title: "Name",
-            field: "courseName",
-            align: "left"
-        }, {
-            title: "Prefix",
-            field: "coursePrefix",
-            align: "left"
-        }, {
-            title: "Code",
-            field: "courseCode",
-            align: "left"
-        }, {
-            title: "Notes",
-            field: "notes",
-            align: "left"
-        }, {
-            title: "Status",
-            field: "courseStatus",
-            align: "left"
-        }, {
-            title: "Operate",
-            field: "operate",
-            align: 'center',
-            events: confObj.me.operateEvent(),
-            formatter: [
-                '<button class="courseEdit" title="Edit">',
-                '<i class="glyphicon glyphicon-pencil icon-pencil"></i>',
-                '</button>  ',
-                '<button class="courseRemove" title="Remove">',
-                '<i class="glyphicon glyphicon-remove-sign icon-remove-sign"></i>',
-                '</button>'
-            ].join('')
-        }]
+                title: "#",
+                field: "srNo",
+                align: "left",
+                formatter: function (value, row, index) {
+                    return (index + 1);
+                }
+            }, {
+                title: "Name",
+                field: "courseName",
+                align: "left"
+            }, {
+                title: "Prefix",
+                field: "coursePrefix",
+                align: "left"
+            }, {
+                title: "Code",
+                field: "courseCode",
+                align: "left"
+            }, {
+                title: "Notes",
+                field: "notes",
+                align: "left"
+            }, {
+                title: "Status",
+                field: "courseStatus",
+                align: "left"
+            }, {
+                title: "Operate",
+                field: "operate",
+                align: 'center',
+                events: confObj.me.operateEvent(),
+                formatter: [
+                    '<button class="courseEdit" title="Edit">',
+                    '<i class="glyphicon glyphicon-pencil icon-pencil"></i>',
+                    '</button>  ',
+                    '<button class="courseRemove" title="Remove">',
+                    '<i class="glyphicon glyphicon-remove-sign icon-remove-sign"></i>',
+                    '</button>'
+                ].join('')
+            }]
     };
     return courseDetailsConfobj;
 }
@@ -2371,7 +2507,7 @@ function loadStudentQuestionnaireLyt(cellObj) {
 
 function getStudentQuestionnaireFormDetails(formName) {
     var formObj = document.forms[formName],
-        itemObj, questionnaireDetailsObj = {};
+            itemObj, questionnaireDetailsObj = {};
 
     for (var itemKey in questionnaireInputDetails) {
         itemObj = formObj[itemKey];
@@ -2494,19 +2630,19 @@ function getStudentQuestionnaireFormValidationObj() {
 
 function onViewCodeOfConductClick() {
     var codeOfConductMsg = '<b>The students, faculty and staff of the Adrian and Margaret Harmon College of Business Administration, working together to create a supportive and ethical educational environment, adopt the following guiding principles.' +
-        '</br>' +
-        '</br>' +
-        'We recognize and support the Central Community Creed.' +
-        '</br>' +
-        '</br>' +
-        'In addition, we believe that:' +
-        '<li>We are responsible for acting in a way that preserves academic honesty, freedom and integrity; </li>' +
-        '<li> We endeavor to foster a sense of personal responsibility for our actions and continuing education; </li>' +
-        '<li> We behave in a manner which encourages ethical behavior; </li>' +
-        '<li> We are personally responsible for acquiring and maintaining professional competence; </li>' +
-        '<li> We appreciate the impacts and benefits of diversity in race, religion gender, ethnicity, opinion, and ideas at UCM and in the workplace; </li>' +
-        '<li> We serve our community both by reaching our educational goals and by being proactive members of the community. </li>' +
-        '</b>';
+            '</br>' +
+            '</br>' +
+            'We recognize and support the Central Community Creed.' +
+            '</br>' +
+            '</br>' +
+            'In addition, we believe that:' +
+            '<li>We are responsible for acting in a way that preserves academic honesty, freedom and integrity; </li>' +
+            '<li> We endeavor to foster a sense of personal responsibility for our actions and continuing education; </li>' +
+            '<li> We behave in a manner which encourages ethical behavior; </li>' +
+            '<li> We are personally responsible for acquiring and maintaining professional competence; </li>' +
+            '<li> We appreciate the impacts and benefits of diversity in race, religion gender, ethnicity, opinion, and ideas at UCM and in the workplace; </li>' +
+            '<li> We serve our community both by reaching our educational goals and by being proactive members of the community. </li>' +
+            '</b>';
     BootstrapDialog.show({
         type: BootstrapDialog.TYPE_INFO,
         title: 'Code of Conduct',

@@ -6,6 +6,7 @@
 package com.ucm.service.helper;
 
 import com.app.util.AppSessionUtil;
+import com.app.util.ApplicationUtil;
 import com.app.util.DBUtil;
 import com.app.util.RequestStatus;
 import com.ucm.exception.ConstraintVilationException;
@@ -63,6 +64,22 @@ public class UserServiceHelper {
         }
     }
 
+    public AppUser getUserByLoginId(String loginId) throws NoUserException {
+        AppUser appUser = null;
+        UserService userService;
+        try {
+            userService = new UserServiceImpl();
+            appUser = userService.getUserByLoginId(loginId);
+            if (appUser == null) {
+                throw new NoUserException();
+            }
+            return appUser;
+        } catch (Exception e) {
+            logger.info("getUserByLoginId().NoResultException_01 ");
+            throw new NoUserException();
+        }
+    }
+
     public void deleteAccessTokens(String authorization) throws NoUserException {
         logger.info("deleteAccessTokens() [authorization:" + authorization + "]");
         AppUser puUser = getUserByAuthorization(authorization);
@@ -79,13 +96,14 @@ public class UserServiceHelper {
         RequestStatus response = new RequestStatus();
         try {
             UserLoginService userLoginService = new UserLoginServiceImpl();
+            appUser.setPassword(ApplicationUtil.encryptValue(appUser.getPassword()));
             int advId = userLoginService.modifyUser(appUser);
             if (advId > 0) {
                 response.setSuccess(true);
-                response.setMessage("Advisor updated successfully.");
+                response.setMessage("Director updated successfully.");
                 response.setId(advId);
             } else {
-                response.setMessage("Advisor not updated.");
+                response.setMessage("Director not updated.");
                 response.setId(advId);
             }
 
