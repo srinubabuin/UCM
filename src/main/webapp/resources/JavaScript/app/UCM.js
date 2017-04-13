@@ -2476,6 +2476,17 @@ function loadStudentQuestionnaireLyt(cellObj) {
             if (!studentId) {
                 return;
             }
+            var codeOfConductValue = formObj.elements['codeOfConduct'];
+            if (codeOfConductValue && !codeOfConductValue.checked) {
+                BootstrapDialog.show({
+                    type: BootstrapDialog.TYPE_WARNING,
+                    title: 'Warning',
+                    message: "Please accept code of conduct",
+                    draggable: true,
+                    nl2br: false
+                });
+                return false;
+            }
             var questionnaireDetails = getStudentQuestionnaireFormDetails(formName);
             var student = {
                 'id': studentId,
