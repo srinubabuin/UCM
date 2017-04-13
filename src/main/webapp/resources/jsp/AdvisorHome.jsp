@@ -259,6 +259,12 @@
                 <textarea name="searchNotes" rows="3" class="form-control textarea-no-resize"></textarea>
             </div>
         </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">Previous Notes</label>
+            <div class="col-sm-8">
+                <textarea name="previousNotes" rows="3" class="form-control textarea-no-resize" readonly></textarea>
+            </div>
+        </div>
     </div>
     <div id="studentSearchFormTplButtons">
         <div class="col-sm-12 text-center">

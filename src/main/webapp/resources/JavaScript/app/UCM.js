@@ -281,6 +281,10 @@ function loadStudentSearchLyt(cellObj) {
             $(studentSearchFormObj.elements["next"]).hide();
             $(studentSearchFormObj.elements["previous"]).hide();
         }
+        
+        if(!studentSearch.preReq) {
+            $(studentSearchFormObj.elements["previousNotes"]).hide();
+        }
     };
 
     this.disableStudentSearchForm = function (formConfObj) {
@@ -311,6 +315,16 @@ function loadStudentSearchLyt(cellObj) {
             var formObj = document.forms[formName];
             var prerequisiteDetails = formObj.elements['studentSearchPrerequisite'].value || 'notmet';
             var notes = formObj.elements['searchNotes'].value || '';
+            if(!notes) {
+                BootstrapDialog.show({
+                    type: BootstrapDialog.TYPE_WARNING,
+                    title: 'Warning',
+                    message: "Please enter notes",
+                    draggable: true,
+                    nl2br: false
+                });
+                return false;
+            }
             var student = {
                 'id': studentDetails.id,
                 'loginId': studentDetails.loginId,
@@ -500,6 +514,7 @@ function loadStudentLyt(cellObj) {
 //            $(_this.detailsCellObj).find("button[name=allStudents]").show();
             _this.loadCodeOfConductNotCompletedStudents(studentsGrid);
         });
+        $(_this.detailsCellObj).find("button[name=studentsByNotes]").hide();
 //        $(_this.detailsCellObj).find("button[name=allStudents]").hide();
         _this.loadStudentsGridData(studentsGrid);
     };
@@ -2592,7 +2607,8 @@ function setStudentFormDetails(formConfObj, details) {
     $(studentFormObj.elements["gpa"]).val(score.gpa);
     $(studentFormObj.elements["studentStatus"]).val(details.studentStatus || "select");
     $(studentFormObj.elements["studentSearchPrerequisite"]).val(details.preReq || "notmet");
-    $(studentFormObj.elements["searchNotes"]).val(details.notes || "");
+    $(studentFormObj.elements["searchNotes"]).val();
+    $(studentFormObj.elements["previousNotes"]).val(details.notes || "");
     $(studentFormObj.elements["studentPrerequisite"]).val(details.preReq || "notmet");
     $(studentFormObj.elements["notes"]).val(details.notes || "");
     $(studentFormObj.elements["programEntryTerm"]).val(details.programEntryTerm || "");
