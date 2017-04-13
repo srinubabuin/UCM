@@ -51,7 +51,7 @@
     <div id="studentQuestionnairesFormTpl">
         <div class="form-group">
             <label class="col-sm-6 control-label required">ACCT 2101 Principles of Financial Accounting,
-                        ACCT 2101 Principles of Financial Accounting,
+                        FIN 2801 Business Statistics I,
                         FIN 3801 Business Statistics II. Have you taken a course(s) like this?</label>
             <div class="col-sm-6">
                 <label class="radio-inline"><input type="radio" value="yes" name="takenCourse"
